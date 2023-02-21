@@ -1,0 +1,21 @@
+# git ignored files
+*.pdf
+*.7z
+*__pycache__
+
+# Modelsim project files
+*.mpf
+*.mti
+work
+
+# Log files from testbench
+*.log
+
+# Apps folders/files
+build
+bin
+obj
+.obj
+
+# CGRA bitsream
+bitsream

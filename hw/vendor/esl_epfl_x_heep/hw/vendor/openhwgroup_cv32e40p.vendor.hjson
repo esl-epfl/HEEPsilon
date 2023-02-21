@@ -1,0 +1,29 @@
+// Copyright 2020 OpenHW Group
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+{
+  name: "openhwgroup_cv32e40p",
+  target_dir: "openhwgroup_cv32e40p",
+
+  upstream: {
+    url: "https://github.com/openhwgroup/cv32e40p.git",
+    rev: "52113dcc79b4d2bc6d79827fa8dad9ec34734c6c",
+  },
+
+  patch_dir: "patches/openhwgroup_cv32e40p",
+
+  exclude_from_upstream: [
+    "ci",
+    ".github",
+    "example_tb",
+    "CONTRIBUTING.md",
+    "Bender.yml",
+    ".gitlab-ci.yml",
+    ".dir-locals.el",
+    "cv32e40p_manifest.flist",
+    "cv32e40p_fpu_manifest.flist",
+    "docs",
+    "rtl/vendor",
+    "scripts",
+  ]
+}

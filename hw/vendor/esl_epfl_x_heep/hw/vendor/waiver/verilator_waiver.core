@@ -1,0 +1,34 @@
+CAPI=2:
+
+# Copyright 2021 OpenHW Group
+# Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+# SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+
+name: "openhwgroup.org:ip:verilator_waiver"
+description: "Waiver for Verilator"
+
+filesets:
+  files_verilator_waiver:
+    files:
+    - lint/cv32e40p.vlt
+    - lint/cve2.vlt
+    - lint/common_cells.vlt
+    - lint/fpnew.vlt
+    - lint/tech_cells_generic.vlt
+    - lint/riscv_dbg.vlt
+    - lint/register_interface.vlt
+    - lint/uart.vlt
+    - lint/uartdpi.vlt
+    - lint/cluster_interconnect.vlt
+    - lint/picorv32.vlt
+    - lint/pulpissimo.vlt
+    - lint/rv_plic.vlt
+    - lint/spi_device.vlt
+    - lint/spi_host.vlt
+    file_type: vlt
+
+
+targets:
+  default: &default_target
+    filesets:
+    - tool_verilator? (files_verilator_waiver)
