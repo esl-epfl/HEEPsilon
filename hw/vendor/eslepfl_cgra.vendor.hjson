@@ -1,0 +1,35 @@
+// Copyright EPFL
+// Licensed under the Solderpad Hardware License v2.1, see LICENSE.txt for details
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+
+{
+  name: "esl_epfl_cgra",
+  target_dir: "esl_epfl_cgra",
+
+  upstream: {
+    url: "https://eslgit.epfl.ch/cgra/cgra_esl_epfl.git",
+    rev: "1026c5f731eb7403c5e7406aa1519fa6473cf760",
+  },
+
+  patch_dir: "patches/esl_epfl_cgra",
+
+  exclude_from_upstream: [
+    "eda/cds_genus",
+    "eda/cds_irun",
+    "eda/mgsim",
+    "eda/snps_dc",
+    "eda/snps_pt",
+    "mem",
+    "apps",
+    "doc",
+    "kernel_mapping",
+    "platform_files",
+    "testbench",
+    "utilities/INSTRUCTIONS_FFT_BITREV.py",
+    "utilities/INSTRUCTIONS_FFT_CPLX.py",
+    "utilities/INSTRUCTIONS_FFT_SPLITOPS.py",
+    "utilities/instructions_max_peak.py",
+    "utilities/instructions_min_max_circular.py",
+    "utilities/lowrisc_opentitan"
+  ]
+}

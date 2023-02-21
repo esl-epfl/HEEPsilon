@@ -1,0 +1,37 @@
+////////////////////////////////////////////////////////////////////////////////
+// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
+//                                                                            //
+// Additional contributions by:                                               //
+//                                                                            //
+//                                                                            //
+// Design Name:    CGRA                                                       //
+// Project Name:   CGRA                                                       //
+// Language:       SystemVerilog                                              //
+//                                                                            //
+// Description:    CGRA lint errors check and removal.                        //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+`verilator_config
+
+lint_off -rule LITENDIAN -file "*esl_epfl_cgra/rtl/cgra.sv"            -match "Little bit endian vector: left < right of bit range: [-1:4]*"
+lint_off -rule WIDTH     -file "*esl_epfl_cgra/rtl/cgra_top.sv"        -match "Operator EQ expects 32 or 6 bits on the LHS*"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/synchronizer.sv"    -match "Bits of signal are not used: 'conf_word_i'[10:0]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/peripheral_regs.sv" -match "Bits of signal are not used: 'periph_add_i'[31:7,1:0]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/peripheral_regs.sv" -match "Signal is not used: 'periph_be_i'"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/cgra_controller.sv" -match "Bits of signal are not used: 'kmem_rdata_i'[14:11]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/context_memory.sv"  -match "Signal is not used: 'rst_ni'*"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/context_memory.sv"  -match "Signal is not used: 'cm_be_i'*"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/context_memory.sv"  -match "Bits of signal are not used: 'cm_add_i'[31:12,1:0]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/alu.sv"             -match "Bits of signal are not used: 'adder_result_full'[33,0]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/alu.sv"             -match "Bits of signal are not used: 'fxp_mult_scaled'[0]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/alu.sv"             -match "Bits of signal are not used: 'mult_result_full'[63:47]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/alu.sv"             -match "Bits of signal are not used: 'shift_amt'[31:5]"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/rtl/alu.sv"             -match "Bits of signal are not used: 'shift_right_result_33b'[32]"
+lint_off -rule UNOPTFLAT -file "*esl_epfl_cgra/rtl/alu.sv"             -match "Signal unoptimizable: Feedback to clock or circular logic: 'heepocrates_testharness.heepocrates_i.cgra_top_wrapper_i.cgra_top_i.cgra_rcs_i.rc_row_gen[*].rc_col_gen[*].rc_i.rc_datapath.rc_alu.data_add_s'"
+lint_off -rule UNOPTFLAT -file "*esl_epfl_cgra/rtl/datapath.sv"        -match "Signal unoptimizable: Feedback to clock or circular logic: 'heepocrates_testharness.heepocrates_i.cgra_top_wrapper_i.cgra_top_i.cgra_rcs_i.rc_row_gen[*].rc_col_gen[*].rc_i.rc_datapath.data_alu_mux'"
+
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/wrapper/cgra_top_wrapper.sv" -match "Signal is not used: 'periph_r_id'*"
+lint_off -rule UNUSED    -file "*esl_epfl_cgra/wrapper/cgra_top_wrapper.sv" -match "Signal is not used: 'periph_rvalid'*"
+
+lint_off -rule UNOPTFLAT -file "*esl_epfl_cgra/eda/HDL/tech_lib/clkgate/rtl/cgra_clock_gate.sv" -match "Signal unoptimizable: Feedback to clock or circular logic:*"
