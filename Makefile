@@ -9,6 +9,9 @@
 
 TARGET ?= sim
 
+# CGRA
+EXTERNAL_DOMAINS = 1
+
 # Generates mcu files
 mcu-gen:
 	cd hw/vendor/esl_epfl_x_heep && \
@@ -39,7 +42,7 @@ app-helloworld:
 	$(MAKE) -C sw x_heep_applications/hello_world/hello_world.hex  TARGET=$(TARGET)
 
 app-cgra-test:
-	$(MAKE) -C sw applications/applications/cgra_func_test/main.hex  TARGET=$(TARGET)
+	$(MAKE) -C sw applications/cgra_func_test/main.hex  TARGET=$(TARGET)
 
 # Tools specific fusesoc call
 
@@ -68,6 +71,12 @@ vcs-sim:
 run-helloworld: mcu-gen questasim-sim app-helloworld
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
 	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
+	cat uart0.log; \
+	cd ../../..;
+
+run-cgra-test: mcu-gen questasim-sim app-cgra-test
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
+	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
 	cat uart0.log; \
 	cd ../../..;
 

@@ -18,18 +18,6 @@ filesets:
     - hw/rtl/cgra_x_heep_top.sv
     file_type: systemVerilogSource
 
-#  rtl-simulation:
-#    depend:
-#    - pulp-platform.org::tech_cells_generic
-#    files:
-#    - hw/simulation/sram_wrapper.sv
-#    - hw/simulation/pad_cell_bypass_input.sv
-#    - hw/simulation/pad_cell_bypass_output.sv
-#    - hw/simulation/pad_cell_inout.sv
-#    - hw/simulation/pad_cell_input.sv
-#    - hw/simulation/pad_cell_output.sv
-#    file_type: systemVerilogSource
-
   x_heep_system:
     depend:
     - x-heep::packages
