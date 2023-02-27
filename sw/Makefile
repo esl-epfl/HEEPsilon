@@ -122,7 +122,7 @@ applications/cgra_func_test/main.elf: applications/cgra_func_test/main.c applica
 		-L $(RISCV)/riscv32-unknown-elf/lib \
 		-lc -lm -lgcc -flto -ffunction-sections -fdata-sections -specs=nano.specs
 
-applications/cgra_kernels_test/main.elf: applications/cgra_kernels_test/main.c
+applications/cgra_dbl_search/main.elf: applications/cgra_dbl_search/main.c
 	$(RISCV_EXE_PREFIX)gcc -march=rv32imc -o $@ -w -Os -g -nostdlib \
 		$(CUSTOM_GCC_FLAGS) \
 		-DHOST_BUILD \

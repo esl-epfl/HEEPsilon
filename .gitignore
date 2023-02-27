@@ -2,6 +2,7 @@
 
 build
 *.log
+*.do
 
 # sw files
 *.map
