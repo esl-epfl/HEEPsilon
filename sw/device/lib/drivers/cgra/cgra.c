@@ -19,7 +19,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "heepocrates.h"
+#include "cgra_x_heep.h"
 #include "core_v_mini_mcu.h"
 #include "cgra.h"
 #include "cgra_regs.h" // generated

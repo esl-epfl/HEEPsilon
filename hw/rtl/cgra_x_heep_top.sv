@@ -75,7 +75,6 @@ module cgra_x_heep_top #(
 
   // External interrupts
   logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_intr_vector;
-  logic cgra_int;
 
   // External subsystems
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch;
@@ -133,8 +132,8 @@ module cgra_x_heep_top #(
       .boot_select_i,
       .execute_from_flash_i,
       .exit_valid_o,
-      .uart_rx_i(uart_rx),
-      .uart_tx_o(uart_tx),
+      .uart_rx_i,
+      .uart_tx_o,
       .gpio_0_io(gpio_io[0]),
       .gpio_1_io(gpio_io[1]),
       .gpio_2_io(gpio_io[2]),

@@ -23,6 +23,7 @@
     "mem",
     "apps",
     "doc",
+    "README.md"
     "kernel_mapping",
     "platform_files",
     "testbench",
