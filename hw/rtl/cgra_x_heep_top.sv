@@ -1,10 +1,11 @@
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_x_heep_top #(
     parameter PULP_XPULP    = 0,
     parameter FPU           = 0,
     parameter PULP_ZFINX    = 0
-    // parameter JTAG_DPI      = 0,
-    // parameter CLK_FREQUENCY = 'd100_000  //KHz
 ) (
     inout logic         clk_i,
     inout logic         rst_ni,
@@ -39,31 +40,9 @@ module cgra_x_heep_top #(
     inout  logic        exit_valid_o
 );
 
-  // `include "tb_util.svh"
-
   import obi_pkg::*;
   import reg_pkg::*;
   import cgra_x_heep_pkg::*;
-
-  // localparam SWITCH_ACK_LATENCY = 15;
-
-  // logic sim_jtag_enable = (JTAG_DPI == 1);
-  // wire sim_jtag_tck_i;
-  // wire sim_jtag_tms_i;
-  // wire sim_jtag_trst_ni;
-  // wire sim_jtag_tdi_i;
-  // wire sim_jtag_tdo_o;
-  // wire [31:0] gpio_io;
-  // wire uart_rx;
-  // wire uart_tx;
-
-  // wire [3:0] spi_flash_sd_io;
-  // wire [1:0] spi_flash_csb_io;
-  // wire spi_flash_sck_io;
-
-  // wire [3:0] spi_sd_io;
-  // wire [1:0] spi_csb_io;
-  // wire spi_sck_io;
 
   // External xbar master/slave and peripheral ports
   obi_req_t [cgra_x_heep_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_req;
@@ -77,9 +56,6 @@ module cgra_x_heep_top #(
   logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_intr_vector;
 
   // External subsystems
-  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch;
-  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack;
-  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso;
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_rst_n;
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_ram_banks_set_retentive;
 
@@ -97,7 +73,8 @@ module cgra_x_heep_top #(
     ext_intr_vector[0] = cgra_int;
   end
 
-  assign cgra_enable = 1'b1; // CGRA logic clock gating unit enable (always-on in this case)
+  // CGRA logic clock gating unit enable (always-on in this case)
+  assign cgra_enable = 1'b1;
   assign cgra_logic_rst_n = external_subsystem_rst_n[0];
   assign cgra_ram_banks_set_retentive = external_ram_banks_set_retentive[0];
 

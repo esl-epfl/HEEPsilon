@@ -30,7 +30,6 @@ filesets:
   tb-harness:
     files:
     - tb/tb_util.svh: {is_include_file: true}
-    #- tb/testharness_pkg.sv
     - tb/testharness.sv
     file_type: systemVerilogSource
 
@@ -59,62 +58,6 @@ filesets:
   cypress_flash:
     depend:
     - ::spiflash:0
-
-  # files_verilator_waiver:
-  #   depend:
-  #   - openhwgroup.org:ip:verilator_waiver
-    # files:
-    # - hw/core-v-mini-mcu/core_v_mini_mcu.vlt
-    # - hw/ip/soc_ctrl/soc_ctrl.vlt
-    # - hw/ip/boot_rom/boot_rom.vlt
-    # - hw/ip/obi_spimemio/obi_spimemio.vlt
-    # - hw/ip/dma/dma.vlt
-    # - hw/ip/power_manager/power_manager.vlt
-    # - hw/ip/fast_intr_ctrl/fast_intr_ctrl.vlt
-    # - hw/system/pad_control/pad_control.vlt
-    # - hw/system/x_heep_system.vlt
-    # - hw/simulation/simulation.vlt
-   # file_type: vlt
-
-  rtl-fpga:
-    files:
-    - hw/fpga/xilinx_core_v_mini_mcu_wrapper.sv
-    - hw/fpga/sram_wrapper.sv
-    file_type: systemVerilogSource
-
-  ip-fpga:
-    files:
-    - hw/fpga/scripts/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
-    - hw/fpga/scripts/generate_sram.tcl:  { file_type: tclSource }
-    - hw/fpga/prim_xilinx_clk.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/cv32e40p_xilinx_clock_gate.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/cve2_xilinx_clock_gate.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/pad_cell_input_xilinx.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/pad_cell_output_xilinx.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/pad_cell_inout_xilinx.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/pad_cell_bypass_input_xilinx.sv:  { file_type: systemVerilogSource }
-    - hw/fpga/pad_cell_bypass_output_xilinx.sv:  { file_type: systemVerilogSource }
-
-  ip-asic:
-    depend:
-    - technology::prim_mytech
-
-  xdc-fpga-nexys:
-    files:
-    - hw/fpga/constraints/nexys/pin_assign.xdc
-    - hw/fpga/constraints/nexys/constraints.xdc
-    file_type: xdc
-
-  xdc-fpga-pynq-z2:
-    files:
-    - hw/fpga/constraints/pynq-z2/pin_assign.xdc
-    - hw/fpga/constraints/pynq-z2/constraints.xdc
-    file_type: xdc
-
-  netlist-fpga:
-    files:
-    - build/openhwgroup.org_systems_core-v-mini-mcu_0/nexys-a7-100t-vivado/core_v_mini_mcu_xiling_postsynth.v
-    file_type: verilogSource
 
   # Scripts for hooks
   pre_build_remote_bitbang:
@@ -192,8 +135,6 @@ targets:
   default: &default_target
     filesets:
     - files_rtl_generic
-    #- target_sim ? (rtl-simulation)
-    # - target_sim ? (tool_verilator? (files_verilator_waiver))
     toplevel: [cgra_x_heep_top]
 
   sim:
@@ -204,13 +145,13 @@ targets:
 
     - tool_verilator? (uartdpi)
     - tool_modelsim? (systemverilog_only_uart)
-    # - tool_vcs? (systemverilog_only_uart)
+    - tool_vcs? (systemverilog_only_uart)
     - tool_verilator? (files_verilator_waiver)
     - tool_verilator? (remote_bitbang_dpi)
     - tool_modelsim? (systemverilog_only_simjtag)
-    # - tool_vcs? (systemverilog_only_simjtag)
+    - tool_vcs? (systemverilog_only_simjtag)
     - tool_modelsim? (cypress_flash)
-    # - tool_vcs? (cypress_flash)
+    - tool_vcs? (cypress_flash)
 
     - tool_modelsim? (pre_build_remote_bitbang)
     - tool_modelsim? (pre_build_uartdpi)
@@ -234,7 +175,6 @@ targets:
     - PULP_XPULP=0
     - use_jtag_dpi? (JTAG_DPI=1)
     - "!use_jtag_dpi? (JTAG_DPI=0)"
-    # - use_upf? (USE_UPF=true)
     tools:
       modelsim:
         vlog_options:
@@ -276,73 +216,3 @@ targets:
           - '-CFLAGS "-std=c++11 -Wall -g -fpermissive"'
           - '-LDFLAGS "-pthread -lutil -lelf"'
           - "-Wall"
-
-#  nexys-a7-100t:
-#    <<: *default_target
-#    default_tool: vivado
-#    description: Digilent Nexys-A7-100T Board
-#    filesets_append:
-#    - rtl-fpga
-#    - ip-fpga
-#    - xdc-fpga-nexys
-#    parameters:
-#    - PULP_XPULP=0
-#    - SYNTHESIS=true
-#    tools:
-#      vivado:
-#        part: xc7a100tcsg324-1
-#    toplevel: [xilinx_core_v_mini_mcu_wrapper]
-#
-#  pynq-z2:
-#    <<: *default_target
-#    default_tool: vivado
-#    description: TUL Pynq-Z2 Board
-#    filesets_append:
-#    - x_heep_system
-#    - rtl-fpga
-#    - ip-fpga
-#    - xdc-fpga-pynq-z2
-#    parameters:
-#    - PULP_XPULP=0
-#    - SYNTHESIS=true
-#    tools:
-#      vivado:
-#        part: xc7z020clg400-1
-#    toplevel: [xilinx_core_v_mini_mcu_wrapper]
-#
-#  sim_nexys_netlist:
-#    filesets:
-#    - netlist-fpga
-#    - tb-rtl
-#    toplevel: [tb_top_vopt]
-#    parameters:
-#    - PULP_XPULP=0
-#    - FPGA_NETLIST=true
-#    tools:
-#      modelsim:
-#        vlog_options:
-#        - -override_timescale 1ns/1ps
-#        - -suppress vlog-2583
-#        - -suppress vlog-2577
-#        - -pedanticerrors
-
-  asic_synthesis:
-    <<: *default_target
-    default_tool: design_compiler
-    description: Design Compiler Script
-    parameters:
-    - PULP_XPULP=0
-    - SYNTHESIS=true
-    filesets_append:
-    - ip-asic
-    parameters:
-      - PRIM_DEFAULT_IMPL=prim_pkg::your_target_technology
-    toplevel: [core_v_mini_mcu]
-    tools:
-      design_compiler:
-        script_dir:
-        - ../../../scripts/synthesis/dc_shell
-        report_dir:
-        - report
-        dc_script:
-        - dc_script.tcl

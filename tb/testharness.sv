@@ -1,10 +1,6 @@
-// Copyright 2022 OpenHW Group
+// Copyright 2022 EPFL
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
-
-// `ifdef USE_UPF
-// import UPF::*;
-// `endif
 
 module testharness #(
     parameter PULP_XPULP    = 0,
@@ -58,16 +54,6 @@ module testharness #(
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch;
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack;
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso;
-  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_rst_n;
-  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_ram_banks_set_retentive;
-
-// `ifdef USE_UPF
-//   initial begin
-//     $display("%t: All Power Supply ON", $time);
-//     supply_on("VDD", 1.2);
-//     supply_on("VSS", 0);
-//   end
-// `endif
 
   cgra_x_heep_top #(
       .PULP_XPULP(PULP_XPULP),

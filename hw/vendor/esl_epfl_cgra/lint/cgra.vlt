@@ -1,16 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    CGRA                                                       //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    CGRA lint errors check and removal.                        //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 `verilator_config
 
@@ -56,8 +46,5 @@ lint_off -rule MULTIDRIVEN -file "*esl_epfl_cgra/rtl/cgra.sv" -match "Signal has
 lint_off -rule MULTIDRIVEN -file "*esl_epfl_cgra/rtl/cgra.sv" -match "Signal has multiple driving blocks with different clocking: 'testharness.cgra_x_heep_top_i.cgra_top_wrapper_i.cgra_top_i.cgra_rcs_i.rcs_flag_reg'*"
 lint_off -rule MULTIDRIVEN -file "*esl_epfl_cgra/rtl/cgra.sv" -match "Signal has multiple driving blocks with different clocking: 'testharness.cgra_x_heep_top_i.cgra_top_wrapper_i.cgra_top_i.cgra_rcs_i.rcs_res_reg'*"
 
-
-// TO BE REMOVED
-// lint_off -rule UNUSED -file "*esl_epfl_cgra/wrapper/cgra_top_wrapper.sv" -match "Signal is not used: 'cgra_enable_i'"
-
-// lint_off -rule UNUSED -file "*esl_epfl_cgra/rtl/cgra_top.sv" -match "Signal is not used: 'rcs_col_e_s'"
+// Remove clock gating instance for verilator simulation otherwise sim is failing (verilator v4.2)
+lint_off -rule UNUSED -file "*esl_epfl_cgra/rtl/cgra_top.sv" -match "Signal is not used: 'rcs_col_e_s'"
