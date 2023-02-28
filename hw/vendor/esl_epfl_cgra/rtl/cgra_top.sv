@@ -1,16 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    CGRA top module                                            //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    CGRA top module.                                           //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_top
   import cgra_pkg::*;
@@ -100,17 +90,31 @@ module cgra_top
 
   logic [N_COL-1:0] clk_rcs_cg;
 
-  // Activate the clock of a column when it is active only
-  generate
-    for (genvar j=0; j<N_COL; j++) begin : rcs_col_cg_gen
-      cgra_clock_gate clk_gate_rcs_col_i (
-        .clk_i     ( clk_i ),
-        .test_en_i ( 1'b0 ),
-        .en_i      ( rcs_col_e_s[j] ),
-        .clk_o     ( clk_rcs_cg[j] )
-      ); 
-    end
-  endgenerate
+  `ifndef VERILATOR
+    // Activate the clock of a column when it is active only
+    generate
+      for (genvar j=0; j<N_COL; j++) begin : rcs_col_cg_gen
+        cgra_clock_gate clk_gate_rcs_col_i (
+          .clk_i     ( clk_i ),
+          .test_en_i ( 1'b0 ),
+          .en_i      ( rcs_col_e_s[j] ),
+          .clk_o     ( clk_rcs_cg[j] )
+        ); 
+      end
+    endgenerate
+  `else
+    // The verilator simulator fails to properly schedule the event when two registers
+    // are control by an original clk signal and a clock gated signal. Probably a problem
+    // in the event scheduling in v4.2 (this might be solved in v5). For now we use this
+    // trick to make sure input data and internal clock signal to the CGRA are updated
+    // at the same delta cycle. This is not a problem with all simulators. For example,
+    // modelsim correctly simulates this design without this trick.
+    assign clk_rcs_cg[0] = clk_i;
+    assign clk_rcs_cg[1] = clk_i;
+    assign clk_rcs_cg[2] = clk_i;
+    assign clk_rcs_cg[3] = clk_i;
+  `endif
+
 
   //---------------------------------------------------------------------
   //
@@ -167,7 +171,6 @@ module cgra_top
   (
     .clk_i            ( clk_rcs_cg        ),
     .rst_col_i        ( rcs_rst_col_s     ),
-    .rcs_col_e_i      ( rcs_col_e_s       ),
     .rcs_conf_we_i    ( rcs_conf_we_s     ),
     .rcs_conf_re_i    ( rcs_conf_re_s     ),
     .rcs_col_pc_i     ( rcs_pc_s          ),
