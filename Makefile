@@ -44,6 +44,9 @@ app-helloworld:
 app-cgra-test:
 	$(MAKE) -C sw applications/cgra_func_test/main.hex  TARGET=$(TARGET)
 
+app-cgra-dbl-search:
+	$(MAKE) -C sw applications/cgra_dbl_search/main.hex  TARGET=$(TARGET)
+
 # Tools specific fusesoc call
 
 # Simulation
@@ -62,40 +65,29 @@ questasim-sim-opt-upf: questasim-sim
 vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
-run-helloworld: mcu-gen verilator-sim app-helloworld
+run-helloworld-verilator: mcu-gen verilator-sim app-helloworld
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex; \
 	cat uart0.log; \
 	cd ../../..;
 
-run-cgra-test: mcu-gen verilator-sim app-cgra-test
+run-cgra-test-verilator: mcu-gen verilator-sim app-cgra-test
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/applications/cgra_func_test/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
 
-# run-helloworld: mcu-gen questasim-sim app-helloworld
-# 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-# 	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
-# 	cat uart0.log; \
-# 	cd ../../..;
+run-helloworld-questasim: mcu-gen questasim-sim app-helloworld
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
+	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
+	cat uart0.log; \
+	cd ../../..;
 
-# run-cgra-test: mcu-gen questasim-sim app-cgra-test
-# 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-# 	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
-# 	cat uart0.log; \
-# 	cd ../../..;
-
-# Emulation
-vivado-fpga:
-	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildvivado.log
-
-vivado-fpga-nobuild:
-	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --setup eslepfl:systems:cgra-x-heep 2>&1 | tee buildvivado.log
-
-# ASIC
-asic:
-	fusesoc --cores-root . run --no-export --target=asic_synthesis --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
+run-cgra-test-questasim: mcu-gen questasim-sim app-cgra-test
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
+	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
+	cat uart0.log; \
+	cd ../../..;
 
 help:
 	@echo "SIMULATION BUILD TARGETS"
@@ -109,18 +101,14 @@ help:
 	@echo "\tmake <toolname>-sim FUSESOC_FLAGS=\"--flag=<flagname0> --flag=<flagname1>\""
 	@echo "\tex: make verilator-sim FUSESOC_FLAGS=\"--flag=use_external_device_example --flag=use_jtag_dpi\""
 	@echo ""
-	@echo "FPGA EMULATION BUILD TARGET"
-	@echo "Build with vivado"
-	@echo "\tmake vivado-fpga[-nobuild] FPGA_BOARD=[nexys-a7-100t,pynq-z2] FUSESOC_FLAGS=--flag=<flagname>"
-	@echo "\tex: make vivado-fpga FPGA_BOARD=nexys-a7-100t FUSESOC_FLAGS=--flag=use_bscane_xilinx"
-	@echo ""
-	@echo "ASIC IMPLEMENTATION"
-	@echo "You need to provide technology-dependent files (e.g., libs, constraints)"
-	@echo "\tmake asic"
 	@echo "SOFTWARE BUILD TARGETS"
 	@echo "Build example applications:"
-	@echo "\tmake app-[helloworld,matadd,ext-periph,gpio-cnt]"
-	@echo "\tex: make app-helloworld"
+	@echo "\tmake app-[helloworld,cgra-test,cgra-dbl-search]"
+	@echo "\tex: make app-helloworld-<toolname>"
+	@echo ""
+	@echo "RUN BASIC EXAMPLES"
+	@echo "\tex: make run-helloworld-<verilator,questasim>"
+	@echo "\tex: make run-cgra-test-<verilator,questasim>"
 
 clean: clean-app clean-sim
 
