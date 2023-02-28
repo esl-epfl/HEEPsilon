@@ -34,6 +34,11 @@ filesets:
     - tb/testharness.sv
     file_type: systemVerilogSource
 
+  files_verilator_waiver:
+    files:
+    - tb/tb.vlt
+    file_type: vlt
+
   systemverilog_only_simjtag:
     depend:
     - pulp-platform.org::pulpissimo_simjtag
@@ -55,21 +60,21 @@ filesets:
     depend:
     - ::spiflash:0
 
-  files_verilator_waiver:
-    depend:
-    - openhwgroup.org:ip:verilator_waiver
-    files:
-    - hw/core-v-mini-mcu/core_v_mini_mcu.vlt
-    - hw/ip/soc_ctrl/soc_ctrl.vlt
-    - hw/ip/boot_rom/boot_rom.vlt
-    - hw/ip/obi_spimemio/obi_spimemio.vlt
-    - hw/ip/dma/dma.vlt
-    - hw/ip/power_manager/power_manager.vlt
-    - hw/ip/fast_intr_ctrl/fast_intr_ctrl.vlt
-    - hw/system/pad_control/pad_control.vlt
-    - hw/system/x_heep_system.vlt
-    - hw/simulation/simulation.vlt
-    file_type: vlt
+  # files_verilator_waiver:
+  #   depend:
+  #   - openhwgroup.org:ip:verilator_waiver
+    # files:
+    # - hw/core-v-mini-mcu/core_v_mini_mcu.vlt
+    # - hw/ip/soc_ctrl/soc_ctrl.vlt
+    # - hw/ip/boot_rom/boot_rom.vlt
+    # - hw/ip/obi_spimemio/obi_spimemio.vlt
+    # - hw/ip/dma/dma.vlt
+    # - hw/ip/power_manager/power_manager.vlt
+    # - hw/ip/fast_intr_ctrl/fast_intr_ctrl.vlt
+    # - hw/system/pad_control/pad_control.vlt
+    # - hw/system/x_heep_system.vlt
+    # - hw/simulation/simulation.vlt
+   # file_type: vlt
 
   rtl-fpga:
     files:

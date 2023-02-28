@@ -43,7 +43,7 @@ module cgra_x_heep_top #(
 
   import obi_pkg::*;
   import reg_pkg::*;
-  import cgra_x_heep_top_pkg::*;
+  import cgra_x_heep_pkg::*;
 
   // localparam SWITCH_ACK_LATENCY = 15;
 
@@ -66,8 +66,8 @@ module cgra_x_heep_top #(
   // wire spi_sck_io;
 
   // External xbar master/slave and peripheral ports
-  obi_req_t [cgra_x_heep_top_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_req;
-  obi_resp_t [cgra_x_heep_top_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_resp;
+  obi_req_t [cgra_x_heep_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_req;
+  obi_resp_t [cgra_x_heep_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_resp;
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
@@ -77,9 +77,9 @@ module cgra_x_heep_top #(
   logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_intr_vector;
 
   // External subsystems
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch;
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack;
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso;
+  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch;
+  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack;
+  // logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso;
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_rst_n;
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_ram_banks_set_retentive;
 
@@ -104,7 +104,7 @@ module cgra_x_heep_top #(
   cgra_top_wrapper cgra_top_wrapper_i (
       .clk_i,
       .rst_ni,
-      .cgra_enable_i(1'b1),
+      .cgra_enable_i(cgra_enable),
       .rst_logic_ni(cgra_logic_rst_n),
       .masters_req_o(ext_xbar_master_req),
       .masters_resp_i(ext_xbar_master_resp),
@@ -120,7 +120,7 @@ module cgra_x_heep_top #(
       .PULP_XPULP(PULP_XPULP),
       .FPU(FPU),
       .PULP_ZFINX(PULP_ZFINX),
-      .EXT_XBAR_NMASTER(cgra_x_heep_top_pkg::EXT_XBAR_NMASTER)
+      .EXT_XBAR_NMASTER(cgra_x_heep_pkg::EXT_XBAR_NMASTER)
   ) x_heep_system_i (
       .clk_i,
       .rst_ni,
@@ -195,4 +195,4 @@ module cgra_x_heep_top #(
       .external_ram_banks_set_retentive_o(external_ram_banks_set_retentive)
   );
 
-endmodule  // cgra_x_heep_top_pkg
+endmodule  // cgra_x_heep_pkg

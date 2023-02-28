@@ -79,9 +79,11 @@ extern "C" {
 
 // Enable performance counters
 #define CGRA_PERF_CNT_ENABLE_REG_OFFSET 0x4c
+#define CGRA_PERF_CNT_ENABLE_PERF_CNT_ENABLE_BIT 0
 
 // Reset performance counters
 #define CGRA_PERF_CNT_RESET_REG_OFFSET 0x50
+#define CGRA_PERF_CNT_RESET_PERF_CNT_RESET_BIT 0
 
 // Total number of kernels executed (all columns)
 #define CGRA_PERF_CNT_TOTAL_KERNELS_REG_OFFSET 0x54

@@ -41,11 +41,6 @@ filesets:
     - esl_epfl_cgra/sim/cgra_sram_wrapper.sv
     file_type: systemVerilogSource
 
-  files_wrap:
-    files:
-    - esl_epfl_cgra/wrapper/cgra_top_wrapper.sv
-    file_type: systemVerilogSource
-
   files_verilator_waiver:
     files:
     - esl_epfl_cgra/lint/cgra.vlt
@@ -55,6 +50,5 @@ targets:
   default:
     filesets:
     - files_rtl
-    - files_wrap
     - tool_verilator? (files_verilator_waiver)
     - target_sim? (files_behav_rtl)

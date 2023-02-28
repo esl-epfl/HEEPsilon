@@ -17,7 +17,6 @@ import cgra_pkg::*;
 (
   input  logic                         clk_i,
   input  logic                         rst_rc_i,
-  input  logic                         ce_i,
   input  logic [      INSTR_WIDTH-1:0] conf_rdata_i,
   input  logic [         DP_WIDTH-1:0] data_rdata_i,
   input  logic                         data_rvalid_i,

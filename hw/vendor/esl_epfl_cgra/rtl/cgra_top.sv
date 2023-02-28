@@ -98,18 +98,9 @@ module cgra_top
   end
   // pragma translate_on
 
-  logic [N_COL-1:0] clk_rcs_cg;//, clk_rcs_en;
+  logic [N_COL-1:0] clk_rcs_cg;
 
-  // // Activate the clock as long as at least one column is active
-  // assign clk_rcs_en = |rcs_col_e_s;
-
-  // cgra_clock_gate clk_gate_rcs_i (
-  //   .clk_i     ( clk_i  ),
-  //   .test_en_i ( 1'b0   ),
-  //   .en_i      ( clk_rcs_en ),
-  //   .clk_o     ( clk_rcs_cg )
-  // );
-
+  // Activate the clock of a column when it is active only
   generate
     for (genvar j=0; j<N_COL; j++) begin : rcs_col_cg_gen
       cgra_clock_gate clk_gate_rcs_col_i (

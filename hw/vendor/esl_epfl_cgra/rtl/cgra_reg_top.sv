@@ -123,11 +123,11 @@ module cgra_reg_top #(
   logic [31:0] slot1_ptr_out_c3_qs;
   logic [31:0] slot1_ptr_out_c3_wd;
   logic slot1_ptr_out_c3_we;
-  logic [31:0] perf_cnt_enable_qs;
-  logic [31:0] perf_cnt_enable_wd;
+  logic perf_cnt_enable_qs;
+  logic perf_cnt_enable_wd;
   logic perf_cnt_enable_we;
-  logic [31:0] perf_cnt_reset_qs;
-  logic [31:0] perf_cnt_reset_wd;
+  logic perf_cnt_reset_qs;
+  logic perf_cnt_reset_wd;
   logic perf_cnt_reset_we;
   logic [31:0] perf_cnt_total_kernels_qs;
   logic [31:0] perf_cnt_total_kernels_wd;
@@ -675,9 +675,9 @@ module cgra_reg_top #(
   // R[perf_cnt_enable]: V(False)
 
   prim_subreg #(
-    .DW      (32),
+    .DW      (1),
     .SWACCESS("RW"),
-    .RESVAL  (32'h0)
+    .RESVAL  (1'h0)
   ) u_perf_cnt_enable (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
@@ -702,9 +702,9 @@ module cgra_reg_top #(
   // R[perf_cnt_reset]: V(False)
 
   prim_subreg #(
-    .DW      (32),
+    .DW      (1),
     .SWACCESS("RW"),
-    .RESVAL  (32'h0)
+    .RESVAL  (1'h0)
   ) u_perf_cnt_reset (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
@@ -1154,10 +1154,10 @@ module cgra_reg_top #(
   assign slot1_ptr_out_c3_wd = reg_wdata[31:0];
 
   assign perf_cnt_enable_we = addr_hit[19] & reg_we & !reg_error;
-  assign perf_cnt_enable_wd = reg_wdata[31:0];
+  assign perf_cnt_enable_wd = reg_wdata[0];
 
   assign perf_cnt_reset_we = addr_hit[20] & reg_we & !reg_error;
-  assign perf_cnt_reset_wd = reg_wdata[31:0];
+  assign perf_cnt_reset_wd = reg_wdata[0];
 
   assign perf_cnt_total_kernels_we = addr_hit[21] & reg_we & !reg_error;
   assign perf_cnt_total_kernels_wd = reg_wdata[31:0];
@@ -1267,11 +1267,11 @@ module cgra_reg_top #(
       end
 
       addr_hit[19]: begin
-        reg_rdata_next[31:0] = perf_cnt_enable_qs;
+        reg_rdata_next[0] = perf_cnt_enable_qs;
       end
 
       addr_hit[20]: begin
-        reg_rdata_next[31:0] = perf_cnt_reset_qs;
+        reg_rdata_next[0] = perf_cnt_reset_qs;
       end
 
       addr_hit[21]: begin

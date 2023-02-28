@@ -9,7 +9,7 @@
 
 TARGET ?= sim
 
-# CGRA
+# 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 
 # Generates mcu files
@@ -62,23 +62,29 @@ questasim-sim-opt-upf: questasim-sim
 vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
-# run-helloworld: mcu-gen verilator-sim app-helloworld
-# 	cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-verilator; \
-# 	./Vtestharness +firmware=../../../sw/applications/hello_world/hello_world.hex; \
+run-helloworld: mcu-gen verilator-sim app-helloworld
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
+	./Vtestharness +firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex; \
+	cat uart0.log; \
+	cd ../../..;
+
+run-cgra-test: mcu-gen verilator-sim app-cgra-test
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
+	./Vtestharness +firmware=../../../sw/applications/cgra_func_test/main.hex; \
+	cat uart0.log; \
+	cd ../../..;
+
+# run-helloworld: mcu-gen questasim-sim app-helloworld
+# 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
+# 	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
 # 	cat uart0.log; \
 # 	cd ../../..;
 
-run-helloworld: mcu-gen questasim-sim app-helloworld
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
-	cat uart0.log; \
-	cd ../../..;
-
-run-cgra-test: mcu-gen questasim-sim app-cgra-test
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
-	cat uart0.log; \
-	cd ../../..;
+# run-cgra-test: mcu-gen questasim-sim app-cgra-test
+# 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
+# 	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
+# 	cat uart0.log; \
+# 	cd ../../..;
 
 # Emulation
 vivado-fpga:

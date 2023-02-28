@@ -49,8 +49,8 @@ module peripheral_regs
   // Columns' read and write pointers
   always_comb
   begin
-    core_ker_id_o[0]    = reg2hw.slot0_ker_id.q;
-    core_ker_id_o[1]    = reg2hw.slot1_ker_id.q;
+    core_ker_id_o[0]    = reg2hw.slot0_ker_id.q[KER_CONF_N_REG_LOG2-1:0];
+    core_ker_id_o[1]    = reg2hw.slot1_ker_id.q[KER_CONF_N_REG_LOG2-1:0];
 
     core_rd_ptr_o[0][0] = reg2hw.slot0_ptr_in_c0.q;
     core_wr_ptr_o[0][0] = reg2hw.slot0_ptr_out_c0.q;

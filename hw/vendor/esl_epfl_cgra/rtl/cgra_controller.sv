@@ -336,7 +336,7 @@ module cgra_controller
 
             rcs_conf_we[i] = 1'b1;
 
-            if (rcs_req_end_reg == 1'b0) begin
+            if (rcs_req_end_reg[i] == 1'b0) begin
               rcs_conf_req[i] = 1'b1;
             end
 

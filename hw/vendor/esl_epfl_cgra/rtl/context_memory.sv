@@ -26,7 +26,6 @@ module context_memory
   output logic [        INSTR_WIDTH-1:0] rcs_cmem_rdata_o [0:N_ROW-1]
 );
 
-
   // CGRA context memories (one per row)
   cgra_sram_wrapper #(
     .NumWords (IMEM_N_LINES),
