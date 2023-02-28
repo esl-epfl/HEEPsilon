@@ -59,9 +59,6 @@ questasim-sim: mcu-gen
 questasim-sim-opt: questasim-sim
 	$(MAKE) -C build/eslepfl_systems_cgra-x-heep_0/sim-modelsim opt
 
-questasim-sim-opt-upf: questasim-sim
-	$(MAKE) -C build/eslepfl_systems_cgra-x-heep_0/sim-modelsim opt-upf
-
 vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
@@ -104,7 +101,7 @@ help:
 	@echo "SOFTWARE BUILD TARGETS"
 	@echo "Build example applications:"
 	@echo "\tmake app-[helloworld,cgra-test,cgra-dbl-search]"
-	@echo "\tex: make app-helloworld-<toolname>"
+	@echo "\tex: make app-helloworld"
 	@echo ""
 	@echo "RUN BASIC EXAMPLES"
 	@echo "\tex: make run-helloworld-<verilator,questasim>"
