@@ -90,11 +90,11 @@ package cgra_reg_pkg;
   } cgra_reg2hw_slot1_ptr_out_c3_reg_t;
 
   typedef struct packed {
-    logic [31:0] q;
+    logic        q;
   } cgra_reg2hw_perf_cnt_enable_reg_t;
 
   typedef struct packed {
-    logic [31:0] q;
+    logic        q;
   } cgra_reg2hw_perf_cnt_reset_reg_t;
 
   typedef struct packed {
@@ -157,7 +157,7 @@ package cgra_reg_pkg;
   } cgra_hw2reg_slot1_ker_id_reg_t;
 
   typedef struct packed {
-    logic [31:0] d;
+    logic        d;
     logic        de;
   } cgra_hw2reg_perf_cnt_reset_reg_t;
 
@@ -208,27 +208,27 @@ package cgra_reg_pkg;
 
   // Register -> HW type
   typedef struct packed {
-    cgra_reg2hw_col_status_reg_t col_status; // [995:992]
-    cgra_reg2hw_slot0_ker_id_reg_t slot0_ker_id; // [991:960]
-    cgra_reg2hw_slot1_ker_id_reg_t slot1_ker_id; // [959:928]
-    cgra_reg2hw_slot0_ptr_in_c0_reg_t slot0_ptr_in_c0; // [927:896]
-    cgra_reg2hw_slot0_ptr_out_c0_reg_t slot0_ptr_out_c0; // [895:864]
-    cgra_reg2hw_slot0_ptr_in_c1_reg_t slot0_ptr_in_c1; // [863:832]
-    cgra_reg2hw_slot0_ptr_out_c1_reg_t slot0_ptr_out_c1; // [831:800]
-    cgra_reg2hw_slot0_ptr_in_c2_reg_t slot0_ptr_in_c2; // [799:768]
-    cgra_reg2hw_slot0_ptr_out_c2_reg_t slot0_ptr_out_c2; // [767:736]
-    cgra_reg2hw_slot0_ptr_in_c3_reg_t slot0_ptr_in_c3; // [735:704]
-    cgra_reg2hw_slot0_ptr_out_c3_reg_t slot0_ptr_out_c3; // [703:672]
-    cgra_reg2hw_slot1_ptr_in_c0_reg_t slot1_ptr_in_c0; // [671:640]
-    cgra_reg2hw_slot1_ptr_out_c0_reg_t slot1_ptr_out_c0; // [639:608]
-    cgra_reg2hw_slot1_ptr_in_c1_reg_t slot1_ptr_in_c1; // [607:576]
-    cgra_reg2hw_slot1_ptr_out_c1_reg_t slot1_ptr_out_c1; // [575:544]
-    cgra_reg2hw_slot1_ptr_in_c2_reg_t slot1_ptr_in_c2; // [543:512]
-    cgra_reg2hw_slot1_ptr_out_c2_reg_t slot1_ptr_out_c2; // [511:480]
-    cgra_reg2hw_slot1_ptr_in_c3_reg_t slot1_ptr_in_c3; // [479:448]
-    cgra_reg2hw_slot1_ptr_out_c3_reg_t slot1_ptr_out_c3; // [447:416]
-    cgra_reg2hw_perf_cnt_enable_reg_t perf_cnt_enable; // [415:384]
-    cgra_reg2hw_perf_cnt_reset_reg_t perf_cnt_reset; // [383:352]
+    cgra_reg2hw_col_status_reg_t col_status; // [933:930]
+    cgra_reg2hw_slot0_ker_id_reg_t slot0_ker_id; // [929:898]
+    cgra_reg2hw_slot1_ker_id_reg_t slot1_ker_id; // [897:866]
+    cgra_reg2hw_slot0_ptr_in_c0_reg_t slot0_ptr_in_c0; // [865:834]
+    cgra_reg2hw_slot0_ptr_out_c0_reg_t slot0_ptr_out_c0; // [833:802]
+    cgra_reg2hw_slot0_ptr_in_c1_reg_t slot0_ptr_in_c1; // [801:770]
+    cgra_reg2hw_slot0_ptr_out_c1_reg_t slot0_ptr_out_c1; // [769:738]
+    cgra_reg2hw_slot0_ptr_in_c2_reg_t slot0_ptr_in_c2; // [737:706]
+    cgra_reg2hw_slot0_ptr_out_c2_reg_t slot0_ptr_out_c2; // [705:674]
+    cgra_reg2hw_slot0_ptr_in_c3_reg_t slot0_ptr_in_c3; // [673:642]
+    cgra_reg2hw_slot0_ptr_out_c3_reg_t slot0_ptr_out_c3; // [641:610]
+    cgra_reg2hw_slot1_ptr_in_c0_reg_t slot1_ptr_in_c0; // [609:578]
+    cgra_reg2hw_slot1_ptr_out_c0_reg_t slot1_ptr_out_c0; // [577:546]
+    cgra_reg2hw_slot1_ptr_in_c1_reg_t slot1_ptr_in_c1; // [545:514]
+    cgra_reg2hw_slot1_ptr_out_c1_reg_t slot1_ptr_out_c1; // [513:482]
+    cgra_reg2hw_slot1_ptr_in_c2_reg_t slot1_ptr_in_c2; // [481:450]
+    cgra_reg2hw_slot1_ptr_out_c2_reg_t slot1_ptr_out_c2; // [449:418]
+    cgra_reg2hw_slot1_ptr_in_c3_reg_t slot1_ptr_in_c3; // [417:386]
+    cgra_reg2hw_slot1_ptr_out_c3_reg_t slot1_ptr_out_c3; // [385:354]
+    cgra_reg2hw_perf_cnt_enable_reg_t perf_cnt_enable; // [353:353]
+    cgra_reg2hw_perf_cnt_reset_reg_t perf_cnt_reset; // [352:352]
     cgra_reg2hw_perf_cnt_total_kernels_reg_t perf_cnt_total_kernels; // [351:320]
     cgra_reg2hw_perf_cnt_c0_active_cycles_reg_t perf_cnt_c0_active_cycles; // [319:288]
     cgra_reg2hw_perf_cnt_c0_stall_cycles_reg_t perf_cnt_c0_stall_cycles; // [287:256]
@@ -244,10 +244,10 @@ package cgra_reg_pkg;
 
   // HW -> register type
   typedef struct packed {
-    cgra_hw2reg_col_status_reg_t col_status; // [400:396]
-    cgra_hw2reg_slot0_ker_id_reg_t slot0_ker_id; // [395:363]
-    cgra_hw2reg_slot1_ker_id_reg_t slot1_ker_id; // [362:330]
-    cgra_hw2reg_perf_cnt_reset_reg_t perf_cnt_reset; // [329:297]
+    cgra_hw2reg_col_status_reg_t col_status; // [369:365]
+    cgra_hw2reg_slot0_ker_id_reg_t slot0_ker_id; // [364:332]
+    cgra_hw2reg_slot1_ker_id_reg_t slot1_ker_id; // [331:299]
+    cgra_hw2reg_perf_cnt_reset_reg_t perf_cnt_reset; // [298:297]
     cgra_hw2reg_perf_cnt_total_kernels_reg_t perf_cnt_total_kernels; // [296:264]
     cgra_hw2reg_perf_cnt_c0_active_cycles_reg_t perf_cnt_c0_active_cycles; // [263:231]
     cgra_hw2reg_perf_cnt_c0_stall_cycles_reg_t perf_cnt_c0_stall_cycles; // [230:198]
@@ -350,8 +350,8 @@ package cgra_reg_pkg;
     4'b 1111, // index[16] CGRA_SLOT1_PTR_OUT_C2
     4'b 1111, // index[17] CGRA_SLOT1_PTR_IN_C3
     4'b 1111, // index[18] CGRA_SLOT1_PTR_OUT_C3
-    4'b 1111, // index[19] CGRA_PERF_CNT_ENABLE
-    4'b 1111, // index[20] CGRA_PERF_CNT_RESET
+    4'b 0001, // index[19] CGRA_PERF_CNT_ENABLE
+    4'b 0001, // index[20] CGRA_PERF_CNT_RESET
     4'b 1111, // index[21] CGRA_PERF_CNT_TOTAL_KERNELS
     4'b 1111, // index[22] CGRA_PERF_CNT_C0_ACTIVE_CYCLES
     4'b 1111, // index[23] CGRA_PERF_CNT_C0_STALL_CYCLES

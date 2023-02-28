@@ -1,23 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    Reconfigurble Cell (RC)                                    //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    Reconfigurable cell top level.                             //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module reconfigurable_cell
 import cgra_pkg::*;
 (
   input  logic                         clk_i,
   input  logic                         rst_rc_i,
-  input  logic                         ce_i,
   input  logic [      INSTR_WIDTH-1:0] conf_rdata_i,
   input  logic [         DP_WIDTH-1:0] data_rdata_i,
   input  logic                         data_rvalid_i,

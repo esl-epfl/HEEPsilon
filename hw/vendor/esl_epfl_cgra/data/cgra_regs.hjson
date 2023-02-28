@@ -168,7 +168,7 @@
       swaccess: "rw",
       hwaccess: "hro",
       fields: [
-        { bits: "31:0", name: "COL_STATUS", desc: "Enable performance counters" }
+        { bits: "0", name: "PERF_CNT_ENABLE", desc: "Enable performance counters" }
       ]
     },
     { name:     "PERF_CNT_RESET",
@@ -176,7 +176,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED19", desc: "Reset performance counters" }
+        { bits: "0", name: "PERF_CNT_RESET", desc: "Reset performance counters" }
       ]
     },
     { name:     "PERF_CNT_TOTAL_KERNELS",
@@ -184,7 +184,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED20", desc: "Total number of kernels executed" }
+        { bits: "31:0", name: "PERF_CNT_TOTAL_KERNELS", desc: "Total number of kernels executed" }
       ]
     },
     { name:     "PERF_CNT_C0_ACTIVE_CYCLES",
@@ -192,7 +192,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED21", desc: "Number of active cycles (configuration+execution)) of column 0" }
+        { bits: "31:0", name: "PERF_CNT_C0_ACTIVE_CYCLES", desc: "Number of active cycles (configuration+execution)) of column 0" }
       ]
     },
     { name:     "PERF_CNT_C0_STALL_CYCLES",
@@ -200,7 +200,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED22", desc: "Number of stall cycles during execution of column 0" }
+        { bits: "31:0", name: "PERF_CNT_C0_STALL_CYCLES", desc: "Number of stall cycles during execution of column 0" }
       ]
     },
     { name:     "PERF_CNT_C1_ACTIVE_CYCLES",
@@ -208,7 +208,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED21", desc: "Number of active cycles (configuration+execution)) of column 1" }
+        { bits: "31:0", name: "PERF_CNT_C1_ACTIVE_CYCLES", desc: "Number of active cycles (configuration+execution)) of column 1" }
       ]
     },
     { name:     "PERF_CNT_C1_STALL_CYCLES",
@@ -216,7 +216,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED22", desc: "Number of stall cycles during execution of column 1" }
+        { bits: "31:0", name: "PERF_CNT_C1_STALL_CYCLES", desc: "Number of stall cycles during execution of column 1" }
       ]
     },
     { name:     "PERF_CNT_C2_ACTIVE_CYCLES",
@@ -224,7 +224,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED21", desc: "Number of active cycles (configuration+execution) )of column 2" }
+        { bits: "31:0", name: "PERF_CNT_C2_ACTIVE_CYCLES", desc: "Number of active cycles (configuration+execution) )of column 2" }
       ]
     },
     { name:     "PERF_CNT_C2_STALL_CYCLES",
@@ -232,7 +232,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED22", desc: "Number of stall cycles during execution of column 2" }
+        { bits: "31:0", name: "PERF_CNT_C2_STALL_CYCLES", desc: "Number of stall cycles during execution of column 2" }
       ]
     },
     { name:     "PERF_CNT_C3_ACTIVE_CYCLES",
@@ -240,7 +240,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED21", desc: "Number of active cycles (configuration+execution) of column 3" }
+        { bits: "31:0", name: "PERF_CNT_C3_ACTIVE_CYCLES", desc: "Number of active cycles (configuration+execution) of column 3" }
       ]
     },
     { name:     "PERF_CNT_C3_STALL_CYCLES",
@@ -248,7 +248,7 @@
       swaccess: "rw",
       hwaccess: "hrw",
       fields: [
-        { bits: "31:0", name: "RESERVED22", desc: "Number of stall cycles during execution of column 3" }
+        { bits: "31:0", name: "PERF_CNT_C3_STALL_CYCLES", desc: "Number of stall cycles during execution of column 3" }
       ]
     },
     { name:     "RESERVED30",

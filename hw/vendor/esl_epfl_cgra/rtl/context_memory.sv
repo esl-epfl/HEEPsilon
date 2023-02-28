@@ -1,16 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    CONFUGRATION MEMORY                                        //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    Configuration memory holding the kernels using SCM.        //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module context_memory
   import cgra_pkg::*;
@@ -25,7 +15,6 @@ module context_memory
   input  logic [DATA_BUS_DATA_WIDTH-1:0] cm_wdata_i,
   output logic [        INSTR_WIDTH-1:0] rcs_cmem_rdata_o [0:N_ROW-1]
 );
-
 
   // CGRA context memories (one per row)
   cgra_sram_wrapper #(

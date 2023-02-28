@@ -1,16 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    DATA_BUS_HANDLER                                           //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    Data bus interface protocol (device dependant).            //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module data_bus_handler
   import cgra_pkg::*;

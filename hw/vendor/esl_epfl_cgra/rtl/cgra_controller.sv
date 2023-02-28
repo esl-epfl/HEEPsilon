@@ -1,16 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    CGRA_CONTROLLER                                            //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    CGRA columns execution controller.                         //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_controller
   import cgra_pkg::*;
@@ -336,7 +326,7 @@ module cgra_controller
 
             rcs_conf_we[i] = 1'b1;
 
-            if (rcs_req_end_reg == 1'b0) begin
+            if (rcs_req_end_reg[i] == 1'b0) begin
               rcs_conf_req[i] = 1'b1;
             end
 

@@ -7,8 +7,7 @@
 #include "core_v_mini_mcu.h"
 #include "rv_plic.h"
 #include "rv_plic_regs.h"
-#include "heepocrates.h"
-#include "heepocrates_ctrl.h"
+#include "cgra_x_heep.h"
 #include "cgra.h"
 #include "cgra_bitstream.h"
 #include "fxp.h"
@@ -87,21 +86,10 @@ int main(void) {
   CSR_SET_BITS(CSR_REG_MIE, mask);
   cgra_intr_flag = 0;
 
-  heepocrates_ctrl_t heepocrates_ctrl;
-  heepocrates_ctrl.base_addr = mmio_region_from_addr((uintptr_t)HEEPOCRATES_CTRL_START_ADDRESS);
-  heepocrates_ctrl_cgra_disable(&heepocrates_ctrl, 0);
-
   cgra_t cgra;
   cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
 
   int32_t tmp0, tmp1, tmp2, tmp3;
-
-  // int32_t stimuli[CGRA_N_ROWS][INPUT_LENGTH] = {
-  //   144, 4, 5, -23463,
-  //   -12, 16, 5, 0, 
-  //   1033, 8, 5, 0, 
-  //   -199, 128, 5, 1, 
-  // };
 
   // SADD AND SSUB TEST
   tmp0 = stimuli[0][0]+stimuli[1][0];

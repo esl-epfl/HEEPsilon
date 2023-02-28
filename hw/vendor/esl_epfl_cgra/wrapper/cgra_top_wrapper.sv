@@ -1,20 +1,6 @@
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                 Simone Machetti - simone.machetti@epfl.ch                  //
-//                                                                            //
-// Design Name:    cgra_top_wrapper                                           //
-//                                                                            //
-// Project Name:   HealWear-V                                                 //
-//                                                                            //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    CGRA top level wrapper module.                             //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_top_wrapper
   import cgra_pkg::*;
@@ -62,7 +48,6 @@ module cgra_top_wrapper
   logic [            N_SLOTS-1:0] cgra_evt;
 
   // Context memory decoder to actual SRAM macro
-  logic                           cm_cg_s;
   logic [              N_ROW-1:0] cm_row_req_s;
   logic                           cm_we_s;
   logic [  IMEM_N_LINES_LOG2-1:0] cm_addr_s;
@@ -122,7 +107,7 @@ module cgra_top_wrapper
   assign cgra_int_o = |cgra_evt;
 
   // No actual need to read this memory so only cgra_ram0 is connected for read
-  assign cm_rdata_o = rcs_cmem_rdata_s[0];
+  assign cm_rdata = rcs_cmem_rdata_s[0];
 
   logic clk_mem_cg, clk_mem_en;
   logic clk_logic_cg;

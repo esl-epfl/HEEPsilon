@@ -1,25 +1,11 @@
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                 Name Surname - email (affiliation if not ESL)              //
-//                                                                            //
-// File Name:      cgra.h                                                     //
-//                                                                            //
-// Project Name:   CGRA_ESL                                                   //
-//                                                                            //
-// Language:       C                                                          //
-//                                                                            //
-// Description:    CGRA parameters and control functions.                     //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
+// Copyright EPFL contributors.
+// Licensed under the Apache License, Version 2.0, see LICENSE for details.
+// SPDX-License-Identifier: Apache-2.0
 
 #include <stddef.h>
 #include <stdint.h>
 
-#include "heepocrates.h"
+#include "cgra_x_heep.h"
 #include "core_v_mini_mcu.h"
 #include "cgra.h"
 #include "cgra_regs.h" // generated

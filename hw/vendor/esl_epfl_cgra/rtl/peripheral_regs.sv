@@ -1,16 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    Peripheral registers                                       //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    Peripheral registers to control the CGRA.                  //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module peripheral_regs
   import cgra_pkg::*;
@@ -49,8 +39,8 @@ module peripheral_regs
   // Columns' read and write pointers
   always_comb
   begin
-    core_ker_id_o[0]    = reg2hw.slot0_ker_id.q;
-    core_ker_id_o[1]    = reg2hw.slot1_ker_id.q;
+    core_ker_id_o[0]    = reg2hw.slot0_ker_id.q[KER_CONF_N_REG_LOG2-1:0];
+    core_ker_id_o[1]    = reg2hw.slot1_ker_id.q[KER_CONF_N_REG_LOG2-1:0];
 
     core_rd_ptr_o[0][0] = reg2hw.slot0_ptr_in_c0.q;
     core_wr_ptr_o[0][0] = reg2hw.slot0_ptr_out_c0.q;

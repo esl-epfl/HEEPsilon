@@ -1,29 +1,19 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    RCs CONFIGURATION REGISTER FILE                            //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    Configuration register file used for instructions.         //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module alu
   import cgra_pkg::*;
 (
-  input  logic [           DP_WIDTH-1:0] operand_a_i,
-  input  logic [           DP_WIDTH-1:0] operand_b_i,
-  input  logic [         ALU_N_FLAG-1:0] flag_i,
-  input  logic [  CGRA_ALU_OP_WIDTH-1:0] alu_op_i,
-  output logic [           DP_WIDTH-1:0] alu_res_o,
-  output logic [         ALU_N_FLAG-1:0] flag_o,
-  output logic                           br_req_o,
-  output logic [  RCS_NUM_CREG_LOG2-1:0] br_add_o,
-  output logic                           alu_stall_o
+  input  logic [         DP_WIDTH-1:0] operand_a_i,
+  input  logic [         DP_WIDTH-1:0] operand_b_i,
+  input  logic [       ALU_N_FLAG-1:0] flag_i,
+  input  logic [CGRA_ALU_OP_WIDTH-1:0] alu_op_i,
+  output logic [         DP_WIDTH-1:0] alu_res_o,
+  output logic [       ALU_N_FLAG-1:0] flag_o,
+  output logic                         br_req_o,
+  output logic [RCS_NUM_CREG_LOG2-1:0] br_add_o,
+  output logic                         alu_stall_o
 );
 
   import cgra_pkg::*;
@@ -125,6 +115,7 @@ module alu
   logic [           DP_WIDTH-1:0] operand_a_mult;
   logic [           DP_WIDTH-1:0] operand_b_mult;
 
+  // Use dummy read module ports to easily find multiplier input operands during asic flow
   generate
     for(genvar j=0; j<DP_WIDTH; j++) begin : mult_read_gen
       read alu_mult_opa_i (
@@ -178,17 +169,17 @@ module alu
   //                                    //
   ////////////////////////////////////////
 
-  logic                shift_e;            // zeroing inputs if not used
-  logic                shift_left;         // should we shift left
-  logic [DP_WIDTH-1:0] shift_amt;          // amount of shift, to the right
-  logic [DP_WIDTH-1:0] shift_op_a;         // input of the shifter
-  logic [DP_WIDTH  :0] shift_op_a_33b;     // For shift right arithmetic
-  logic [DP_WIDTH  :0] shift_right_result_signed;
-  logic [DP_WIDTH  :0] shift_right_result_33b;
-  logic [DP_WIDTH-1:0] shift_result;
-  logic [DP_WIDTH-1:0] shift_right_result;
-  logic [DP_WIDTH-1:0] shift_left_result;
-  logic                shift_arithmetic;
+  logic                     shift_e;            // zeroing inputs if not used
+  logic                     shift_left;         // should we shift left
+  logic [DP_WIDTH_LOG2-1:0] shift_amt;          // amount of shift, to the right
+  logic [     DP_WIDTH-1:0] shift_op_a;         // input of the shifter
+  logic [     DP_WIDTH  :0] shift_op_a_33b;     // For shift right arithmetic
+  logic [     DP_WIDTH  :0] shift_right_result_signed;
+  logic [     DP_WIDTH  :0] shift_right_result_33b;
+  logic [     DP_WIDTH-1:0] shift_result;
+  logic [     DP_WIDTH-1:0] shift_right_result;
+  logic [     DP_WIDTH-1:0] shift_left_result;
+  logic                     shift_arithmetic;
 
   assign shift_arithmetic = (alu_op_i == CGRA_ALU_SRA);
 
@@ -205,7 +196,7 @@ module alu
     endcase
   end
 
-  assign shift_amt  = shift_e ? operand_b_i : '0;
+  assign shift_amt  = shift_e ? operand_b_i[DP_WIDTH_LOG2-1:0] : '0;
   assign shift_left = (alu_op_i == CGRA_ALU_SLL);
 
   // choose the bit reversed or the normal input for shift operand a
@@ -435,7 +426,7 @@ module alu
 
   assign flag_o      = {alu_res_o[DP_WIDTH-1], ~(|alu_res_o)};
   assign br_req_o    = br_req_s;
-  assign br_add_o    = alu_op_i == CGRA_ALU_JUMP ? adder_result : '0;
+    assign br_add_o    = alu_op_i == CGRA_ALU_JUMP ? adder_result[RCS_NUM_CREG_LOG2-1:0] : '0;
   assign alu_stall_o = (alu_op_i == CGRA_ALU_SMUL || alu_op_i == CGRA_ALU_FXPMUL) ? 1'b1 : '0;
 
 endmodule

@@ -1,23 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                                                                            //
-//                                                                            //
-// Design Name:    CGRA                                                       //
-// Project Name:   CGRA                                                       //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    CGRA RCs mesh.                                             //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra
   import cgra_pkg::*;
 (
   input  logic [            N_COL-1:0] clk_i,
   input  logic [            N_COL-1:0] rst_col_i,
-  input  logic [            N_COL-1:0] rcs_col_e_i,
   input  logic [            N_COL-1:0] rcs_conf_we_i,
   input  logic [            N_COL-1:0] rcs_conf_re_i,
   input  logic [RCS_NUM_CREG_LOG2-1:0] rcs_col_pc_i [0:N_COL-1],
@@ -444,7 +433,6 @@ module cgra
           //                               [ROW][COL]
           .clk_i         (            clk_i     [j  ] ),
           .rst_rc_i      (       rst_col_i      [j  ] ),
-          .ce_i          (     rcs_col_e_i      [j  ] ),
           .conf_rdata_i  ( rcs_conf_words_i[i  ]      ),
           .data_rdata_i  (     data_rdata_i     [j  ] ),
           .data_rvalid_i (     rvalid_demux[j  ][i  ] ),

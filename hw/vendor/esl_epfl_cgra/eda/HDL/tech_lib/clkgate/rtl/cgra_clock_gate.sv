@@ -1,20 +1,6 @@
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-// Author:         Benoît Denkinger - benoit.denkinger@epfl.ch                //
-//                                                                            //
-// Additional contributions by:                                               //
-//                 Name Surname - email (affiliation if not ESL)              //
-//                                                                            //
-// Design Name:    clkgate                                                    //
-//                                                                            //
-// Project Name:   CGRA_ESL_EPFL                                              //
-//                                                                            //
-// Language:       SystemVerilog                                              //
-//                                                                            //
-// Description:    Wrapper clock-gating unit.                                 //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+// Copyright 2022 EPFL
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_clock_gate
 (

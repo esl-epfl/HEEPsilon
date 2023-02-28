@@ -1,0 +1,12 @@
+# ignore files by default
+
+build
+*.log
+*.do
+
+# sw files
+*.map
+*.hex
+*.elf
+*.dis
+*.dump
