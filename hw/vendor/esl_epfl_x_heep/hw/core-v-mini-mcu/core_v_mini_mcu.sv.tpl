@@ -9,7 +9,8 @@ module core_v_mini_mcu
     parameter PULP_XPULP = 0,
     parameter FPU = 0,
     parameter PULP_ZFINX = 0,
-    parameter EXT_XBAR_NMASTER = 0
+    parameter EXT_XBAR_NMASTER = 0,
+    parameter X_EXT = 0  // eXtension interface in cv32e40x
 ) (
 
     input logic rst_ni,
@@ -17,6 +18,14 @@ module core_v_mini_mcu
 % for pad in pad_list:
     ${pad.core_v_mini_mcu_interface}
 % endfor
+
+    // eXtension interface
+    if_xif.cpu_compressed xif_compressed_if,
+    if_xif.cpu_issue      xif_issue_if,
+    if_xif.cpu_commit     xif_commit_if,
+    if_xif.cpu_mem        xif_mem_if,
+    if_xif.cpu_mem_result xif_mem_result_if,
+    if_xif.cpu_result     xif_result_if,
 
     output reg_req_t pad_req_o,
     input  reg_rsp_t pad_resp_i,
@@ -122,6 +131,10 @@ module core_v_mini_mcu
   logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0] memory_subsystem_banks_powergate_iso;
   logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0] memory_subsystem_banks_set_retentive;
 
+   // Clock gating signals
+   logic peripheral_subsystem_clkgate_en;
+   logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0]memory_subsystem_clkgate_en;
+
   // DMA
   logic dma_intr;
 
@@ -170,7 +183,8 @@ module core_v_mini_mcu
       .FPU(FPU),
       .PULP_ZFINX(PULP_ZFINX),
       .NUM_MHPMCOUNTERS(NUM_MHPMCOUNTERS),
-      .DM_HALTADDRESS(DM_HALTADDRESS)
+      .DM_HALTADDRESS(DM_HALTADDRESS),
+      .X_EXT(X_EXT)
   ) cpu_subsystem_i (
       // Clock and Reset
       .clk_i,
@@ -179,6 +193,12 @@ module core_v_mini_mcu
       .core_instr_resp_i(core_instr_resp),
       .core_data_req_o(core_data_req),
       .core_data_resp_i(core_data_resp),
+      .xif_compressed_if,
+      .xif_issue_if,
+      .xif_commit_if,
+      .xif_mem_if,
+      .xif_mem_result_if,
+      .xif_result_if,
       .irq_i(intr),
       .irq_ack_o(irq_ack),
       .irq_id_o(irq_id_out),
@@ -240,6 +260,7 @@ module core_v_mini_mcu
   ) memory_subsystem_i (
       .clk_i,
       .rst_ni,
+      .clk_gate_en_i(memory_subsystem_clkgate_en),
       .ram_req_i(ram_slave_req),
       .ram_resp_o(ram_slave_resp),
       .set_retentive_i(memory_subsystem_banks_set_retentive)
@@ -290,6 +311,8 @@ module core_v_mini_mcu
       .external_subsystem_powergate_iso_o,
       .external_subsystem_rst_no,
       .external_ram_banks_set_retentive_o,
+      .peripheral_subsystem_clkgate_en_o(peripheral_subsystem_clkgate_en),
+      .memory_subsystem_clkgate_en_o(memory_subsystem_clkgate_en),
       .rv_timer_0_intr_o(rv_timer_intr[0]),
       .rv_timer_1_intr_o(rv_timer_intr[1]),
       .dma_master0_ch0_req_o(dma_master0_ch0_req),
@@ -326,6 +349,7 @@ module core_v_mini_mcu
   ) peripheral_subsystem_i (
       .clk_i,
       .rst_ni(peripheral_subsystem_rst_n),
+      .clk_gate_en_i(peripheral_subsystem_clkgate_en),
       .slave_req_i(peripheral_slave_req),
       .slave_resp_o(peripheral_slave_resp),
       .intr_vector_ext_i,
@@ -348,6 +372,13 @@ module core_v_mini_mcu
       .cio_sda_i(i2c_sda_i),
       .cio_sda_o(i2c_sda_o),
       .cio_sda_en_o(i2c_sda_oe_o),
+      .spi2_sck_o,
+      .spi2_sck_en_o(spi2_sck_oe_o),
+      .spi2_csb_o({spi2_cs_1_o, spi2_cs_0_o}),
+      .spi2_csb_en_o({spi2_cs_1_oe_o, spi2_cs_0_oe_o}),
+      .spi2_sd_o({spi2_sd_3_o, spi2_sd_2_o, spi2_sd_1_o, spi2_sd_0_o}),
+      .spi2_sd_en_o({spi2_sd_3_oe_o, spi2_sd_2_oe_o, spi2_sd_1_oe_o, spi2_sd_0_oe_o}),
+      .spi2_sd_i({spi2_sd_3_i, spi2_sd_2_i, spi2_sd_1_i, spi2_sd_0_i}),
       .rv_timer_2_intr_o(rv_timer_intr[2]),
       .rv_timer_3_intr_o(rv_timer_intr[3])
   );

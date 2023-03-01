@@ -10,6 +10,7 @@ module testharness #(
     parameter PULP_XPULP    = 0,
     parameter FPU           = 0,
     parameter PULP_ZFINX    = 0,
+    parameter X_EXT         = 0,         // eXtension interface in cv32e40x
     parameter JTAG_DPI      = 0,
     parameter CLK_FREQUENCY = 'd100_000  //KHz
 ) (
@@ -99,11 +100,15 @@ module testharness #(
   end
 `endif
 
+  // eXtension Interface
+  if_xif #() ext_if ();
+
   x_heep_system #(
       .PULP_XPULP(PULP_XPULP),
       .FPU(FPU),
       .PULP_ZFINX(PULP_ZFINX),
-      .EXT_XBAR_NMASTER(testharness_pkg::EXT_XBAR_NMASTER)
+      .EXT_XBAR_NMASTER(testharness_pkg::EXT_XBAR_NMASTER),
+      .X_EXT(X_EXT)
   ) x_heep_system_i (
       .clk_i,
       .rst_ni,
@@ -140,13 +145,6 @@ module testharness #(
       .gpio_20_io(gpio[20]),
       .gpio_21_io(gpio[21]),
       .gpio_22_io(gpio[22]),
-      .gpio_23_io(gpio[23]),
-      .gpio_24_io(gpio[24]),
-      .gpio_25_io(gpio[25]),
-      .gpio_26_io(gpio[26]),
-      .gpio_27_io(gpio[27]),
-      .gpio_28_io(gpio[28]),
-      .gpio_29_io(gpio[29]),
       .spi_flash_sck_io(spi_flash_sck),
       .spi_flash_cs_0_io(spi_flash_csb[0]),
       .spi_flash_cs_1_io(spi_flash_csb[1]),
@@ -161,10 +159,23 @@ module testharness #(
       .spi_sd_1_io(spi_sd_io[1]),
       .spi_sd_2_io(spi_sd_io[2]),
       .spi_sd_3_io(spi_sd_io[3]),
+      .spi2_cs_0_io(gpio[23]),
+      .spi2_cs_1_io(gpio[24]),
+      .spi2_sck_io(gpio[25]),
+      .spi2_sd_0_io(gpio[26]),
+      .spi2_sd_1_io(gpio[27]),
+      .spi2_sd_2_io(gpio[28]),
+      .spi2_sd_3_io(gpio[29]),
       .i2c_scl_io(gpio[31]),
       .i2c_sda_io(gpio[30]),
       .exit_value_o,
       .intr_vector_ext_i(intr_vector_ext),
+      .xif_compressed_if(ext_if),
+      .xif_issue_if(ext_if),
+      .xif_commit_if(ext_if),
+      .xif_mem_if(ext_if),
+      .xif_mem_result_if(ext_if),
+      .xif_result_if(ext_if),
       .ext_xbar_master_req_i(master_req),
       .ext_xbar_master_resp_o(master_resp),
       .ext_xbar_slave_req_o(slave_req),

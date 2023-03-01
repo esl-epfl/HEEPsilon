@@ -41,6 +41,10 @@ module power_manager #(
     // External interrupts
     input logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_irq_i,
 
+    // Clock gating signals
+    output logic peripheral_subsystem_clkgate_en_o,
+    output logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0]memory_subsystem_clkgate_en_o,
+
     // Power gating signals
     output logic cpu_subsystem_powergate_switch_o,
     input  logic cpu_subsystem_powergate_switch_ack_i,
@@ -68,19 +72,23 @@ module power_manager #(
 
   logic start_on_sequence;
 
-  assign hw2reg.intr_state.d = {
-    1'b0,
-    ext_irq_i,
-    intr_i[29:22], // gpio
-    intr_i[21], // spi_flash
-    intr_i[20], // spi
-    intr_i[19], // dma
-    intr_i[18], // rv_timer_3
-    intr_i[17], // rv_timer_2
-    intr_i[16], // rv_timer_1
-    intr_i[11], // plic
-    intr_i[7] // rv_timer_0
+  assign hw2reg.intr_state.d[15:0] = {
+    intr_i[29:22],  // gpio
+    intr_i[21],  // spi_flash
+    intr_i[20],  // spi
+    intr_i[19],  // dma
+    intr_i[18],  // rv_timer_3
+    intr_i[17],  // rv_timer_2
+    intr_i[16],  // rv_timer_1
+    intr_i[11],  // plic
+    intr_i[7]  // rv_timer_0
   };
+
+  if (core_v_mini_mcu_pkg::NEXT_INT > 16) begin
+    assign hw2reg.intr_state.d[31:16] = ext_irq_i[15:0];
+  end else begin
+    assign hw2reg.intr_state.d[31:16] = $unsigned(ext_irq_i);
+  end
 
   assign hw2reg.intr_state.de = 1'b1;
 
@@ -120,6 +128,16 @@ module power_manager #(
   assign external_subsystem_powergate_switch_o = external_subsystem_powergate_switch;
   assign external_subsystem_powergate_iso_o = external_subsystem_powergate_iso;
   assign external_subsystem_rst_no = external_subsystem_rst_n;
+
+  // --------------------------------------------------------------------------------------
+  // CLK_GATING 
+  // --------------------------------------------------------------------------------------
+
+    assign peripheral_subsystem_clkgate_en_o = reg2hw.periph_clk_gate.q;
+
+% for bank in range(ram_numbanks):
+    assign memory_subsystem_clkgate_en_o[${bank}] = reg2hw.ram_${bank}_clk_gate.q;
+% endfor
 
   // --------------------------------------------------------------------------------------
   // CPU_SUBSYSTEM DOMAIN
