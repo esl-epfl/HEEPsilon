@@ -38,9 +38,6 @@ mcu-gen:
 verible:
 	util/format-verible;
 
-app-helloworld:
-	$(MAKE) -C sw x_heep_applications/hello_world/hello_world.hex  TARGET=$(TARGET)
-
 app-cgra-test:
 	$(MAKE) -C sw applications/cgra_func_test/main.hex  TARGET=$(TARGET)
 
@@ -62,21 +59,9 @@ questasim-sim-opt: questasim-sim
 vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
-run-helloworld-verilator: mcu-gen verilator-sim app-helloworld
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex; \
-	cat uart0.log; \
-	cd ../../..;
-
 run-cgra-test-verilator: mcu-gen verilator-sim app-cgra-test
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/applications/cgra_func_test/main.hex; \
-	cat uart0.log; \
-	cd ../../..;
-
-run-helloworld-questasim: mcu-gen questasim-sim app-helloworld
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
 	cat uart0.log; \
 	cd ../../..;
 
