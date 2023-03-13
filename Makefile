@@ -3,17 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-# Makefile to generates cgra-x-heep files and build the design with fusesoc
-
-.PHONY: clean help
-
 TARGET ?= sim
 
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 
 # Generates mcu files
-mcu-gen:
+mcu-gen-test:
 	cd hw/vendor/esl_epfl_x_heep && \
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/include --cpu $(CPU) --bus $(BUS) --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/core-v-mini-mcu/include/core_v_mini_mcu_pkg.sv.tpl  && \
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/ --memorybanks $(MEMORY_BANKS) --tpl-sv hw/core-v-mini-mcu/system_bus.sv.tpl  && \
@@ -71,31 +67,7 @@ run-cgra-test-questasim: mcu-gen questasim-sim app-cgra-test
 	cat uart0.log; \
 	cd ../../..;
 
-help:
-	@echo "SIMULATION BUILD TARGETS"
-	@echo "Build for simulation :"
-	@echo "\tmake [verilator,questasim,vcs]-sim"
-	@echo "\tex: make verilator-sim"
-	@echo "Change cpu and/or bus:"
-	@echo "\tmake <toolname>-sim CPU=[cv32e20(default),cv32e40p] BUS=[onetoM(default),NtoM]"
-	@echo "\tex: make verilator-sim CPU=cv32e40p BUS=NtoM)"
-	@echo "Add fusesoc flags:"
-	@echo "\tmake <toolname>-sim FUSESOC_FLAGS=\"--flag=<flagname0> --flag=<flagname1>\""
-	@echo "\tex: make verilator-sim FUSESOC_FLAGS=\"--flag=use_external_device_example --flag=use_jtag_dpi\""
-	@echo ""
-	@echo "SOFTWARE BUILD TARGETS"
-	@echo "Build example applications:"
-	@echo "\tmake app-[helloworld,cgra-test,cgra-dbl-search]"
-	@echo "\tex: make app-helloworld"
-	@echo ""
-	@echo "RUN BASIC EXAMPLES"
-	@echo "\tex: make run-helloworld-<verilator,questasim>"
-	@echo "\tex: make run-cgra-test-<verilator,questasim>"
-
-clean: clean-app clean-sim
-
-clean-sim:
-	@rm -rf build
-
-clean-app:
-	$(MAKE) -C sw clean
+	
+export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
+XHEEP_MAKE = $(HEEP_DIR)/external.mk
+include $(XHEEP_MAKE)

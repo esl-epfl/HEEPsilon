@@ -1,1 +1,1 @@
-../../../../../hw/vendor/esl_epfl_cgra/sw/cgra_regs.h
+../../../../hw/vendor/esl_epfl_cgra/sw/cgra_regs.h

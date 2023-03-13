@@ -81,10 +81,24 @@ message( "${Magenta}LIB_DRIVERS PATH for Cmake: ${LIB_DRIVERS}${ColourReset}")
 message( "${Magenta}Targetting folder: ${INC_FOLDERS}${ColourReset}")
 
 # Define MACRO to get ALL the *.h files under sw/device (string format)
+
+
+
+
+
+
+
+
+
 MACRO(H_FILES_RECURSIVE return_list)
+
+  message( "${BoldRed} ##### LOOKING FOR H FILES ${ColourReset}")
+
   FILE(GLOB_RECURSE new_list *.h)
   SET(dir_list "")
   FOREACH(file_path ${new_list})
+  message( "${BoldBlue} Checking ${file_path}\
+  ${ColourReset}")
   if(${file_path} MATCHES "device")
     if(${file_path} MATCHES "target")
       if(${file_path} MATCHES "${INC_FOLDERS}")
@@ -113,9 +127,36 @@ MACRO(H_FILES_RECURSIVE return_list)
     endif()
   endif()
   ENDFOREACH()
+  
+  
+  
+  # Now look for external .h files
+  FILE(GLOB_RECURSE new_list ${SOURCE_PATH}*.h)
+  FOREACH(file_path ${new_list})
+  message( "${BoldYellow} Checking ${file_path}\
+  ${ColourReset}")
+  if( ${file_path} MATCHES "external" )  
+    message( "${BoldGreen}Found ${file_path}${ColourReset}")
+    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+    SET(dir_list ${dir_list} "-I ${dir_path} \
+    ")
+    string(REPLACE ";" "" dir_list ${dir_list}) 
+  endif()
+  ENDFOREACH()
+  
+  
+  
+  
   LIST(REMOVE_DUPLICATES dir_list)
   SET(${return_list} ${dir_list})
 ENDMACRO()
+
+
+
+
+
+
+
 
 # Use the MACRO to get ALL the .h files
 H_FILES_RECURSIVE(h_dir_list)
@@ -133,9 +174,16 @@ SET(INCLUDE_FOLDERS "-I ${RISCV}/riscv32-unknown-elf/include \
 
 # Define MACRO to get ALL the *.h files under sw/device (list format)
 MACRO(H_FILES_RECURSIVE_LIST return_list)
+
+
+  message( "${BoldRed} ##### LOOKING FOR H FILES AGAIN ${ColourReset}")
+  
+  
   FILE(GLOB_RECURSE new_list *.h)
   SET(dir_list "")
   FOREACH(file_path ${new_list})
+  message( "${BoldBlue} Checking ${file_path}\
+  ${ColourReset}")
   if(${file_path} MATCHES "device")
     if(${file_path} MATCHES "target")
       if(${file_path} MATCHES "${INC_FOLDERS}")
@@ -156,6 +204,23 @@ MACRO(H_FILES_RECURSIVE_LIST return_list)
     endif()
   endif()
   ENDFOREACH()
+  
+  
+  
+  # Now look for external .h files
+  FILE(GLOB_RECURSE new_list ${SOURCE_PATH}*.h)
+  FOREACH(file_path ${new_list})
+  message( "${BoldYellow} Checking ${file_path}\
+  ${ColourReset}")
+  if( ${file_path} MATCHES "external" )  
+    message( "${BoldGreen}Found ${file_path}${ColourReset}")
+    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+    SET(dir_list ${dir_list} "${dir_path}")   
+  endif()
+  ENDFOREACH()
+  
+  
+  
   LIST(REMOVE_DUPLICATES dir_list)
   SET(${return_list} ${dir_list})
 ENDMACRO()
@@ -164,14 +229,23 @@ ENDMACRO()
 # Use the MACRO to get ALL the .h files
 H_FILES_RECURSIVE_LIST(h_dir_list_)
 
+
+
+	
+
+
 # Define MACRO to get ALL the *.c files under sw/device 
 MACRO(C_FILES_RECURSIVE return_list)
+
+	message( "${BoldRed} ##### LOOKING FOR C FILES ${ColourReset}")
+
     FILE(GLOB_RECURSE new_list *.c)
     SET(dir_list "")
     FOREACH(file_c IN LISTS new_list)
-      #message(${file_c})
+      message( "${BoldBlue} Checking ${file_c}\
+      ${ColourReset}")
       if(${file_c} MATCHES "device")
-        SET(dir_list ${dir_list} "${file_c} \
+        SET(dir_list ${dir_list} "${file_c}\
         ")
         string(REPLACE ";" "" dir_list ${dir_list})
       elseif(${file_c} MATCHES "${PROJECT}")
@@ -180,8 +254,29 @@ MACRO(C_FILES_RECURSIVE return_list)
           ")
           string(REPLACE ";" "" dir_list ${dir_list})          
         endif()
+      elseif(${file_c} MATCHES "${PROJECT}")
+        SET(dir_list ${dir_list} "${file_c} \
+          ")
+        string(REPLACE ";" "" dir_list ${dir_list})          
       endif()
     ENDFOREACH()
+    
+    
+    
+    # Now look for external .c files
+    FILE(GLOB_RECURSE new_list ${SOURCE_PATH}*.c)
+    FOREACH(file_c IN LISTS new_list)
+    message( "${BoldYellow} Checking ${file_c}\
+    ${ColourReset}")
+    if( ${file_c} MATCHES "external" )  
+      message( "${BoldGreen}Found ${file_c}${ColourReset}")
+      SET(dir_list ${dir_list} "${file_c} \
+          ")
+      string(REPLACE ";" "" dir_list ${dir_list}) 
+    endif()
+    ENDFOREACH()    
+    
+    
     LIST(REMOVE_DUPLICATES dir_list)
     SET(${return_list} ${dir_list})
 ENDMACRO()
