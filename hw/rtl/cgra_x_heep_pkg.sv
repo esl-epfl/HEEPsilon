@@ -32,7 +32,7 @@ package cgra_x_heep_pkg;
   //slave encoder
   localparam EXT_SYSTEM_NPERIPHERALS = 1;
 
-  localparam logic [31:0] CGRA_PERIPH_START_ADDRESS = core_v_mini_mcu_pkg::EXT_PERIPH_START_ADDRESS + 32'h0000000;
+  localparam logic [31:0] CGRA_PERIPH_START_ADDRESS = core_v_mini_mcu_pkg::EXT_PERIPHERAL_START_ADDRESS + 32'h0000000;
   localparam logic [31:0] CGRA_PERIPH_SIZE = 32'h0001000;
   localparam logic [31:0] CGRA_PERIPH_END_ADDRESS = CGRA_PERIPH_START_ADDRESS + CGRA_PERIPH_SIZE;
   localparam logic [31:0] CGRA_PERIPH_IDX = 32'd0;

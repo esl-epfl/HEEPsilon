@@ -93,6 +93,9 @@ module cgra_x_heep_top #(
       .cgra_int_o(cgra_int)
   );
 
+  // eXtension Interface
+  if_xif #() ext_if ();
+
   x_heep_system #(
       .PULP_XPULP(PULP_XPULP),
       .FPU(FPU),
@@ -134,13 +137,13 @@ module cgra_x_heep_top #(
       .gpio_20_io(gpio_io[20]),
       .gpio_21_io(gpio_io[21]),
       .gpio_22_io(gpio_io[22]),
-      .gpio_23_io(gpio_io[23]),
-      .gpio_24_io(gpio_io[24]),
-      .gpio_25_io(gpio_io[25]),
-      .gpio_26_io(gpio_io[26]),
-      .gpio_27_io(gpio_io[27]),
-      .gpio_28_io(gpio_io[28]),
-      .gpio_29_io(gpio_io[29]),
+      .spi2_cs_0_io(gpio_io[23]),
+      .spi2_cs_1_io(gpio_io[24]),
+      .spi2_sck_io(gpio_io[25]),
+      .spi2_sd_0_io(gpio_io[26]),
+      .spi2_sd_1_io(gpio_io[27]),
+      .spi2_sd_2_io(gpio_io[28]),
+      .spi2_sd_3_io(gpio_io[29]),
       .spi_flash_sck_io,
       .spi_flash_cs_0_io(spi_flash_csb_io[0]),
       .spi_flash_cs_1_io(spi_flash_csb_io[1]),
@@ -159,6 +162,12 @@ module cgra_x_heep_top #(
       .i2c_sda_io(gpio_io[30]),
       .exit_value_o,
       .intr_vector_ext_i(ext_intr_vector),
+      .xif_compressed_if(ext_if),
+      .xif_issue_if(ext_if),
+      .xif_commit_if(ext_if),
+      .xif_mem_if(ext_if),
+      .xif_mem_result_if(ext_if),
+      .xif_result_if(ext_if),
       .ext_xbar_master_req_i(ext_xbar_master_req),
       .ext_xbar_master_resp_o(ext_xbar_master_resp),
       .ext_xbar_slave_req_o(ext_xbar_slave_req),
