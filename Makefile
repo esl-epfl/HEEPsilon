@@ -8,8 +8,12 @@ TARGET ?= sim
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 
+export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
+include $(HEEP_DIR)Makefile.venv
+
 # Generates mcu files
 mcu-gen:
+	@echo This is mcu-gen from topmost Makefile
 	cd hw/vendor/esl_epfl_x_heep && \
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson --outdir hw/core-v-mini-mcu/include --cpu $(CPU) --bus $(BUS) --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/core-v-mini-mcu/include/core_v_mini_mcu_pkg.sv.tpl  && \
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson --outdir hw/core-v-mini-mcu/ --memorybanks $(MEMORY_BANKS) --tpl-sv hw/core-v-mini-mcu/system_bus.sv.tpl  && \
@@ -28,7 +32,8 @@ mcu-gen:
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson --outdir hw/system/pad_control/rtl --pkg-sv hw/system/pad_control/rtl/pad_control.sv.tpl  && \
 	bash -c "cd hw/system/pad_control; source pad_control_gen.sh; cd ../../../"  && \
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_exec.ld.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_load.ld.tpl
+	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_load.ld.tpl &&\
+	cd ../../
 
 # Runs verible formating
 verible:
@@ -67,7 +72,17 @@ run-cgra-test-questasim: mcu-gen questasim-sim app-cgra-test
 	cat uart0.log; \
 	cd ../../..;
 
-	
-export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
+
+## Generates the build output for a given application
+## Uses verilator to simulate the HW model and run the FW
+## UART Dumping in uart0.log to show recollected results
+run: 
+	$(MAKE) app PROJECT=$(PROJECT)
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
+	./Vtestharness +firmware=../../../sw/build/main.hex; \
+	cat uart0.log; \
+	cd ../../..;
+
+
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
