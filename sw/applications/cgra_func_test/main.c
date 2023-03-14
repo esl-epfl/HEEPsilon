@@ -57,7 +57,7 @@ int main(void) {
   PRINTF("\rdone\n");
 
     // Init the PLIC
-  rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)PLIC_START_ADDRESS);
+  rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
   plic_res = dif_plic_init(rv_plic_params, &rv_plic);
 
   if (plic_res != kDifPlicOk) {
