@@ -81,133 +81,83 @@ message( "${Magenta}LIB_DRIVERS PATH for Cmake: ${LIB_DRIVERS}${ColourReset}")
 message( "${Magenta}Targetting folder: ${INC_FOLDERS}${ColourReset}")
 message( "${Magenta}Target: ${TARGET}${ColourReset}")
 
-# Define MACRO to get ALL the *.h files under sw/device (string format)
-MACRO(H_FILES_RECURSIVE return_list)
-  FILE(GLOB_RECURSE new_list FOLLOW_SYMLINKS ${SOURCE_PATH}*.h)
-  SET(dir_list "")
-  FOREACH(file_path ${new_list})
+
+# Make a list of the header files that need to be included
+FILE(GLOB_RECURSE new_list FOLLOW_SYMLINKS ${SOURCE_PATH}*.h)
+SET(dir_list_str "")
+FOREACH(file_path ${new_list})
+  SET(add 0) # This variable is set to 1 if the file_pth needs to be added to the list
   if(${file_path} MATCHES "device")
     if(${file_path} MATCHES "target")
       if(${file_path} MATCHES ${TARGET})
-        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-        SET(dir_list ${dir_list} "-I ${dir_path} \
-        ")
-        string(REPLACE ";" "" dir_list ${dir_list})     
+        SET(add 1)     
       endif()
     else()
-      GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-      SET(dir_list ${dir_list} "-I ${dir_path} \
-      ")
-      string(REPLACE ";" "" dir_list ${dir_list})
+      SET(add 1) 
     endif()
   elseif(${file_path} MATCHES "${PROJECT}")
-    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-    SET(dir_list ${dir_list} "-I ${dir_path} \
-    ")
-    string(REPLACE ";" "" dir_list ${dir_list}) 
+    SET(add 1) 
   elseif(${file_path} MATCHES "freertos")
     if(${PROJECT} MATCHES "freertos")
-      GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-      SET(dir_list ${dir_list} "-I ${dir_path} \
-      ")
-      string(REPLACE ";" "" dir_list ${dir_list}) 
+      SET(add 1)  
     endif()
   elseif( ${file_path} MATCHES "external" )  
-    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-    SET(dir_list ${dir_list} "-I ${dir_path} \
-    ")  
-    string(REPLACE ";" "" dir_list ${dir_list})        
+    SET(add 1)        
   endif()
-  ENDFOREACH()
 
-  LIST(REMOVE_DUPLICATES dir_list)
-  SET(${return_list} ${dir_list})
-ENDMACRO()
+  if( add EQUAL 1 )
+    # Get the path of the obtained directory 
+    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
 
+    # Add it to the string format list
+    SET(dir_list_str ${dir_list_str} "-I ${dir_path} \
+    ")  
+    string(REPLACE ";" "" dir_list_str ${dir_list_str})
 
-# Use the MACRO to get ALL the .h files
-H_FILES_RECURSIVE(h_dir_list)
+    # Add it to the header list
+    SET(h_dir_list_ ${h_dir_list_} "${dir_path}")
+  endif()
 
-# Check how many you found!
-list(LENGTH h_dir_list h_dir_list_count)
-message(STATUS "[INFO] ${h_dir_list}")
+ENDFOREACH()
+
+LIST(REMOVE_DUPLICATES dir_list_str)
+LIST(REMOVE_DUPLICATES h_dir_list_)
+
+message(STATUS "[INFO] ${dir_list_str}")
 
 # Get all the folders to include when linking
 SET(INCLUDE_FOLDERS "-I ${RISCV}/riscv32-unknown-elf/include \
                      -I ${RISCV}/riscv32-unknown-elf/include/ \
                      -I ${ROOT_PROJECT} \
                      -I ${SOURCE_PATH} \
-					           ${h_dir_list}")
+					           ${dir_list_str}")
 
-# Define MACRO to get ALL the *.h files under sw/device (list format)
-MACRO(H_FILES_RECURSIVE_LIST return_list)
-  FILE(GLOB_RECURSE new_list FOLLOW_SYMLINKS ${SOURCE_PATH}*.h)
-  SET(dir_list "")
-  FOREACH(file_path ${new_list})
-  if(${file_path} MATCHES "device")
-    if(${file_path} MATCHES "target")
-      if(${file_path} MATCHES ${TARGET})
-        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-        SET(dir_list ${dir_list} "${dir_path}")    
-      endif()
-    else()
-      GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-      SET(dir_list ${dir_list} "${dir_path}")
+
+# Make a list of the source files that need to be linked
+FILE(GLOB_RECURSE new_list FOLLOW_SYMLINKS ${SOURCE_PATH}*.c)
+SET(c_dir_list "")
+FOREACH(file_c IN LISTS new_list)
+  SET(add 0) # This variable is set to 1 if the file_pth needs to be added to the list
+  if(${file_c} MATCHES "device")
+    SET(add 1) 
+  elseif(${file_c} MATCHES "${PROJECT}")
+    if(NOT ${file_c} MATCHES ${MAINFILE})
+      SET(add 1)       
     endif()
-  elseif(${file_path} MATCHES "${PROJECT}")
-    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-    SET(dir_list ${dir_list} "${dir_path}")
-  elseif(${file_path} MATCHES "freertos")
-    if(${PROJECT} MATCHES "freertos")
-      GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-      SET(dir_list ${dir_list} "${dir_path}")
-    endif()
-  elseif( ${file_path} MATCHES "external" )  
-    GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-    SET(dir_list ${dir_list} "${dir_path}")         
+  elseif( ${file_c} MATCHES "external" )  
+    SET(add 1)          
   endif()
-  ENDFOREACH()
 
-  LIST(REMOVE_DUPLICATES dir_list)
-  SET(${return_list} ${dir_list})
-ENDMACRO()
+  if( add EQUAL 1 )
+    SET(c_dir_list ${c_dir_list} "${file_c}\
+    ")
+    string(REPLACE ";" "" c_dir_list ${c_dir_list})
+  endif()
 
-# Include all those directories for compiling 
-# Use the MACRO to get ALL the .h files
-H_FILES_RECURSIVE_LIST(h_dir_list_)
+ENDFOREACH()
 
+LIST(REMOVE_DUPLICATES c_dir_list)
 
-# Define MACRO to get ALL the *.c files under sw/device 
-MACRO(C_FILES_RECURSIVE return_list)
-  FILE(GLOB_RECURSE new_list FOLLOW_SYMLINKS ${SOURCE_PATH}*.c)
-  SET(dir_list "")
-  FOREACH(file_c IN LISTS new_list)
-    if(${file_c} MATCHES "device")
-      SET(dir_list ${dir_list} "${file_c}\
-      ")
-      string(REPLACE ";" "" dir_list ${dir_list})
-    elseif(${file_c} MATCHES "${PROJECT}")
-      if(NOT ${file_c} MATCHES ${MAINFILE})
-        SET(dir_list ${dir_list} "${file_c} \
-        ")
-        string(REPLACE ";" "" dir_list ${dir_list})          
-      endif()
-    elseif( ${file_c} MATCHES "external" )  
-      SET(dir_list ${dir_list} "${file_c} \
-          ")
-      string(REPLACE ";" "" dir_list ${dir_list})          
-    endif()
-  ENDFOREACH()
-
-  LIST(REMOVE_DUPLICATES dir_list)
-  SET(${return_list} ${dir_list})
-ENDMACRO()
-
-# Use the MACRO to get ALL the .c files
-C_FILES_RECURSIVE(c_dir_list)
-# Check how many you found!
-list(LENGTH c_dir_list c_dir_list_count)
-#message(STATUS "[INFO] ${c_dir_list}")
 
 # Get all the files to include when linking
 SET(LINKED_FILES    "${LIB_CRT_P}crt0.S \
