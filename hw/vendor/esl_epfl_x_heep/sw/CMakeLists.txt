@@ -88,24 +88,22 @@ SET(dir_list_str "")
 FOREACH(file_path ${new_list})
   SET(add 0) # This variable is set to 1 if the file_pth needs to be added to the list
   if(${file_path} MATCHES "device")
-    if(${file_path} MATCHES "target")
+    if(${file_path} MATCHES "target") # Add it if its not in target, or if its in target/${TARGET}
       if(${file_path} MATCHES ${TARGET})
         SET(add 1)     
       endif()
     else()
       SET(add 1) 
     endif()
-  elseif(${file_path} MATCHES "${PROJECT}")
+  elseif(${file_path} MATCHES ${PROJECT})
     SET(add 1) 
-  elseif(${file_path} MATCHES "freertos")
-    if(${PROJECT} MATCHES "freertos")
-      SET(add 1)  
-    endif()
+  elseif( ( ${file_path} MATCHES "freertos" ) AND ( ${PROJECT} MATCHES "freertos" ) )
+    SET(add 1)  
   elseif( ${file_path} MATCHES "external" )  
     SET(add 1)        
   endif()
 
-  if( add EQUAL 1 )
+  if( add EQUAL 1 ) # If the file path mathced one of the criterion, add it to the list
     # Get the path of the obtained directory 
     GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
 
@@ -136,20 +134,18 @@ SET(INCLUDE_FOLDERS "-I ${RISCV}/riscv32-unknown-elf/include \
 # Make a list of the source files that need to be linked
 FILE(GLOB_RECURSE new_list FOLLOW_SYMLINKS ${SOURCE_PATH}*.c)
 SET(c_dir_list "")
-FOREACH(file_c IN LISTS new_list)
+FOREACH(file_path IN LISTS new_list)
   SET(add 0) # This variable is set to 1 if the file_pth needs to be added to the list
-  if(${file_c} MATCHES "device")
+  if(${file_path} MATCHES "device")
     SET(add 1) 
-  elseif(${file_c} MATCHES "${PROJECT}")
-    if(NOT ${file_c} MATCHES ${MAINFILE})
-      SET(add 1)       
-    endif()
-  elseif( ${file_c} MATCHES "external" )  
+  elseif( ( ${file_path} MATCHES ${PROJECT} ) AND ( NOT ${file_path} MATCHES ${MAINFILE} ) )
+    SET(add 1)       
+  elseif( ${file_path} MATCHES "external" )  
     SET(add 1)          
   endif()
 
-  if( add EQUAL 1 )
-    SET(c_dir_list ${c_dir_list} "${file_c}\
+  if( add EQUAL 1 ) # If the file path mathced one of the criterion, add it to the list
+    SET(c_dir_list ${c_dir_list} "${file_path}\
     ")
     string(REPLACE ";" "" c_dir_list ${c_dir_list})
   endif()
