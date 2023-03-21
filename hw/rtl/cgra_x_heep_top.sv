@@ -10,6 +10,11 @@ module cgra_x_heep_top #(
     inout logic         clk_i,
     inout logic         rst_ni,
 
+    //visibility signals
+    output logic        rst_led,
+    output logic        clk_led,
+    output logic        clk_out,
+
     inout logic         boot_select_i,
     inout logic         execute_from_flash_i,
 
@@ -19,25 +24,32 @@ module cgra_x_heep_top #(
     inout  logic        jtag_tdi_i,
     inout  logic        jtag_tdo_o,
 
-    inout  logic [31:0] gpio_io,
-
     inout               uart_rx_i,
     inout               uart_tx_o,
 
-    inout  logic [ 3:0] spi_flash_sd_io,
-    inout  logic [ 1:0] spi_flash_csb_io,
-    inout  logic        spi_flash_sck_io,
-
-    inout  logic [ 3:0] spi_sd_io,
-    inout  logic [ 1:0] spi_csb_io,
-    inout  logic        spi_sck_io,
-
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_o,
-    input  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack_i,
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso_o,
+    inout  logic [22:0] gpio_io,
 
     output logic [31:0] exit_value_o,
-    inout  logic        exit_valid_o
+    inout  logic        exit_valid_o,
+
+    inout  logic [ 3:0] spi_flash_sd_io,
+    inout  logic        spi_flash_csb_o,
+    inout  logic        spi_flash_sck_o,
+
+    inout  logic [ 3:0] spi_sd_io,
+    inout  logic        spi_csb_o,
+    inout  logic        spi_sck_o,
+
+    inout logic         spi2_sd_0_io,
+    inout logic         spi2_sd_1_io,
+    inout logic         spi2_sd_2_io,
+    inout logic         spi2_sd_3_io,
+    inout logic [1:0]   spi2_csb_io,
+    inout logic         spi2_sck_o,
+
+
+    inout logic         i2c_scl_io,
+    inout logic         i2c_sda_io
 );
 
   import obi_pkg::*;
@@ -137,29 +149,33 @@ module cgra_x_heep_top #(
       .gpio_20_io(gpio_io[20]),
       .gpio_21_io(gpio_io[21]),
       .gpio_22_io(gpio_io[22]),
-      .spi2_cs_0_io(gpio_io[23]),
-      .spi2_cs_1_io(gpio_io[24]),
-      .spi2_sck_io(gpio_io[25]),
-      .spi2_sd_0_io(gpio_io[26]),
-      .spi2_sd_1_io(gpio_io[27]),
-      .spi2_sd_2_io(gpio_io[28]),
-      .spi2_sd_3_io(gpio_io[29]),
-      .spi_flash_sck_io,
-      .spi_flash_cs_0_io(spi_flash_csb_io[0]),
-      .spi_flash_cs_1_io(spi_flash_csb_io[1]),
+
+      .spi2_cs_0_io(spi2_csb_io[0]),
+      .spi2_cs_1_io(spi2_csb_io[1]),
+      .spi2_sck_io(spi2_sck_o),
+      .spi2_sd_0_io(spi2_sd_0_io),
+      .spi2_sd_1_io(spi2_sd_1_io),
+      .spi2_sd_2_io(spi2_sd_2_io),
+      .spi2_sd_3_io(spi2_sd_3_io),
+            
+      .i2c_sda_io(i2c_sda_io),
+      .i2c_scl_io(i2c_scl_io),
+
+      .spi_flash_sck_io(spi_flash_sck_o),
+      .spi_flash_cs_0_io(spi_flash_csb_o),
+      .spi_flash_cs_1_io(),
       .spi_flash_sd_0_io(spi_flash_sd_io[0]),
       .spi_flash_sd_1_io(spi_flash_sd_io[1]),
       .spi_flash_sd_2_io(spi_flash_sd_io[2]),
       .spi_flash_sd_3_io(spi_flash_sd_io[3]),
-      .spi_sck_io,
-      .spi_cs_0_io(spi_csb_io[0]),
-      .spi_cs_1_io(spi_csb_io[1]),
+      .spi_sck_io(spi_sck_o),
+      .spi_cs_0_io(spi_csb_o),
+      .spi_cs_1_io(),
       .spi_sd_0_io(spi_sd_io[0]),
       .spi_sd_1_io(spi_sd_io[1]),
       .spi_sd_2_io(spi_sd_io[2]),
       .spi_sd_3_io(spi_sd_io[3]),
-      .i2c_scl_io(gpio_io[31]),
-      .i2c_sda_io(gpio_io[30]),
+
       .exit_value_o,
       .intr_vector_ext_i(ext_intr_vector),
       .xif_compressed_if(ext_if),
@@ -174,9 +190,9 @@ module cgra_x_heep_top #(
       .ext_xbar_slave_resp_i(ext_xbar_slave_resp),
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
-      .external_subsystem_powergate_switch_o,
-      .external_subsystem_powergate_switch_ack_i,
-      .external_subsystem_powergate_iso_o,
+      .external_subsystem_powergate_switch_o(),
+      .external_subsystem_powergate_switch_ack_i(),
+      .external_subsystem_powergate_iso_o(),
       .external_subsystem_rst_no(external_subsystem_rst_n),
       .external_ram_banks_set_retentive_o(external_ram_banks_set_retentive)
   );

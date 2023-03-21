@@ -12,6 +12,8 @@
 #include "cgra_bitstream.h"
 #include "fxp.h"
 
+#define DEBUG
+
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
   #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)

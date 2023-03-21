@@ -17,7 +17,7 @@ module context_memory
 );
 
   // CGRA context memories (one per row)
-  cgra_sram_wrapper #(
+  sram_wrapper #(
     .NumWords (IMEM_N_LINES),
     .DataWidth(32'd32)
   ) cgra_ram0_i (
@@ -33,7 +33,7 @@ module context_memory
     .rdata_o(rcs_cmem_rdata_o[0])
   );
 
-  cgra_sram_wrapper #(
+  sram_wrapper #(
     .NumWords (IMEM_N_LINES),
     .DataWidth(32'd32)
   ) cgra_ram1_i (
@@ -49,7 +49,7 @@ module context_memory
     .rdata_o(rcs_cmem_rdata_o[1])
   );
 
-  cgra_sram_wrapper #(
+  sram_wrapper #(
     .NumWords (IMEM_N_LINES),
     .DataWidth(32'd32)
   ) cgra_ram2_i (
@@ -65,7 +65,7 @@ module context_memory
     .rdata_o(rcs_cmem_rdata_o[2])
   );
 
-  cgra_sram_wrapper #(
+  sram_wrapper #(
     .NumWords (IMEM_N_LINES),
     .DataWidth(32'd32)
   ) cgra_ram3_i (

@@ -12,9 +12,11 @@
 #include "cgra_bitstream.h"
 #include "stimuli.h"
 
+#define DEBUG
+
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
-  #define PRINTF(fmt, ...)    PRINTF(fmt, ## __VA_ARGS__)
+  #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
 #endif
@@ -43,9 +45,11 @@ void handler_irq_external(void) {
 
 int main(void) {
 
-  PRINTF("Init CGRA context memory...\n");
+  //PRINTF("Init CGRA context memory...\n");
+  printf("Hello!\n");
   cgra_cmem_init(cgra_imem_bistream, cgra_kem_bitstream);
-  PRINTF("\rdone\n");
+  //printf("Bye!\n");
+  //PRINTF("\rdone\n");
 
   // Init the PLIC
   rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
