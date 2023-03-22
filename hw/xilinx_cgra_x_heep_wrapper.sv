@@ -66,6 +66,7 @@ module xilinx_cgra_x_heep_wrapper
 
   // reset LED for debugging
   assign rst_led = rst_n;
+  
   // counter to blink an LED
   assign clk_led = clk_count[CLK_LED_COUNT_LENGTH-1];
 

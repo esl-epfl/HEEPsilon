@@ -86,5 +86,8 @@ set_property -dict {PACKAGE_PIN C20 IOSTANDARD LVCMOS33} [get_ports {spi2_sck_o}
 set_property -dict {PACKAGE_PIN W13 IOSTANDARD LVCMOS33} [get_ports {i2c_scl_io}]
 set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {i2c_sda_io}]
 
+# Removing this line (but leaving the one in constraints.xdc gives an error and recommends adding exactly this to turn it into a warning)
+# Having this line along with the one in constrains.xdc gives an critical warning
+# Not having the line in constraints.xdc synthezises SUPER slow (>1h), or at least thats a candidate for that. 
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets jtag_tck_i_IBUF]
 
