@@ -89,6 +89,8 @@ filesets:
     files:
     - hw/fpga/xilinx_core_v_mini_mcu_wrapper.sv
     - hw/fpga/sram_wrapper.sv
+    - hw/fpga_cgra/cgra_sram_wrapper.sv
+    - hw/fpga_cgra/cgra_clock_gate.sv
     - hw/xilinx_cgra_x_heep_wrapper.sv
     file_type: systemVerilogSource
 

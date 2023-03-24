@@ -112,14 +112,14 @@ module cgra_top_wrapper
   logic clk_mem_cg, clk_mem_en;
   logic clk_logic_cg;
 
-  xilinx_clk_gating clk_gate_mem_i (
+  cgra_clock_gate clk_gate_mem_i (
     .clk_i     ( clk_i  ),
     .test_en_i ( 1'b0   ),
     .en_i      ( clk_mem_en ),
     .clk_o     ( clk_mem_cg )
   );
 
-  xilinx_clk_gating clk_gate_logic_i (
+  cgra_clock_gate clk_gate_logic_i (
     .clk_i     ( clk_i  ),
     .test_en_i ( 1'b0   ),
     .en_i      ( cgra_enable_i ),
