@@ -62,33 +62,36 @@ module testharness #(
   ) cgra_x_heep_top_i (
       .clk_i,
       .rst_ni,
-
+      .rst_led(),
+      .clk_led(),
+      .clk_out(),
       .boot_select_i,
       .execute_from_flash_i,
-
       .jtag_tck_i(sim_jtag_tck),
       .jtag_tms_i(sim_jtag_tms),
       .jtag_trst_ni(sim_jtag_trstn),
       .jtag_tdi_i(sim_jtag_tdi),
       .jtag_tdo_o(sim_jtag_tdo),
-
-      .gpio_io(gpio),
-
+      .gpio_io(gpio[22:0]),
       .uart_rx_i(uart_rx),
       .uart_tx_o(uart_tx),
-
       .spi_flash_sd_io(spi_flash_sd_io),
-      .spi_flash_csb_io(spi_flash_csb),
-      .spi_flash_sck_io(spi_flash_sck),
-
+      .spi_flash_csb_o(spi_flash_csb[0]),
+      .spi_flash_sck_o(spi_flash_sck),
       .spi_sd_io(spi_sd_io),
-      .spi_csb_io(spi_csb),
-      .spi_sck_io(spi_sck),
-
+      .spi_csb_o(spi_csb[0]),
+      .spi_sck_o(spi_sck),
+      .spi2_csb_io(gpio[24:23]),
+      .spi2_sck_o(gpio[25]),
+      .spi2_sd_0_io(gpio[26]),
+      .spi2_sd_1_io(gpio[27]),
+      .spi2_sd_2_io(gpio[28]),
+      .spi2_sd_3_io(gpio[29]),
+      .i2c_scl_io(gpio[31]),
+      .i2c_sda_io(gpio[30]),
       .external_subsystem_powergate_switch_o(external_subsystem_powergate_switch),
       .external_subsystem_powergate_switch_ack_i(external_subsystem_powergate_switch_ack),
       .external_subsystem_powergate_iso_o(external_subsystem_powergate_iso),
-
       .exit_value_o,
       .exit_valid_o
   );

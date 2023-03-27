@@ -47,6 +47,10 @@ module cgra_x_heep_top #(
     inout logic [1:0]   spi2_csb_io,
     inout logic         spi2_sck_o,
 
+    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_o,
+    input  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack_i,
+    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso_o,
+
 
     inout logic         i2c_scl_io,
     inout logic         i2c_sda_io

@@ -278,7 +278,7 @@ targets:
     tools:
       vivado:
         part: xc7z020clg400-1
-    toplevel: [xilinx_cgra_x_heep_wrapper] # to mimic verialtor-sim: tb_top or testharness, was xilinx_core_v_mini_mcu_wrapper
+    toplevel: [xilinx_cgra_x_heep_wrapper]
 
   pynq-z2-arm-emulation:
     <<: *default_target
