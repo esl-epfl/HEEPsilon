@@ -96,9 +96,6 @@ module xilinx_cgra_x_heep_wrapper
       ) cgra_x_heep_top_i (
         .clk_i(clk_gen),
         .rst_ni(rst_n),
-        .rst_led,
-        .clk_led,
-        .clk_out,
         .boot_select_i,
         .execute_from_flash_i,
         .jtag_tck_i,
