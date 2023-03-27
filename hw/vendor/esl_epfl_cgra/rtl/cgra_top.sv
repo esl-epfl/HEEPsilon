@@ -94,7 +94,7 @@ module cgra_top
     // Activate the clock of a column when it is active only
     generate
       for (genvar j=0; j<N_COL; j++) begin : rcs_col_cg_gen
-        xilinx_clk_gating clk_gate_rcs_col_i (
+        cgra_clock_gate clk_gate_rcs_col_i (
           .clk_i     ( clk_i ),
           .test_en_i ( 1'b0 ),
           .en_i      ( rcs_col_e_s[j] ),

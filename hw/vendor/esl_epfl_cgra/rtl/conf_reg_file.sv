@@ -20,7 +20,7 @@ module conf_reg_file
 
   assign clk_en = we_i && ce_i;
 
-  xilinx_clk_gating u_clk_gate (
+  cgra_clock_gate u_clk_gate (
     .clk_i     ( clk_i  ),
     .test_en_i ( 1'b0   ),
     .en_i      ( clk_en ),
