@@ -10,11 +10,6 @@ module cgra_x_heep_top #(
     inout logic         clk_i,
     inout logic         rst_ni,
 
-    //visibility signals
-    output logic        rst_led,
-    output logic        clk_led,
-    output logic        clk_out,
-
     inout logic         boot_select_i,
     inout logic         execute_from_flash_i,
 
@@ -194,9 +189,9 @@ module cgra_x_heep_top #(
       .ext_xbar_slave_resp_i(ext_xbar_slave_resp),
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
-      .external_subsystem_powergate_switch_o(),
-      .external_subsystem_powergate_switch_ack_i(),
-      .external_subsystem_powergate_iso_o(),
+      .external_subsystem_powergate_switch_o(external_subsystem_powergate_switch_o),
+      .external_subsystem_powergate_switch_ack_i(external_subsystem_powergate_switch_ack_i),
+      .external_subsystem_powergate_iso_o(external_subsystem_powergate_iso_o),
       .external_subsystem_rst_no(external_subsystem_rst_n),
       .external_ram_banks_set_retentive_o(external_ram_banks_set_retentive)
   );

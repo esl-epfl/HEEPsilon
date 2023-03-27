@@ -62,9 +62,6 @@ module testharness #(
   ) cgra_x_heep_top_i (
       .clk_i,
       .rst_ni,
-      .rst_led(),
-      .clk_led(),
-      .clk_out(),
       .boot_select_i,
       .execute_from_flash_i,
       .jtag_tck_i(sim_jtag_tck),
