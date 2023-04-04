@@ -9,6 +9,7 @@
 #include "rv_plic_regs.h"
 #include "cgra_x_heep.h"
 #include "cgra.h"
+
 #include "cgra/cgra_bitstream.h"
 #include "cgra/function.h"
 
@@ -111,7 +112,7 @@ void cgra_print_perf(void){
 
 int main(void) {
 
-    srand(RNG_SEED);
+    //srand(RNG_SEED);
     plic_interrupt_init(CGRA_INTR);
 
     cgra_config();
@@ -121,7 +122,8 @@ int main(void) {
     for(int r=0 ; r < REPETITIONS ; r++){
 
         /* BEGIN RNG INPUT */
-        unsigned x = rand() % (0x7fffffff * 2U + 1U); //UINT max
+        unsigned x = 8;
+        //unsigned x = rand() % (0x7fffffff * 2U + 1U); //UINT max
         cgra_input[3][0] = x;
         /* END RNG INPUT */
 
