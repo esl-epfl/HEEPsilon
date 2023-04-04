@@ -9,6 +9,8 @@
 
 TARGET 		?= sim
 FPGA_BOARD 	?= pynq-z2
+
+
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 
@@ -51,14 +53,6 @@ vivado-fpga: |venv
 verible:
 	util/format-verible;
 
-app-cgra-test:
-	$(MAKE) -C sw applications/cgra_func_test/main.hex  TARGET=$(TARGET)
-
-app-cgra-dbl-search:
-	$(MAKE) -C sw applications/cgra_dbl_search/main.hex  TARGET=$(TARGET)
-
-# Tools specific fusesoc call
-
 # Simulation
 verilator-sim: mcu-gen
 	fusesoc --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
@@ -72,29 +66,22 @@ questasim-sim-opt: questasim-sim
 vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
-run-cgra-test-verilator: mcu-gen verilator-sim app-cgra-test
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/applications/cgra_func_test/main.hex; \
-	cat uart0.log; \
-	cd ../../..;
-
-run-cgra-test-questasim: mcu-gen questasim-sim app-cgra-test
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
-	cat uart0.log; \
-	cd ../../..;
-
 
 ## Generates the build output for a given application
 ## Uses verilator to simulate the HW model and run the FW
 ## UART Dumping in uart0.log to show recollected results
-run: 
+run-verilator: 
 	$(MAKE) app PROJECT=$(PROJECT)
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/build/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
 
+run-fpga:
+	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
+	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
+	sudo $(MAKE) flash-prog ;\
+	sudo picocom -b 115200 -r -l --imap lfcrlf /dev/ttyUSB2
 
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
