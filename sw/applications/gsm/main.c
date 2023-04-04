@@ -8,10 +8,10 @@
 #include "core_v_mini_mcu.h"
 #include "rv_plic.h"
 #include "rv_plic_regs.h"
-#include "heepocrates.h"
+#include "cgra_x_heep.h"
 #include "cgra.h"
-#include "cgra_bitstream.h"
-#include "function.h"
+#include "cgra/cgra_bitstream.h"
+#include "cgra/function.h"
 
 // TEST PARAMETERS
 #define RNG_SEED 18765456
@@ -58,7 +58,7 @@ void handler_irq_external(void) {
 */
 void plic_interrupt_init(dif_plic_irq_id_t irq) {
     // Init the PLIC
-    rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)PLIC_START_ADDRESS);
+    rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
     plic_res = dif_plic_init(rv_plic_params, &rv_plic);
     if (plic_res != kDifPlicOk) {
         printf("PLIC init failed\n;");
@@ -110,9 +110,25 @@ void cgra_print_perf(void){
     }
 }
 
+unsigned int pseudoRand()
+{
+   static unsigned int z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
+   unsigned int b;
+   b  = ((z1 << 6) ^ z1) >> 13;
+   z1 = ((z1 & 4294967294U) << 18) ^ b;
+   b  = ((z2 << 2) ^ z2) >> 27; 
+   z2 = ((z2 & 4294967288U) << 2) ^ b;
+   b  = ((z3 << 13) ^ z3) >> 21;
+   z3 = ((z3 & 4294967280U) << 7) ^ b;
+   b  = ((z4 << 3) ^ z4) >> 12;
+   z4 = ((z4 & 4294967168U) << 13) ^ b;
+   return (z1 ^ z2 ^ z3 ^ z4);
+}
+
 int main(void) {
 
-    srand(RNG_SEED);
+    printf( "GSM!\n" );
+
     plic_interrupt_init(CGRA_INTR);
 
     cgra_config();
@@ -124,7 +140,7 @@ int main(void) {
         int32_t d[40];
 		int32_t d_sw[40];
 		for(int i=0 ; i < 40 ; i++)
-			d_sw[i] = d[i] = rand() % (32767 - -32768 + 1) + -32768;
+			d_sw[i] = d[i] = pseudoRand() % (32767 - -32768 + 1) + -32768;
 		
 		cgra_input[1][0] = d;
 		cgra_input[3][0] = 32767;
