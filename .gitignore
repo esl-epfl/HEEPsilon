@@ -3,7 +3,7 @@
 build
 *.log
 *.do
-
+.venv/
 # sw files
 *.map
 *.hex
