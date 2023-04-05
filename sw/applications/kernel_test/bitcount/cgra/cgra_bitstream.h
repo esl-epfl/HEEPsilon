@@ -8,7 +8,7 @@
 // Kernel 0 => NULL
 #define BITCOUNT_KER_ID 1
 
-uint32_t cgra_kem_bitstream[CGRA_KMEM_SIZE] = {
+uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {
   0x0,
   0xf008,
   0x0,
@@ -27,7 +27,7 @@ uint32_t cgra_kem_bitstream[CGRA_KMEM_SIZE] = {
   0x0
 };
 
-uint32_t cgra_imem_bistream[CGRA_IMEM_SIZE] = {
+uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0xa080000,
   0x0,
   0x1080000,

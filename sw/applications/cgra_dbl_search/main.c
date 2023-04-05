@@ -20,6 +20,7 @@
 #else
   #define PRINTF(...)
 #endif
+#define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
 
 #define OUTPUT_LENGTH 4
 
