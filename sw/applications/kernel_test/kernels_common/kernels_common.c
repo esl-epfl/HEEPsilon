@@ -47,7 +47,6 @@
 //#define PERF_PRINT_LATEX
 #define PERF_PRINT_TABBED
 
-#define PARAMETER_COUNT 4
 /****************************************************************************/
 /**                                                                        **/
 /*                        TYPEDEFS AND STRUCTURES                           */

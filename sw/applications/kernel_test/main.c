@@ -57,7 +57,7 @@
 #define PRINT_KERNEL_STATS      1   
 
 
-#define ITERATIONS_PER_KERNEL   10
+#define ITERATIONS_PER_KERNEL   250
 
 
 
