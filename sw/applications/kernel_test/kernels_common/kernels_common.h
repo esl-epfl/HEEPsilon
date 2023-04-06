@@ -90,7 +90,7 @@
 /**                                                                        **/
 /****************************************************************************/
 
-typedef uint8_t kcom_func_ret_t;
+typedef uint32_t kcom_func_ret_t;
 
 typedef uint32_t kcom_time_t;
 
@@ -100,13 +100,14 @@ typedef int32_t* kcom_io_t;
 
 typedef struct 
 {
-    kcom_mem_t          kmem;
-    kcom_mem_t          imem;
-    kcom_io_t           input;
-    kcom_io_t           output;
-    uint8_t             col_n;
-    kcom_func_ret_t     ( *function  )(void);
-    kcom_func_ret_t     ( *check )(void);
+    kcom_mem_t  kmem;
+    kcom_mem_t  imem;
+    kcom_io_t   input;
+    kcom_io_t   output;
+    uint8_t     col_n;
+    void        ( *config ) (void);
+    void        ( *func )   (void);
+    uint32_t    ( *check )  (void);
 } kcom_kernel_t;
 
 
@@ -128,6 +129,7 @@ typedef struct
     kcom_time_diff_t    sw;
     kcom_time_diff_t    cgra;
     kcom_time_diff_t    config;
+    kcom_time_diff_t    dead;
     rv_timer_t          timer;
 } kcom_timing_t;
 

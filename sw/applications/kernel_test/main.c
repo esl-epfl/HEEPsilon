@@ -178,33 +178,36 @@ void main()
     uint8_t kernels_n = sizeof( kernels ) / sizeof( kcom_kernel_t * );
     for( uint8_t ker_idx = 0; ker_idx < kernels_n; ker_idx++ )
     {
+        cgra_intr_flag = 0;
+
         kcom_kernel_t* kernel = kernels[ ker_idx ];
         
+        /* Configuration (of inputs. */
+        kernel->config();
+
+        /* Obtantion of dead-zone-time */
+        kcom_timeStart( &(kstats.time.dead), &(kstats.time.timer) );
+        kcom_timeStop(  &(kstats.time.dead), &(kstats.time.timer) );
+
         /* Software */
         kcom_timeStart( &(kstats.time.sw), &(kstats.time.timer) );
-        kernel->function();
-        kcom_timeStop( &(kstats.time.sw), &(kstats.time.timer) );
+        kernel->func();
+        kcom_timeStop(  &(kstats.time.sw), &(kstats.time.timer) );
 
         /* CGRA Configuration */
         kcom_timeStart( &(kstats.time.config), &(kstats.time.timer) );
         cgra_config( kernel );
-        kcom_timeStop( &(kstats.time.config), &(kstats.time.timer) );
+        kcom_timeStop(  &(kstats.time.config), &(kstats.time.timer) );
         
         /* CGRA Execution */
         kcom_timeStart( &(kstats.time.cgra), &(kstats.time.timer) );
-
-
         cgra_set_kernel(&cgra, cgra_slot, 1 );
-
-        while(cgra_intr_flag==0) {
-            wait_for_interrupt();
-        }
-        cgra_intr_flag = 0;
+        while(cgra_intr_flag==0) wait_for_interrupt();
+        // Time is stopped inside the interrupt handler to make it as fast as possible
 
         /* Result comparison */
         kcom_func_ret_t errors = kernel->check();
-        PRINTF("ERRORS:\t%d\n", errors);
-
+        PRINTF("Errors:\t%d\n", errors);
 
         /* Performance report */
         kcom_printPerf( &cgra, &kstats );
@@ -221,3 +224,6 @@ void main()
 /*                                 EOF                                      */
 /**                                                                        **/
 /****************************************************************************/
+
+
+// Juan: remove the timer pasing from everywhere
