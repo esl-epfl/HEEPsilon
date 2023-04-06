@@ -65,8 +65,8 @@ void kcom_timeStop( kcom_time_diff_t *stats,  rv_timer_t *timer )
 /* 
     CGRA performance results
 */
-void kcom_printPerf( cgra_t *cgra, kcom_cgra_stats_t *stats ){
-    PRINTF("CGRA kernels executed: %d\n", cgra_perf_cnt_get_kernel(cgra));
+void kcom_printPerf( cgra_t *cgra, kcom_cgra_stats_t *stats )
+{
     PRINTF("Col\tAct\tStl\n");
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++){
         stats->cols[col_idx].cyc_act    = cgra_perf_cnt_get_col_active(cgra, col_idx);
@@ -82,4 +82,9 @@ void kcom_printPerf( cgra_t *cgra, kcom_cgra_stats_t *stats ){
     PRINTF("RATIO:\t%d.%01d%%\n",   stats->cyc_ratio / 10, stats->cyc_ratio % 10  ); 
     PRINTF("SW time:\t%d\n",        stats->time.sw.spent );
     PRINTF("CGRA time:\t%d\n",      stats->time.cgra.spent );
+}
+
+void kcom_printSummary( cgra_t *cgra, kcom_cgra_stats_t *stats )
+{
+    PRINTF("CGRA kernels executed: %d\n", cgra_perf_cnt_get_kernel(cgra));
 }

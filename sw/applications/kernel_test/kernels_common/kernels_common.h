@@ -158,6 +158,7 @@ uint64_t kcom_getTime( rv_timer_t *timer );
 void kcom_timeStart( kcom_time_diff_t *stats, rv_timer_t *timer );
 void kcom_timeStop( kcom_time_diff_t *stats,  rv_timer_t *timer );
 void kcom_printPerf( cgra_t *cgra, kcom_cgra_stats_t *stats );
+void kcom_printSummary( cgra_t *cgra, kcom_cgra_stats_t *stats );
 
 /****************************************************************************/
 /**                                                                        **/

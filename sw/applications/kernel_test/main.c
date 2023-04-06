@@ -115,8 +115,8 @@ void cgra_config( kcom_kernel_t *ker )
     cgra_perf_cnt_enable(&cgra, 1);
     // Set CGRA kernel L/S pointers
     for(int8_t col_idx = 0 ; col_idx < ker->col_n ; col_idx++){
-        cgra_set_read_ptr ( &cgra, cgra_slot, (uint32_t)ker->input  [col_idx],  col_idx );
-        cgra_set_write_ptr( &cgra, cgra_slot, (uint32_t)ker->output [col_idx],  col_idx );
+        cgra_set_read_ptr ( &cgra, cgra_slot, &((ker->input[col_idx])),  col_idx );
+        cgra_set_write_ptr( &cgra, cgra_slot, &((ker->output[col_idx])),  col_idx );
     }
 }
 
@@ -164,7 +164,6 @@ void handler_irq_external(void) {
 }
 
 
-
 void main()
 {
 
@@ -173,6 +172,7 @@ void main()
     kcom_timerInit( &(kstats.time.timer) );
 
     plic_interrupt_init(CGRA_INTR);
+
     cgra_intr_flag = 0;
 
     uint8_t kernels_n = sizeof( kernels ) / sizeof( kcom_kernel_t * );
@@ -196,22 +196,21 @@ void main()
 
         cgra_set_kernel(&cgra, cgra_slot, 1 );
 
-
-        printf("salio!");
-        return;
-
-        while(cgra_intr_flag==0) {};
-
-        PRINTF("M");
+        while(cgra_intr_flag==0) {
+            wait_for_interrupt();
+        }
+        cgra_intr_flag = 0;
 
         /* Result comparison */
         kcom_func_ret_t errors = kernel->check();
-        PRINTF("ERRORS:\t%d", errors);
+        PRINTF("ERRORS:\t%d\n", errors);
 
 
         /* Performance report */
         kcom_printPerf( &cgra, &kstats );
     }
+
+    kcom_printSummary( &cgra, &kstats );
 }
 
 
