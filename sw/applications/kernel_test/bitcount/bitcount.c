@@ -35,8 +35,11 @@ extern kcom_kernel_t bitc_kernel = {
 kcom_func_ret_t bitcount(void) 
 {
     int32_t x = kcom_getRand() % UINT_MAX;
+
+    PRINTF("x  = %d\n", x);
     cgra_input[3][0] = (int32_t)x;
     unsigned sw_res = bit_count ( x );
+    PRINTF("sw = %d\n", sw_res);
     return KCOM_FUNC_RET_OK;
 }
 
@@ -45,6 +48,8 @@ kcom_func_ret_t check(void)
     int errors = 0;
     PRINTF("Bitcount!\n");
     
+    PRINTF("cg = %d\n", cgra_output[0][0]);
+
     //for(int r=0 ; r < REPETITIONS ; r++){
         unsigned cgra_res = cgra_output[0][0];
         if (cgra_res != sw_res) {
