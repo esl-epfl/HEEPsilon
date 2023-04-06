@@ -52,6 +52,15 @@
 /**                                                                        **/
 /****************************************************************************/
 
+/* Configuration definitions */
+#define PRINT_ITERATION_VALUES  0
+#define PRINT_KERNEL_STATS      1   
+
+
+#define ITERATIONS_PER_KERNEL   10
+
+
+
 /****************************************************************************/
 /**                                                                        **/
 /*                        TYPEDEFS AND STRUCTURES                           */
@@ -77,14 +86,16 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
-    &bitc_kernel, 
+    &bitc_kernel,  
     // Add all other kernels here
     };
 
 
-static uint8_t              cgra_slot;
-static cgra_t               cgra;
-static kcom_cgra_stats_t    kstats;
+static uint8_t      cgra_slot;
+static cgra_t       cgra;
+static kcom_perf_t  kperf;
+static kcom_run_t   run[ ITERATIONS_PER_KERNEL ];
+static kcom_stats_t stats;
 
 // Plic controller variables
 dif_plic_params_t           rv_plic_params;
@@ -151,7 +162,7 @@ void handler_irq_external(void) {
     // Claim/clear interrupt
     plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
     if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
-      kcom_timeStop( &(kstats.time.cgra), &(kstats.time.timer) );  
+      kcom_timeStop( &(kperf.time.cgra), &(kperf.time.timer) );  
       cgra_intr_flag = 1;
     }
 
@@ -169,7 +180,7 @@ void main()
 
     PRINTF("Will execute many kernels! \n");
 
-    kcom_timerInit( &(kstats.time.timer) );
+    kcom_timerInit( &(kperf.time.timer) );
 
     plic_interrupt_init(CGRA_INTR);
 
@@ -178,42 +189,64 @@ void main()
     uint8_t kernels_n = sizeof( kernels ) / sizeof( kcom_kernel_t * );
     for( uint8_t ker_idx = 0; ker_idx < kernels_n; ker_idx++ )
     {
-        cgra_intr_flag = 0;
-
-        kcom_kernel_t* kernel = kernels[ ker_idx ];
         
-        /* Configuration (of inputs. */
-        kernel->config();
+        for( uint8_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
+        {
+            cgra_intr_flag = 0;
+            kcom_kernel_t* kernel = kernels[ ker_idx ];
+            
+            /* Reset the CGRA performance counters */
+            cgra_perf_cnt_reset( &cgra ); // is this working?? 
 
-        /* Obtantion of dead-zone-time */
-        kcom_timeStart( &(kstats.time.dead), &(kstats.time.timer) );
-        kcom_timeStop(  &(kstats.time.dead), &(kstats.time.timer) );
 
-        /* Software */
-        kcom_timeStart( &(kstats.time.sw), &(kstats.time.timer) );
-        kernel->func();
-        kcom_timeStop(  &(kstats.time.sw), &(kstats.time.timer) );
+            /* Configuration (of inputs. */
+            kernel->config();
 
-        /* CGRA Configuration */
-        kcom_timeStart( &(kstats.time.config), &(kstats.time.timer) );
-        cgra_config( kernel );
-        kcom_timeStop(  &(kstats.time.config), &(kstats.time.timer) );
-        
-        /* CGRA Execution */
-        kcom_timeStart( &(kstats.time.cgra), &(kstats.time.timer) );
-        cgra_set_kernel(&cgra, cgra_slot, 1 );
-        while(cgra_intr_flag==0) wait_for_interrupt();
-        // Time is stopped inside the interrupt handler to make it as fast as possible
+            /* Obtantion of dead-zone-time */
+            kcom_timeStart( &(kperf.time.dead), &(kperf.time.timer) );
+            kcom_timeStop(  &(kperf.time.dead), &(kperf.time.timer) );
 
-        /* Result comparison */
-        kcom_func_ret_t errors = kernel->check();
-        PRINTF("Errors:\t%d\n", errors);
+            /* Software */
+            kcom_timeStart( &(kperf.time.sw), &(kperf.time.timer) );
+            kernel->func();
+            kcom_timeStop(  &(kperf.time.sw), &(kperf.time.timer) );
 
-        /* Performance report */
-        kcom_printPerf( &cgra, &kstats );
+            /* CGRA Configuration */
+            kcom_timeStart( &(kperf.time.config), &(kperf.time.timer) );
+            cgra_config( kernel );
+            kcom_timeStop(  &(kperf.time.config), &(kperf.time.timer) );
+            
+            /* CGRA Execution */
+            kcom_timeStart( &(kperf.time.cgra), &(kperf.time.timer) );
+            cgra_set_kernel(&cgra, cgra_slot, 1 );
+            while(cgra_intr_flag==0) wait_for_interrupt();
+            // Time is stopped inside the interrupt handler to make it as fast as possible
+
+            /* Result comparison */
+            kcom_func_ret_t errors = kernel->check();
+            /* Subtract the dead times from the obtained values */
+            kcom_subtractDead( &(kperf.time.sw), &(kperf.time.dead) );
+            kcom_subtractDead( &(kperf.time.config), &(kperf.time.dead) );
+            kcom_subtractDead( &(kperf.time.cgra), &(kperf.time.dead) );
+
+
+            /* Performance report */
+            kcom_getPerf(&cgra, &kperf );
+#if PRINT_ITERATION_VALUES
+            kcom_printPerf( &cgra, &kperf );
+#endif //PRINT_ITERATION_VALUES
+            
+            /* Add this iteration to the runs vector */
+            kcom_populateRun( &run, &kperf, it_idx );
+
+        }
+        /* Get statistical values from the whole set of runs for this kernel. */
+        stats.n = ITERATIONS_PER_KERNEL;
+        kcom_getKernelStats( &run, &stats );
+        kcom_printKernelStats( &stats );
     }
 
-    kcom_printSummary( &cgra, &kstats );
+    kcom_printSummary( &cgra );
 }
 
 

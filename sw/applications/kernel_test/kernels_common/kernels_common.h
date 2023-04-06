@@ -74,15 +74,17 @@
 /* Definitions */
 
 
-#define CGRA_STAT_RATIO_MULTIPLIER  100
+#define CGRA_STAT_PERCENT_MULTIPLIER    100
 
-#define CGRA_MAX_COLS               4
+#define CGRA_MAX_COLS                   4
 
-#define HART_ID                     0
+#define HART_ID                         0
 
-#define KCOM_FUNC_RET_OK            0
+#define KCOM_FUNC_RET_OK                0
 
-#define TICK_FREQ_HZ                1000 * 1000 // 1 MHz
+#define TICK_FREQ_HZ                    1000 * 1000 // 1 MHz
+
+#define KERNEL_NAME_LENGTH_MAX          20
 
 /****************************************************************************/
 /**                                                                        **/
@@ -90,13 +92,15 @@
 /**                                                                        **/
 /****************************************************************************/
 
-typedef uint32_t kcom_func_ret_t;
+typedef uint32_t    kcom_func_ret_t;
 
-typedef uint32_t kcom_time_t;
+typedef uint32_t    kcom_time_t;
 
-typedef uint32_t* kcom_mem_t;
+typedef uint32_t*   kcom_mem_t;
 
-typedef int32_t* kcom_io_t;
+typedef int32_t*    kcom_io_t;
+
+typedef kcom_time_t kcom_param_t;
 
 typedef struct 
 {
@@ -108,6 +112,7 @@ typedef struct
     void        ( *config ) (void);
     void        ( *func )   (void);
     uint32_t    ( *check )  (void);
+    int8_t      name[ KERNEL_NAME_LENGTH_MAX ];
 } kcom_kernel_t;
 
 
@@ -115,7 +120,7 @@ typedef struct
 {
     uint32_t cyc_act;
     uint32_t cyc_stl;
-} col_stats_t;
+} kcom_col_perf_t;
 
 typedef struct
 {
@@ -135,11 +140,26 @@ typedef struct
 
 typedef struct
 {
-    col_stats_t     cols[CGRA_MAX_COLS];
-    col_stats_t     total;
-    uint32_t        cyc_ratio; // Stored *CGRA_STAT_RATIO_MULTIPLIER 
-    kcom_timing_t   time;
-} kcom_cgra_stats_t;
+    kcom_col_perf_t    cols[CGRA_MAX_COLS];
+    kcom_col_perf_t    cols_total;
+    uint32_t           cyc_ratio; // Stored *CGRA_STAT_PERCENT_MULTIPLIER 
+    kcom_timing_t      time;
+} kcom_perf_t;
+
+typedef struct 
+{
+    kcom_param_t sw;
+    kcom_param_t config;
+    kcom_param_t cgra;
+    kcom_param_t cyc_ratio;
+} kcom_run_t;
+
+typedef struct
+{
+   kcom_run_t  avg;
+   kcom_run_t  var;
+   uint32_t     n;
+} kcom_stats_t;
 
 /****************************************************************************/
 /**                                                                        **/
@@ -155,12 +175,20 @@ typedef struct
 /**                                                                        **/
 /****************************************************************************/
 uint32_t kcom_getRand();
+
 void kcom_timerInit( rv_timer_t *timer);
 uint64_t kcom_getTime( rv_timer_t *timer );
-void kcom_timeStart( kcom_time_diff_t *stats, rv_timer_t *timer );
-void kcom_timeStop( kcom_time_diff_t *stats,  rv_timer_t *timer );
-void kcom_printPerf( cgra_t *cgra, kcom_cgra_stats_t *stats );
-void kcom_printSummary( cgra_t *cgra, kcom_cgra_stats_t *stats );
+void kcom_timeStart( kcom_time_diff_t *perf, rv_timer_t *timer );
+void kcom_timeStop( kcom_time_diff_t *perf,  rv_timer_t *timer );
+void kcom_subtractDead( kcom_time_t *time, kcom_time_t *dead );
+
+void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf );
+void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx );
+void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats );
+
+void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf );
+void kcom_printKernelStats( kcom_stats_t *stats  );
+void kcom_printSummary( cgra_t *cgra);
 
 /****************************************************************************/
 /**                                                                        **/

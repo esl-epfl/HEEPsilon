@@ -32,6 +32,7 @@ extern kcom_kernel_t bitc_kernel = {
     .config = config,
     .func   = bitcount,
     .check  = check,
+    .name   = "Bitcount name",
 };
 
 
@@ -49,10 +50,7 @@ void bitcount(void)
 uint32_t check(void) 
 {
     uint32_t errors = 0;
-    
-    PRINTF("Bitcount!\n");
-
-    cgra_res = cgra_output[0][0];
+    cgra_res = cgra_output[0][0];   
     if (cgra_res != sw_res) {
         errors++;
     }
