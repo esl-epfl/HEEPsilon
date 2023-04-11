@@ -46,7 +46,10 @@
 #define PERF_PRINT_COLUMN_STATS 0
 #define PERF_PRINT_LATEX        0
 #define PERF_PRINT_TABBED       0
+#define PERF_PRINT_PLOT         1
 
+
+#define PERF_PLOT_SCALE_DOWN    5 
 /****************************************************************************/
 /**                                                                        **/
 /*                        TYPEDEFS AND STRUCTURES                           */
@@ -207,6 +210,14 @@ void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
 
 void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 {
+
+#if PERF_PRINT_PLOT
+    for( uint16_t i = 0; i < perf->time.cgra.spent_cy; i += PERF_PLOT_SCALE_DOWN )
+    {
+        PRINTF(" ");
+    }
+    PRINTF("*\n");
+#endif
 
 #if PERF_PRINT_COLUMN_STATS
     PRINTF("\n===========\n COLUMN STATS BELOW \n===========\n");
