@@ -286,5 +286,3 @@ void kcom_printSummary( cgra_t *cgra )
 /*                                 EOF                                      */
 /**                                                                        **/
 /****************************************************************************/
-
-// Juan: make different parameters be accesible without having to repeat N times the same lines!
