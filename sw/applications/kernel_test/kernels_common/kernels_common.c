@@ -264,6 +264,7 @@ void kcom_printKernelStats( kcom_stats_t *stats  )
     PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.config, stats->var.config/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.config%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->var.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("A/St\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
 }
 
 void kcom_printSummary( cgra_t *cgra )
