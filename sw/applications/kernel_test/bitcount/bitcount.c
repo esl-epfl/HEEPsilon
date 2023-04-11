@@ -1,15 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
+#include <stdint.h>
 
 #include "bitcount.h"
 #include "cgra/cgra_bitstream.h"
 #include "cgra/function.h"
 
-// TEST PARAMETERS
-#define REPETITIONS 10
-
-// cgra variables
+// CGRA variables
 #define CGRA_COLS   4
 #define IN_VARS     1
 #define OUT_VARS    1
@@ -32,13 +27,13 @@ extern kcom_kernel_t bitc_kernel = {
     .config = config,
     .func   = bitcount,
     .check  = check,
-    .name   = "Bitcount name",
+    .name   = "Bitcount",
 };
 
 
 void config()
 {
-    x = kcom_getRand() % UINT_MAX;
+    x = kcom_getRand();
     cgra_input[3][0] = x;
 }
 

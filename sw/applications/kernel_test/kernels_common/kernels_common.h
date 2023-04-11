@@ -82,7 +82,7 @@
 
 #define KCOM_FUNC_RET_OK                0
 
-#define TICK_FREQ_HZ                    1000 * 1000 // 1 MHz
+#define TICK_FREQ_HZ                    20 * 1000 * 1000 // 20 MHz
 
 #define KERNEL_NAME_LENGTH_MAX          20
 
@@ -124,9 +124,9 @@ typedef struct
 
 typedef struct
 {
-    kcom_time_t start;
-    kcom_time_t end;
-    kcom_time_t spent;
+    kcom_time_t start_cy;
+    kcom_time_t end_cy;
+    kcom_time_t spent_cy;
 } kcom_time_diff_t;
 
 typedef struct 

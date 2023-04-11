@@ -53,7 +53,7 @@
 /****************************************************************************/
 
 /* Configuration definitions */
-#define PRINT_ITERATION_VALUES  0
+#define PRINT_ITERATION_VALUES  1
 #define PRINT_KERNEL_STATS      1   
 
 

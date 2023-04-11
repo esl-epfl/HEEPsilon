@@ -43,9 +43,9 @@
 /**                                                                        **/
 /****************************************************************************/
 
-#define PERF_PRINT_COLUMN_STATS
-//#define PERF_PRINT_LATEX
-#define PERF_PRINT_TABBED
+#define PERF_PRINT_COLUMN_STATS 0
+#define PERF_PRINT_LATEX        0
+#define PERF_PRINT_TABBED       0
 
 /****************************************************************************/
 /**                                                                        **/
@@ -70,6 +70,8 @@
 /*                            GLOBAL VARIABLES                              */
 /**                                                                        **/
 /****************************************************************************/
+
+uint32_t freq_hz; 
 
 /****************************************************************************/
 /**                                                                        **/
@@ -99,8 +101,8 @@ uint32_t kcom_getRand()
 void kcom_timerInit( rv_timer_t *timer)
 {
     soc_ctrl_t soc_ctrl;
-    soc_ctrl.base_addr = mmio_region_from_addr((uintptr_t)SOC_CTRL_START_ADDRESS);
-    uint32_t freq_hz = soc_ctrl_get_frequency(&soc_ctrl);
+    soc_ctrl.base_addr  = mmio_region_from_addr((uintptr_t)SOC_CTRL_START_ADDRESS);
+    freq_hz             = soc_ctrl_get_frequency(&soc_ctrl);
 
     mmio_region_t timer_0_reg = mmio_region_from_addr(RV_TIMER_AO_START_ADDRESS);
     
@@ -128,13 +130,13 @@ uint64_t kcom_getTime( rv_timer_t *timer )
 
 void kcom_timeStart( kcom_time_diff_t *perf, rv_timer_t *timer )
 {
-    perf->start = kcom_getTime( timer );
+    perf->start_cy = kcom_getTime( timer );
 }
 
 void kcom_timeStop( kcom_time_diff_t *perf,  rv_timer_t *timer )
 {
-    perf->end = kcom_getTime( timer );
-    perf->spent = perf->end - perf->start;
+    perf->end_cy = kcom_getTime( timer );
+    perf->spent_cy = perf->end_cy - perf->start_cy;
 }
 
 void kcom_subtractDead( kcom_time_t *time, kcom_time_t *dead )
@@ -147,9 +149,9 @@ void kcom_subtractDead( kcom_time_t *time, kcom_time_t *dead )
 void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 {
     // These times have already been subtracted the dead time.
-    (run[ it_idx ]).sw        = perf->time.sw.spent;     
-    (run[ it_idx ]).config    = perf->time.config.spent;     
-    (run[ it_idx ]).cgra      = perf->time.cgra.spent;   
+    (run[ it_idx ]).sw        = perf->time.sw.spent_cy;     
+    (run[ it_idx ]).config    = perf->time.config.spent_cy;     
+    (run[ it_idx ]).cgra      = perf->time.cgra.spent_cy;   
     (run[ it_idx ]).cyc_ratio = perf->cyc_ratio; 
 }
 
@@ -206,7 +208,7 @@ void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
 void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 {
 
-#ifdef PERF_PRINT_COLUMN_STATS
+#if PERF_PRINT_COLUMN_STATS
     PRINTF("\n===========\n COLUMN STATS BELOW \n===========\n");
     PRINTF("Col\tAct\tStl\n");
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++)
@@ -215,8 +217,8 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     }
 #endif //PERF_PRINT_COLUMN_STATS
 
-#ifdef PERF_PRINT_LATEX
-#ifdef PERF_PRINT_TABBED
+#if PERF_PRINT_LATEX
+#if PERF_PRINT_TABBED
     PRINTF("\n===========\n LATEX VERSION BELOW \n===========\n");
 #endif // PERF_PRINT_TABBED
     PRINTF("\\begin{table}[h!] \n");
@@ -231,42 +233,43 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 
     PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_total.cyc_act + perf->cols_total.cyc_stl );
     PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
-    PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent );
-    PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent );
+    PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent_cy );
+    PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent_cy );
 
     PRINTF("\t\t\\bottomrule \n");
 	PRINTF("\t\\end{tabular} \n");
     PRINTF("\\end{table} \n");
 #endif //PERF_PRINT_LATEX
 
-#ifdef PERF_PRINT_TABBED
-#ifdef PERF_PRINT_LATEX
+#if PERF_PRINT_TABBED
+#if PERF_PRINT_LATEX
     PRINTF("\n===========\n TABBED VERSION BELOW \n===========\n");
 #endif //PERF_PRINT_LATEX
     PRINTF("Param\tValue\tUnit \n");
-    PRINTF("Active\t%03d\tcycles \n", perf->cols_total.cyc_act + perf->cols_total.cyc_stl );
-    PRINTF("Act/Stl\t%d.%01d\t- \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
-    PRINTF("Sw\t%d\tus\n",  perf->time.sw.spent );
-    PRINTF("Acce\t%d\tus\n", perf->time.cgra.spent );
-    PRINTF("CGRA\t%d\tus\n", perf->time.cgra.spent * ( 1000 - perf->cyc_ratio )/1000 );
+    PRINTF("Total\t%03d\tcycles \n", perf->cols_total.cyc_act + perf->cols_total.cyc_stl );
+    PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
+    PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
+    PRINTF("Conf\t%d\tcy\n", perf->time.config.spent_cy );
+    PRINTF("CGRA\t%d\tcy\n", perf->time.cgra.spent_cy );
+    PRINTF("Active\t%d\tcy\n", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
 #endif // PERF_PRINT_TABBED
 
 }
 
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
-    PRINTF("kERNEL STATS :)\n");
-    PRINTF("PARA\tAVG\tVAR\n");
+    PRINTF("KERNEL STATS\n");
+    PRINTF("PARA\tAVG(cy)\tVAR\n");
     PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->var.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.sw%CGRA_STAT_PERCENT_MULTIPLIER );
     PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.config, stats->var.config/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.config%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->var.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("CYCR\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("A/St\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
 }
 
 void kcom_printSummary( cgra_t *cgra )
 {
     PRINTF("\nCGRA kernels executed: %d\n", cgra_perf_cnt_get_kernel(cgra));
-
+    PRINTF("Clock freq: %d MHz\n", freq_hz/1000000);
 }
 
 
