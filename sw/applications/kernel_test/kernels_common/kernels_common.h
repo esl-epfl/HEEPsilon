@@ -141,7 +141,7 @@ typedef struct
 typedef struct
 {
     kcom_col_perf_t    cols[CGRA_MAX_COLS];
-    kcom_col_perf_t    cols_total;
+    kcom_col_perf_t    cols_max;
     uint32_t           cyc_ratio; // Stored *CGRA_STAT_PERCENT_MULTIPLIER 
     kcom_timing_t      time;
 } kcom_perf_t;

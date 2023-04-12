@@ -16,8 +16,9 @@ import string
 # File Settings #
 #################
 
-if len(sys.argv) > 1 :
-    config_path = sys.argv[1]
+if len(sys.argv) > 2 :
+    source_path = sys.argv[1]
+    dest_path   = sys.argv[2]
 else:
     sys.exit("[ERROR] No path specified")
 
@@ -28,8 +29,9 @@ header_tpl_name     = "header.h.tpl"
 
 
 # Variables
-conf_path = str(config_path)
-filename = conf_path[ conf_path.rfind('/') +1: ]
+source_path = str(source_path)
+dest_path   = str(dest_path)
+filename = source_path[ source_path.rfind('/') +1: ]
 FILENAME = filename.upper()
 Filename = filename.capitalize()
 if 1:
@@ -38,14 +40,14 @@ if 1:
     print("Filename = ", Filename )
 
 # Files being generated:
-bitstream_file_name     = conf_path + "cgra_bitstream.h"
-header_file_name        = conf_path + filename + ".h"
-source_file_name        = conf_path + filename + ".c"
+bitstream_file_name     = dest_path + "/cgra_bitstream.h"
+header_file_name        = dest_path + "/" + filename + ".h"
+source_file_name        = dest_path + "/" + filename + ".c"
 
 # Bitstream:
-imem_bit_name       = conf_path + "/cgra/cgra_imem.bit"
-kmem_bit_name       = conf_path + "/cgra/cgra_kmem.bit"
-io_file_name        = conf_path + "/cgra/io.json"
+imem_bit_name       = source_path + "/cgra/cgra_imem.bit"
+kmem_bit_name       = source_path + "/cgra/cgra_kmem.bit"
+io_file_name        = source_path + "/cgra/io.json"
 
 
 ##########################
@@ -136,7 +138,7 @@ for inout in io_data["inputs"]:
         max_val = str(inout.get("max"))
 
     config_str += f"\tfor(int i = 0; i < {inout['num']}; i++ )\n"
-    config_str += f"\t\t{inout['name']} = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
+    config_str += f"\t\t{inout['name']}[i] = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
 
 
 

@@ -43,7 +43,7 @@
 /**                                                                        **/
 /****************************************************************************/
 
-#define PERF_PRINT_COLUMN_STATS 0
+#define PERF_PRINT_COLUMN_STATS 1
 #define PERF_PRINT_LATEX        0
 #define PERF_PRINT_TABBED       0
 #define PERF_PRINT_PLOT         1
@@ -170,6 +170,7 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
     for( uint8_t p_idx = 0; p_idx < paramCount; p_idx++ )
     {
         /* Get the population average. */
+        ((kcom_param_t*)avg)[p_idx] = 0;
         for( uint32_t it_idx = 0; it_idx < iterations; it_idx++ )
         {
             /* Get the sum of values. */
@@ -179,6 +180,7 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
         ((kcom_param_t*)avg)[p_idx] /= iterations;
     
         /* Get the variance (sigma^2). */
+        ((kcom_param_t*)var)[p_idx] = 0; 
         for( uint32_t it_idx = 0; it_idx < iterations; it_idx++ )
         {
              /* Get diff with avg. */
@@ -194,16 +196,22 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
 
 void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
 {
-    perf->cols_total.cyc_act = 0;
-    perf->cols_total.cyc_stl = 0;
+    perf->cols_max.cyc_act = 0;
+    perf->cols_max.cyc_stl = 0;
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++)
     {
         perf->cols[col_idx].cyc_act    = cgra_perf_cnt_get_col_active(cgra, col_idx);
         perf->cols[col_idx].cyc_stl    = cgra_perf_cnt_get_col_stall (cgra, col_idx);
-        perf->cols_total.cyc_act       += perf->cols[col_idx].cyc_act;
-        perf->cols_total.cyc_stl       += perf->cols[col_idx].cyc_stl;
+        if( perf->cols[col_idx].cyc_act > perf->cols_max.cyc_act )
+        {
+            perf->cols_max.cyc_act       = perf->cols[col_idx].cyc_act;
+        }
+        if( perf->cols[col_idx].cyc_stl > perf->cols_max.cyc_stl )
+        {
+            perf->cols_max.cyc_stl       += perf->cols[col_idx].cyc_stl;
+        }
     }
-    perf->cyc_ratio = perf->cols_total.cyc_stl*CGRA_STAT_PERCENT_MULTIPLIER*10 / perf->cols_total.cyc_act;
+    perf->cyc_ratio = perf->cols_max.cyc_stl*CGRA_STAT_PERCENT_MULTIPLIER*10 / perf->cols_max.cyc_act;
 }
 
 /* PRESENTING THE RESULTS */
@@ -226,6 +234,7 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     {
         PRINTF("%01d\t%03d\t%03d\n", col_idx, perf->cols[col_idx].cyc_act, perf->cols[col_idx].cyc_stl );
     }
+    PRINTF("Max:\t%03d\t%03d\n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl );
 #endif //PERF_PRINT_COLUMN_STATS
 
 #if PERF_PRINT_LATEX
@@ -242,7 +251,7 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 
     PRINTF("\t\t\\midrule \n");
 
-    PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_total.cyc_act + perf->cols_total.cyc_stl );
+    PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
     PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
     PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent_cy );
     PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent_cy );
@@ -257,7 +266,7 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     PRINTF("\n===========\n TABBED VERSION BELOW \n===========\n");
 #endif //PERF_PRINT_LATEX
     PRINTF("Param\tValue\tUnit \n");
-    PRINTF("Total\t%03d\tcycles \n", perf->cols_total.cyc_act + perf->cols_total.cyc_stl );
+    PRINTF("Total\t%03d\tcycles \n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
     PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
     PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
     PRINTF("Conf\t%d\tcy\n", perf->time.config.spent_cy );
@@ -269,12 +278,12 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
-    PRINTF("KERNEL STATS\n");
+    PRINTF("\n==========================\nKERNEL STATS\n");
     PRINTF("PARA\tAVG(cy)\tVAR\n");
     PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->var.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.sw%CGRA_STAT_PERCENT_MULTIPLIER );
     PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.config, stats->var.config/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.config%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->var.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("A/St\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
 }
 
