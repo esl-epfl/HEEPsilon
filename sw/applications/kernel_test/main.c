@@ -80,8 +80,6 @@
 /**                                                                        **/
 /****************************************************************************/
 
-extern int32_t cgra_input;
-
 /****************************************************************************/
 /**                                                                        **/
 /*                            GLOBAL VARIABLES                              */
@@ -91,8 +89,8 @@ extern int32_t cgra_input;
 static kcom_kernel_t *kernels[] = { 
     //&bitc_kernel,
     &gsm_kernel, 
-    &bitc_kernel, 
-    &gsm_kernel,
+    //&bitc_kernel, 
+    //&gsm_kernel,
     //&bitc_kernel, 
     //&gsm_kernel,    
     //&bitc_kernel, 
@@ -244,7 +242,7 @@ void main()
             /* Result comparison */
             errors = kernel->check();
 
-            PRINTF("Errors: %d", errors);
+            PRINTF("Errors: %d\n", errors);
 
             /* Subtract the dead times from the obtained values */
             kcom_subtractDead( &(kperf.time.sw), &(kperf.time.dead) );

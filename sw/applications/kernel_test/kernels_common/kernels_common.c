@@ -43,10 +43,10 @@
 /**                                                                        **/
 /****************************************************************************/
 
-#define PERF_PRINT_COLUMN_STATS 1
+#define PERF_PRINT_COLUMN_STATS 0
 #define PERF_PRINT_LATEX        0
-#define PERF_PRINT_TABBED       0
-#define PERF_PRINT_PLOT         1
+#define PERF_PRINT_TABBED       1
+#define PERF_PRINT_PLOT         0
 
 
 #define PERF_PLOT_SCALE_DOWN    5 
@@ -266,7 +266,7 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     PRINTF("\n===========\n TABBED VERSION BELOW \n===========\n");
 #endif //PERF_PRINT_LATEX
     PRINTF("Param\tValue\tUnit \n");
-    PRINTF("Total\t%03d\tcycles \n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
+    PRINTF("Total\t%d+%d=%03d\tcycles \n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
     PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
     PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
     PRINTF("Conf\t%d\tcy\n", perf->time.config.spent_cy );

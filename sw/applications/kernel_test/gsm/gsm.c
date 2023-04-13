@@ -121,9 +121,9 @@ static uint32_t check(void)
 {
     uint32_t errors = 0;
     cgra_res = cgra_output[3][0];  
-    PRINTF("In : %04x > %d %d %d %d \n",cgra_output[3], cgra_output[3][0], cgra_output[3][1], cgra_output[3][2], cgra_output[3][3]);
-    PRINTF("0 IS %04x\n", cgra_output[0]);
-    PRINTF("Res: %d vs %d \n",sw_res, cgra_res);
+    //PRINTF("In : %04x > %d %d %d %d \n",cgra_output[3], cgra_output[3][0], cgra_output[3][1], cgra_output[3][2], cgra_output[3][3]);
+    //PRINTF("0 IS %04x\n", cgra_output[0]);
+    //PRINTF("Res: %d vs %d \n",sw_res, cgra_res);
 
     if (cgra_res != sw_res) {
         errors++;
