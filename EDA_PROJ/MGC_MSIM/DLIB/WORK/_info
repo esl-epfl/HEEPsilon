@@ -1,0 +1,32 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/sapriza/projects/heepsilon/cgra_x_heep/EDA_PROJ/MGC_MSIM
+Xcgra_pkg
+DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+!s110 1681379705
+!i10b 0
+!s100 4UR1E[DBG[`]C7h2@TDRW3
+!s11b Dg1SIo80bB@j0V0VzS_@n1
+IeZfe9zA`nTT@UU>fKS@]J0
+VeZfe9zA`nTT@UU>fKS@]J0
+S1
+R0
+w1681217405
+8HDL/RTL/cgra_pkg.sv
+FHDL/RTL/cgra_pkg.sv
+!i122 0
+L0 5 0
+!s108 1681379705.000000
+!s107 HDL/RTL/cgra_top.sv|
+!s90 -work|work|HDL/RTL/cgra_top.sv|+libext+.sv|-y|HDL/RTL|-v|HDL/RTL/cgra_reg_pkg.sv|
+!i113 0
+o-work work +libext+.sv -L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
+!s92 -work work +libext+.sv -y HDL/RTL -v HDL/RTL/cgra_reg_pkg.sv -L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
+tCvgOpt 0

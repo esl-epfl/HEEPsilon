@@ -1,0 +1,48 @@
+exec rm -fr DLIB/WORK
+vlib DLIB/WORK
+vmap work DLIB/WORK
+# QuestaSim-64 vmap 2020.4 Lib Mapping Utility 2020.10 Oct 13 2020
+# vmap work DLIB/WORK 
+# Modifying modelsim.ini
+
+
+
+vlog  -work work HDL/RTL/cgra_top.sv +libext+.sv -y HDL/RTL -v HDL/RTL/cgra_reg_pkg.sv 
+# QuestaSim-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+# Start time: 11:55:05 on Apr 13,2023
+# vlog -work work HDL/RTL/cgra_top.sv "+libext+.sv" -y HDL/RTL -v HDL/RTL/cgra_reg_pkg.sv 
+# -- Compiling module cgra_top
+# ** Note: (vlog-2603) Package "cgra_pkg" is being compiled on-demand.
+# -- Compiling package cgra_pkg
+# -- Importing package cgra_pkg
+# ** Error: HDL/RTL/cgra_top.sv(7): (vlog-13006) Could not find the package (reg_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# ** Error: (vlog-13069) HDL/RTL/cgra_top.sv(12): near "reg_req_i": syntax error, unexpected IDENTIFIER, expecting ')'.
+# End time: 11:55:05 on Apr 13,2023, Elapsed time: 0:00:00
+# Errors: 2, Warnings: 0
+# /softs/mentor/qsta/2020.4/linux_x86_64/vlog failed.
+vlog  -work work HDL/TBENCH/cgra_top_wrapper.sv 
+# QuestaSim-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+# Start time: 11:55:05 on Apr 13,2023
+# vlog -work work HDL/TBENCH/cgra_top_wrapper.sv 
+# -- Compiling module cgra_top_wrapper
+# -- Importing package cgra_pkg
+# ** Error: HDL/TBENCH/cgra_top_wrapper.sv(7): (vlog-13006) Could not find the package (obi_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# ** Error: HDL/TBENCH/cgra_top_wrapper.sv(8): (vlog-13006) Could not find the package (reg_pkg).  Design read will continue, but expect a cascade of errors after this failure.  Furthermore if you experience a vopt-7 error immediately before this error then please check the package names or the library search paths on the command line.
+# ** Error: (vlog-13069) HDL/TBENCH/cgra_top_wrapper.sv(16): near "masters_req_o": syntax error, unexpected IDENTIFIER, expecting ')'.
+# End time: 11:55:05 on Apr 13,2023, Elapsed time: 0:00:00
+# Errors: 3, Warnings: 0
+# /softs/mentor/qsta/2020.4/linux_x86_64/vlog failed.
+
+
+vsim cgra_top
+# vsim cgra_top 
+# Start time: 11:55:05 on Apr 13,2023
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Error: (vopt-13130) Failed to find design unit cgra_top.
+#         Searched libraries:
+#             work
+# Optimization failed
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=1, Warnings=0.
+# Error loading design
+# End time: 11:55:06 on Apr 13,2023, Elapsed time: 0:00:01
+# Errors: 1, Warnings: 0
