@@ -72,3 +72,15 @@ fileOut.close()
 fileRun = open("run.tcl", "w")
 fileRun.write("run -all; quit -code [expr [coverage attribute -name TESTSTATUS -concise] >= 2 ? [coverage attribute -name TESTSTATUS -concise] : 0]; exit")
 fileRun.close()
+
+
+# Fix the ocurrences of hw/hw/ inside the edalize_build_rtl.tcl file
+with open("edalize_build_rtl.tcl","r") as f:
+	data = f.read()
+data = data.replace("/hw/hw/","/hw/")
+with open("edalize_build_rtl.tcl","w") as f:
+	f.write(data)	
+
+
+
+
