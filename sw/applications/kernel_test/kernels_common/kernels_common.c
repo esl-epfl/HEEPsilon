@@ -43,13 +43,8 @@
 /**                                                                        **/
 /****************************************************************************/
 
-#define PERF_PRINT_COLUMN_STATS 0
-#define PERF_PRINT_LATEX        0
-#define PERF_PRINT_TABBED       1
-#define PERF_PRINT_PLOT         0
-
-
 #define PERF_PLOT_SCALE_DOWN    5 
+
 /****************************************************************************/
 /**                                                                        **/
 /*                        TYPEDEFS AND STRUCTURES                           */
@@ -278,13 +273,14 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
-    PRINTF("\n==========================\nKERNEL STATS\n");
+    PRINTF("\n===================\n %s \n", stats->name);
     PRINTF("PARA\tAVG(cy)\tVAR\n");
     PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->var.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.sw%CGRA_STAT_PERCENT_MULTIPLIER );
     PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.config, stats->var.config/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.config%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->var.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
+    PRINTF("Errs\t%d\n", stats->errors);
 }
 
 void kcom_printSummary( cgra_t *cgra )

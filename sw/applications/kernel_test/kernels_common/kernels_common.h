@@ -53,38 +53,36 @@
 /**                                                                        **/
 /****************************************************************************/
 
-/* Configuration Definitions */
+/* Operation Configurations */
+#define ENABLE_PRINTF           1
+#define PRINT_ITERATION_VALUES  1
+#define PRINT_KERNEL_STATS      1  
+#define PERF_PRINT_COLUMN_STATS 0
+#define PERF_PRINT_LATEX        0
+#define PERF_PRINT_TABBED       0
+#define PERF_PRINT_PLOT         0
+#define TOGGLE_PIN              1
+#define MEASURE_TIME            1
+#define PIN_TO_TOGGLE           30
+#define ITERATIONS_PER_KERNEL   4
 
-#define DEBUG
 
-
+/* Constants */
+#define CGRA_STAT_PERCENT_MULTIPLIER    100
+#define CGRA_MAX_COLS                   4
+#define HART_ID                         0
+#define KCOM_FUNC_RET_OK                0
+#define TICK_FREQ_HZ                    20 * 1000 * 1000 // 20 MHz
+#define KERNEL_NAME_LENGTH_MAX          20
 
 /* Macros */
 
-#ifdef DEBUG
+#if ENABLE_PRINTF
   #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
 #endif
 #define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
-
-#define PRINT64(x) "%8x%08x",(uint32_t)( x >> 32 ), (uint32_t)( x & 0xffffffff)
-
-
-/* Definitions */
-
-
-#define CGRA_STAT_PERCENT_MULTIPLIER    100
-
-#define CGRA_MAX_COLS                   4
-
-#define HART_ID                         0
-
-#define KCOM_FUNC_RET_OK                0
-
-#define TICK_FREQ_HZ                    20 * 1000 * 1000 // 20 MHz
-
-#define KERNEL_NAME_LENGTH_MAX          20
 
 /****************************************************************************/
 /**                                                                        **/
@@ -156,9 +154,11 @@ typedef struct
 
 typedef struct
 {
-   kcom_run_t  avg;
-   kcom_run_t  var;
+   kcom_run_t   avg;
+   kcom_run_t   var;
    uint32_t     n;
+   uint32_t     errors;
+   uint8_t      *name;
 } kcom_stats_t;
 
 /****************************************************************************/
