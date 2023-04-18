@@ -54,15 +54,25 @@
 /****************************************************************************/
 
 /* Operation Configurations */
-#define ENABLE_PRINTF           1
-#define PRINT_ITERATION_VALUES  1
+#ifdef TARGET_PYNQ_Z2
+    #define ENABLE_PRINTF      1
+#else
+    #define ENABLE_PRINTF      0
+#endif //TARGET_PYNQ_Z2
+#define ENABLE_DEBUG_PRINTF     0
+
+#define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
-#define PERF_PRINT_COLUMN_STATS 0
-#define PERF_PRINT_LATEX        0
-#define PERF_PRINT_TABBED       0
-#define PERF_PRINT_PLOT         0
-#define TOGGLE_PIN              1
-#define MEASURE_TIME            1
+#define PRINT_COLUMN_STATS      0
+#define PRINT_LATEX             0
+#define PRINT_TABBED            0
+#define PRINT_PLOT              0
+
+#define ENABLE_PIN_TOGGLE       1
+#define ENABLE_TIME_MEASURE     1
+#define REPEAT_FIRST_INPUT      1
+
+
 #define PIN_TO_TOGGLE           30
 #define ITERATIONS_PER_KERNEL   4
 
@@ -74,15 +84,25 @@
 #define KCOM_FUNC_RET_OK                0
 #define TICK_FREQ_HZ                    20 * 1000 * 1000 // 20 MHz
 #define KERNEL_NAME_LENGTH_MAX          20
+#define RANDOM_SEED                     12346
+
+
+#define CGRA_ACCESS_FLAT_COST_CYCLES    25 // Measured in Questasim, do not change
 
 /* Macros */
 
 #if ENABLE_PRINTF
-  #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
+    #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
-#endif
+#endif //ENABLE_PRINTF
+#if ENABLE_DEBUG_PRINTF
+    #define PRINTDBG(fmt, ...)  printf(fmt, ## __VA_ARGS__)
+#else
+    #define PRINTDBG(...)
+#endif //ENABLE_DEBUG_PRINTF
 #define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
+
 
 /****************************************************************************/
 /**                                                                        **/
@@ -131,7 +151,8 @@ typedef struct
 {
     kcom_time_diff_t    sw;
     kcom_time_diff_t    cgra;
-    kcom_time_diff_t    config;
+    kcom_time_diff_t    load;
+    kcom_time_diff_t    conf;
     kcom_time_diff_t    dead;
     rv_timer_t          timer;
 } kcom_timing_t;
@@ -147,8 +168,10 @@ typedef struct
 typedef struct 
 {
     kcom_param_t sw;
-    kcom_param_t config;
+    kcom_param_t conf;
     kcom_param_t cgra;
+    kcom_param_t repo;
+    kcom_param_t repo_conf;
     kcom_param_t cyc_ratio;
 } kcom_run_t;
 
@@ -175,20 +198,22 @@ typedef struct
 /**                                                                        **/
 /****************************************************************************/
 uint32_t kcom_getRand();
+void kcom_resetRand();
 
-void kcom_timerInit( rv_timer_t *timer);
-uint64_t kcom_getTime( rv_timer_t *timer );
-void kcom_timeStart( kcom_time_diff_t *perf, rv_timer_t *timer );
-void kcom_timeStop( kcom_time_diff_t *perf,  rv_timer_t *timer );
-void kcom_subtractDead( kcom_time_t *time, kcom_time_t *dead );
+void kcom_timerInit(    rv_timer_t *timer);
+uint64_t kcom_getTime(  rv_timer_t *timer );
+void kcom_timeStart(    kcom_time_diff_t    *perf, rv_timer_t   *timer );
+void kcom_timeStop(     kcom_time_diff_t    *perf, rv_timer_t   *timer );
+void kcom_subtractDead( kcom_time_t         *time, kcom_time_t  dead );
 
-void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf );
-void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx );
-void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats );
+void kcom_getPerf(          cgra_t      *cgra,  kcom_perf_t     *perf );
+void kcom_populateRun(      kcom_run_t  *run,   kcom_perf_t     *perf, uint32_t it_idx );
+void kcom_extractConfTime(  kcom_run_t  *run,   uint32_t        it_n );
+void kcom_getKernelStats(   kcom_run_t  *run,   kcom_stats_t    *stats );
 
-void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf );
-void kcom_printKernelStats( kcom_stats_t *stats  );
-void kcom_printSummary( cgra_t *cgra);
+void kcom_printPerf(        cgra_t          *cgra, kcom_perf_t *perf );
+void kcom_printKernelStats( kcom_stats_t    *stats );
+void kcom_printSummary(     cgra_t          *cgra );
 
 /****************************************************************************/
 /**                                                                        **/

@@ -71,6 +71,11 @@
 
 uint32_t freq_hz; 
 
+static uint32_t z1 = RANDOM_SEED, \
+                z2 = RANDOM_SEED, \
+                z3 = RANDOM_SEED, \
+                z4 = RANDOM_SEED;
+
 /****************************************************************************/
 /**                                                                        **/
 /*                           EXPORTED FUNCTIONS                             */
@@ -81,17 +86,22 @@ uint32_t freq_hz;
 
 uint32_t kcom_getRand()
 {
-   static uint32_t z1 = 12345, z2 = 12345, z3 = 12345, z4 = 12345;
-   uint32_t b;
-   b  = ((z1 << 6) ^ z1) >> 13;
-   z1 = ((z1 & 4294967294U) << 18) ^ b;
-   b  = ((z2 << 2) ^ z2) >> 27; 
-   z2 = ((z2 & 4294967288U) << 2) ^ b;
-   b  = ((z3 << 13) ^ z3) >> 21;
-   z3 = ((z3 & 4294967280U) << 7) ^ b;
-   b  = ((z4 << 3) ^ z4) >> 12;
-   z4 = ((z4 & 4294967168U) << 13) ^ b;
-   return (z1 ^ z2 ^ z3 ^ z4);
+    uint32_t b;
+
+    b  = ((z1 << 6) ^ z1) >> 13;
+    z1 = ((z1 & 4294967294U) << 18) ^ b;
+    b  = ((z2 << 2) ^ z2) >> 27; 
+    z2 = ((z2 & 4294967288U) << 2) ^ b;
+    b  = ((z3 << 13) ^ z3) >> 21;
+    z3 = ((z3 & 4294967280U) << 7) ^ b;
+    b  = ((z4 << 3) ^ z4) >> 12;
+    z4 = ((z4 & 4294967168U) << 13) ^ b;
+    return (z1 ^ z2 ^ z3 ^ z4);
+}
+
+void kcom_resetRand()
+{
+    z1 = z2 = z3 = z4 = RANDOM_SEED;
 }
 
 /* TIME OPERATIONS */
@@ -137,9 +147,9 @@ void kcom_timeStop( kcom_time_diff_t *perf,  rv_timer_t *timer )
     perf->spent_cy = perf->end_cy - perf->start_cy;
 }
 
-void kcom_subtractDead( kcom_time_t *time, kcom_time_t *dead )
+void kcom_subtractDead( kcom_time_t *time, kcom_time_t dead )
 {
-    *time -= *dead;
+    *time -= dead;
 }
 
 /* COMPUTATIONS */
@@ -147,17 +157,59 @@ void kcom_subtractDead( kcom_time_t *time, kcom_time_t *dead )
 void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 {
     // These times have already been subtracted the dead time.
-    (run[ it_idx ]).sw        = perf->time.sw.spent_cy;     
-    (run[ it_idx ]).config    = perf->time.config.spent_cy;     
-    (run[ it_idx ]).cgra      = perf->time.cgra.spent_cy;   
-    (run[ it_idx ]).cyc_ratio = perf->cyc_ratio; 
+    (run[ it_idx ]).sw          = perf->time.sw.spent_cy;     
+    (run[ it_idx ]).conf        = 0;     
+    (run[ it_idx ]).cgra        = perf->time.cgra.spent_cy;  
+    (run[ it_idx ]).repo        = perf->cols_max.cyc_act + perf->cols_max.cyc_stl;
+    (run[ it_idx ]).repo_conf   = 0;   
+    (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio; 
+    PRINTDBG("sw: %03d \t conf: %03d \t cgra: %03d \t repo: %03d \t repo_conf: %03d \t cyc_ratio: %03d\n", 
+    (run[ it_idx ]).sw, (run[ it_idx ]).conf, (run[ it_idx ]).cgra, (run[ it_idx ]).repo, (run[ it_idx ]).repo_conf, (run[ it_idx ]).cyc_ratio );
 }
+
+void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
+{
+#if REPEAT_FIRST_INPUT
+    PRINTDBG("-----\n");
+    run[0].conf         = run[0].cgra - run[1].cgra;
+    run[0].repo_conf    = run[0].repo - run[1].repo;
+
+    for( uint32_t i = 0; i < it_n; i++ )
+    {
+        run[i].cgra         = run[i].cgra - run[0].conf;
+        run[i].conf         = run[0].conf;
+        run[i].repo_conf    = run[0].repo_conf; 
+        PRINTDBG("sw: %03d \t conf: %03d \t cgra: %03d \t repo: %03d \t repo_conf: %03d \t cyc_ratio: %03d\n", 
+        (run[ i ]).sw, (run[ i ]).conf, (run[ i ]).cgra, (run[ i ]).repo, (run[ i ]).repo_conf, (run[ i ]).cyc_ratio );
+    }
+#else
+    kcom_param_t avg        = 0;
+    kcom_param_t repo_avg   = 0;
+    for( uint32_t i = 1; i < it_n; i++ )
+    {
+        run[i].conf         = run[0].cgra - run[i].cgra;
+        run[i].repo_conf    = run[0].repo - run[i].repo;
+        avg         += run[i].conf;
+        repo_avg    += run[i].repo_conf;
+    }
+    avg         /= it_n;
+    repo_avg    /= it_n;
+
+    run[0].conf         = avg;
+    run[0].repo_conf    = repo_avg;
+
+    run[0].cgra         = run[0].cgra - avg;  
+    run[0].repo         = run[0].repo - repo_avg; 
+#endif //REPEAT_FIRST_INPUT
+
+}
+
 
 void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
 {
     kcom_run_t *avg = &( stats->avg );
     kcom_run_t *var = &( stats->var );
-    uint32_t iterations = stats->n;
+    uint32_t iterations = stats->n - 1; // Because the first iteration is discarded
 
     
     uint8_t paramCount = sizeof( kcom_run_t ) / sizeof( kcom_param_t );
@@ -214,7 +266,7 @@ void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
 void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 {
 
-#if PERF_PRINT_PLOT
+#if PRINT_PLOT
     for( uint16_t i = 0; i < perf->time.cgra.spent_cy; i += PERF_PLOT_SCALE_DOWN )
     {
         PRINTF(" ");
@@ -222,7 +274,7 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     PRINTF("*\n");
 #endif
 
-#if PERF_PRINT_COLUMN_STATS
+#if PRINT_COLUMN_STATS
     PRINTF("\n===========\n COLUMN STATS BELOW \n===========\n");
     PRINTF("Col\tAct\tStl\n");
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++)
@@ -230,12 +282,12 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
         PRINTF("%01d\t%03d\t%03d\n", col_idx, perf->cols[col_idx].cyc_act, perf->cols[col_idx].cyc_stl );
     }
     PRINTF("Max:\t%03d\t%03d\n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl );
-#endif //PERF_PRINT_COLUMN_STATS
+#endif //PRINT_COLUMN_STATS
 
-#if PERF_PRINT_LATEX
-#if PERF_PRINT_TABBED
+#if PRINT_LATEX
+#if PRINT_TABBED
     PRINTF("\n===========\n LATEX VERSION BELOW \n===========\n");
-#endif // PERF_PRINT_TABBED
+#endif // PRINT_TABBED
     PRINTF("\\begin{table}[h!] \n");
     PRINTF("\t\\centering \n");
     PRINTF("\t\\caption{\\small Some table caption} \n");
@@ -254,20 +306,19 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     PRINTF("\t\t\\bottomrule \n");
 	PRINTF("\t\\end{tabular} \n");
     PRINTF("\\end{table} \n");
-#endif //PERF_PRINT_LATEX
+#endif //PRINT_LATEX
 
-#if PERF_PRINT_TABBED
-#if PERF_PRINT_LATEX
+#if PRINT_TABBED
+#if PRINT_LATEX
     PRINTF("\n===========\n TABBED VERSION BELOW \n===========\n");
-#endif //PERF_PRINT_LATEX
+#endif //PRINT_LATEX
     PRINTF("Param\tValue\tUnit \n");
     PRINTF("Total\t%d+%d=%03d\tcycles \n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
     PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
     PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
-    PRINTF("Conf\t%d\tcy\n", perf->time.config.spent_cy );
     PRINTF("CGRA\t%d\tcy\n", perf->time.cgra.spent_cy );
     PRINTF("Active\t%d\tcy\n", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
-#endif // PERF_PRINT_TABBED
+#endif // PRINT_TABBED
 
 }
 
@@ -276,7 +327,8 @@ void kcom_printKernelStats( kcom_stats_t *stats  )
     PRINTF("\n===================\n %s \n", stats->name);
     PRINTF("PARA\tAVG(cy)\tVAR\n");
     PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->var.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.sw%CGRA_STAT_PERCENT_MULTIPLIER );
-    PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.config, stats->var.config/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.config%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.conf, stats->var.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.conf%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("REPO\t%d\t%0d.%01d\n", stats->avg.repo, stats->var.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.repo%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->var.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));

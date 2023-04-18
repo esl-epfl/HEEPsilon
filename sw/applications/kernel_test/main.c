@@ -83,9 +83,9 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
-    // /&bitc_kernel,
-    &gsm_kernel, 
-    // Add all other kernels here
+        &bitc_kernel,
+        //&gsm_kernel, 
+        // Add all other kernels here
     };
 
 
@@ -120,7 +120,7 @@ uint8_t pinState = 0;
 /****************************************************************************/
 
 
-void cgra_config( kcom_kernel_t *ker )
+void cgra_load( kcom_kernel_t *ker )
 {
     cgra_cmem_init(ker->imem, ker->kmem );
     cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
@@ -180,7 +180,7 @@ void handler_irq_external(void) {
 
 void initPin()
 {
-#if TOGGLE_PIN
+#if ENABLE_PIN_TOGGLE
     gpio_result_t gpio_res;
     gpio_params_t gpio_params;
     pad_control_t pad_control;
@@ -208,7 +208,7 @@ void initPin()
 
 inline __attribute__((always_inline)) void togglePin()
 {
-#if TOGGLE_PIN
+#if ENABLE_PIN_TOGGLE
     gpio_write(&gpio, PIN_TO_TOGGLE, (pinState = !pinState) );
 #endif
 }
@@ -241,7 +241,10 @@ void main()
             /* Reset the CGRA performance counters */
             cgra_perf_cnt_reset( &cgra );
 
-            /* Configuration (of inputs). */
+            /* Load (of inputs). */
+#if REPEAT_FIRST_INPUT
+            if( it_idx < 3 ) kcom_resetRand(); 
+#endif //REPEAT_FIRST_INPUT
             kernel->config();
 
             /* Obtention of dead-zone-time */
@@ -257,11 +260,11 @@ void main()
             kcom_timeStop(  &(kperf.time.sw), &(kperf.time.timer) );
             togglePin();    
 
-            /* CGRA Configuration */
+            /* CGRA load */
             togglePin(); 
-            kcom_timeStart( &(kperf.time.config), &(kperf.time.timer) );
-                cgra_config( kernel );
-            kcom_timeStop(  &(kperf.time.config), &(kperf.time.timer) );
+            kcom_timeStart( &(kperf.time.load), &(kperf.time.timer) );
+                cgra_load( kernel );
+            kcom_timeStop(  &(kperf.time.load), &(kperf.time.timer) );
             togglePin(); 
             
             /* CGRA Execution */
@@ -276,9 +279,12 @@ void main()
             stats.errors += kernel->check();
 
             /* Subtract the dead times from the obtained values */
-            kcom_subtractDead( &(kperf.time.sw), &(kperf.time.dead) );
-            kcom_subtractDead( &(kperf.time.config), &(kperf.time.dead) );
-            kcom_subtractDead( &(kperf.time.cgra), &(kperf.time.dead) );
+            PRINTDBG("CGRA: %d - %d - %d =", kperf.time.cgra.spent_cy, kperf.time.dead.spent_cy, CGRA_ACCESS_FLAT_COST_CYCLES );
+
+            kcom_subtractDead( &(kperf.time.sw.spent_cy),    kperf.time.dead.spent_cy );
+            kcom_subtractDead( &(kperf.time.load.spent_cy),  kperf.time.dead.spent_cy );
+            kcom_subtractDead( &(kperf.time.cgra.spent_cy),  kperf.time.dead.spent_cy + CGRA_ACCESS_FLAT_COST_CYCLES );
+            PRINTDBG("%d\n",kperf.time.cgra.spent_cy);
 
             /* Performance report */
             kcom_getPerf(&cgra, &kperf );
@@ -288,8 +294,11 @@ void main()
             
             /* Add this iteration to the runs vector */
             kcom_populateRun( &run, &kperf, it_idx );
-
         }
+
+        // Compute the conf time for each iteration. The iteration 0 is assigned the average, and its is subtracted to the cgra operation.
+        kcom_extractConfTime( &run, stats.n );
+
         /* Get statistical values from the whole set of runs for this kernel. */
         kcom_getKernelStats( &run, &stats );
         kcom_printKernelStats( &stats );
