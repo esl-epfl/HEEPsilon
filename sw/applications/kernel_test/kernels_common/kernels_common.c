@@ -163,14 +163,11 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
     (run[ it_idx ]).repo        = perf->cols_max.cyc_act + perf->cols_max.cyc_stl;
     (run[ it_idx ]).repo_conf   = 0;   
     (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio; 
-    PRINTDBG("sw: %03d \t conf: %03d \t cgra: %03d \t repo: %03d \t repo_conf: %03d \t cyc_ratio: %03d\n", 
-    (run[ it_idx ]).sw, (run[ it_idx ]).conf, (run[ it_idx ]).cgra, (run[ it_idx ]).repo, (run[ it_idx ]).repo_conf, (run[ it_idx ]).cyc_ratio );
 }
 
 void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
 {
 #if REPEAT_FIRST_INPUT
-    PRINTDBG("-----\n");
     run[0].conf         = run[0].cgra - run[1].cgra;
     run[0].repo_conf    = run[0].repo - run[1].repo;
 
@@ -179,8 +176,6 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
         run[i].cgra         = run[i].cgra - run[0].conf;
         run[i].conf         = run[0].conf;
         run[i].repo_conf    = run[0].repo_conf; 
-        PRINTDBG("sw: %03d \t conf: %03d \t cgra: %03d \t repo: %03d \t repo_conf: %03d \t cyc_ratio: %03d\n", 
-        (run[ i ]).sw, (run[ i ]).conf, (run[ i ]).cgra, (run[ i ]).repo, (run[ i ]).repo_conf, (run[ i ]).cyc_ratio );
     }
 #else
     kcom_param_t avg        = 0;

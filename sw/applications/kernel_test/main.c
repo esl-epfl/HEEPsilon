@@ -279,12 +279,9 @@ void main()
             stats.errors += kernel->check();
 
             /* Subtract the dead times from the obtained values */
-            PRINTDBG("CGRA: %d - %d - %d =", kperf.time.cgra.spent_cy, kperf.time.dead.spent_cy, CGRA_ACCESS_FLAT_COST_CYCLES );
-
             kcom_subtractDead( &(kperf.time.sw.spent_cy),    kperf.time.dead.spent_cy );
             kcom_subtractDead( &(kperf.time.load.spent_cy),  kperf.time.dead.spent_cy );
             kcom_subtractDead( &(kperf.time.cgra.spent_cy),  kperf.time.dead.spent_cy + CGRA_ACCESS_FLAT_COST_CYCLES );
-            PRINTDBG("%d\n",kperf.time.cgra.spent_cy);
 
             /* Performance report */
             kcom_getPerf(&cgra, &kperf );

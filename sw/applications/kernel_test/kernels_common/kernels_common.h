@@ -55,7 +55,7 @@
 
 /* Operation Configurations */
 #define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     0
+#define ENABLE_DEBUG_PRINTF     1
 
 #define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
@@ -70,7 +70,7 @@
 
 
 #define PIN_TO_TOGGLE           30
-#define ITERATIONS_PER_KERNEL   200
+#define ITERATIONS_PER_KERNEL   10
 
 
 /* Constants */
@@ -82,8 +82,7 @@
 #define KERNEL_NAME_LENGTH_MAX          20
 #define RANDOM_SEED                     12346
 
-
-#define CGRA_ACCESS_FLAT_COST_CYCLES    25 // Measured in Questasim, do not change
+#define CGRA_ACCESS_FLAT_COST_CYCLES    55  // Measured in Questasim, do not change
 
 /* Macros */
 
