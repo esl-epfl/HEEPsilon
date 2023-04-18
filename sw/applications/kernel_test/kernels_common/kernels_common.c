@@ -208,7 +208,7 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
 void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
 {
     kcom_run_t *avg = &( stats->avg );
-    kcom_run_t *var = &( stats->var );
+    kcom_run_t *stdev = &( stats->stdev );
     uint32_t iterations = stats->n - 1; // Because the first iteration is discarded
 
     
@@ -226,17 +226,29 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
         /* Divide by the population size. */
         ((kcom_param_t*)avg)[p_idx] /= iterations;
     
-        /* Get the variance (sigma^2). */
-        ((kcom_param_t*)var)[p_idx] = 0; 
+        /* Get the deviation (sigma). */
+        ((kcom_param_t*)stdev)[p_idx] = 0; 
         for( uint32_t it_idx = 0; it_idx < iterations; it_idx++ )
         {
              /* Get diff with avg. */
             int32_t diff = (int32_t)(((int32_t)((kcom_param_t*)&(run[it_idx]))[p_idx]) -  (int32_t)(((kcom_param_t*)avg)[p_idx]));
             /* Square it. Its multiplied by 100 because otherwise the next division would be < 1 */
-            ((kcom_param_t*)var)[p_idx] += diff * diff * CGRA_STAT_PERCENT_MULTIPLIER;
+            ((kcom_param_t*)stdev)[p_idx] += diff * diff * CGRA_STAT_PERCENT_MULTIPLIER;
         }
         /* Divide by the population size. */
-        ((kcom_param_t*)var)[p_idx] /= iterations;
+        ((kcom_param_t*)stdev)[p_idx] /= iterations;
+
+        kcom_param_t value = ((kcom_param_t*)stdev)[p_idx];
+        if( value != 0 )
+        {
+            kcom_param_t sqr = value / 2;
+            kcom_param_t temp;
+            while( sqr != temp ){
+                temp = sqr;
+                sqr = ( value/temp + temp) / 2;
+            }
+            ((kcom_param_t*)stdev)[p_idx] = sqr *10; //To recover a 10 factor we lost during sqrt
+        }
     }
 
 }
@@ -325,12 +337,12 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
     PRINTF("\n===================\n %s \n", stats->name);
-    PRINTF("PARA\tAVG(cy)\tVAR\n");
-    PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->var.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.sw%CGRA_STAT_PERCENT_MULTIPLIER );
-    PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.conf, stats->var.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.conf%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("REPO\t%d\t%0d.%01d\n", stats->avg.repo, stats->var.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.repo%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->var.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->var.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->var.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("PARA\tAVG(cy)\tDEV\n");
+    PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->stdev.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.sw%CGRA_STAT_PERCENT_MULTIPLIER );
+    PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.conf, stats->stdev.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.conf%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("REPO\t%d\t%0d.%01d\n", stats->avg.repo, stats->stdev.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.repo%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->stdev.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
     PRINTF("Errs\t%d\n", stats->errors);
 }

@@ -54,11 +54,7 @@
 /****************************************************************************/
 
 /* Operation Configurations */
-#ifdef TARGET_PYNQ_Z2
-    #define ENABLE_PRINTF      1
-#else
-    #define ENABLE_PRINTF      0
-#endif //TARGET_PYNQ_Z2
+#define ENABLE_PRINTF           1
 #define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
@@ -74,7 +70,7 @@
 
 
 #define PIN_TO_TOGGLE           30
-#define ITERATIONS_PER_KERNEL   4
+#define ITERATIONS_PER_KERNEL   200
 
 
 /* Constants */
@@ -178,7 +174,7 @@ typedef struct
 typedef struct
 {
    kcom_run_t   avg;
-   kcom_run_t   var;
+   kcom_run_t   stdev;
    uint32_t     n;
    uint32_t     errors;
    uint8_t      *name;
