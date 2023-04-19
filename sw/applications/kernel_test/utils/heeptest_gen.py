@@ -27,27 +27,30 @@ bitstream_tpl_name  = "bitstream.h.tpl"
 source_tpl_name     = "source.c.tpl"
 header_tpl_name     = "header.h.tpl"
 
+auxFolder_name      = "data/"
 
 # Variables
 source_path = str(source_path)
 dest_path   = str(dest_path)
+
 filename = source_path[ source_path.rfind('/') +1: ]
 FILENAME = filename.upper()
 Filename = filename.capitalize()
+shortname = filename[0:min(4,len(filename))]
+
 if 1:
     print("filename = ", filename )
     print("FILENAME = ", FILENAME )
     print("Filename = ", Filename )
 
 # Files being generated:
-bitstream_file_name     = dest_path + "/cgra_bitstream.h"
 header_file_name        = dest_path + "/" + filename + ".h"
 source_file_name        = dest_path + "/" + filename + ".c"
 
 # Bitstream:
-imem_bit_name       = source_path + "/cgra/cgra_imem.bit"
-kmem_bit_name       = source_path + "/cgra/cgra_kmem.bit"
-io_file_name        = source_path + "/cgra/io.json"
+imem_bit_name       = source_path + "/" + auxFolder_name + "cgra_imem.bit"
+kmem_bit_name       = source_path + "/" + auxFolder_name + "cgra_kmem.bit"
+io_file_name        = source_path + "/" + auxFolder_name + "io.json"
 
 
 ##########################
@@ -74,29 +77,10 @@ for mem_filename in [imem_bit_name, kmem_bit_name]:
         mem_str[mem_filename] = ""
         mem_bit_lines = mem_bit_file.readlines()
         for mem_line in mem_bit_lines[0:-1] :
-            mem_line = mem_line.replace("\n",",\n")
-            mem_str[mem_filename] += f"\t{mem_line}"
+            mem_line = mem_line.replace("\n",", ")
+            mem_str[mem_filename] += f" {mem_line}"
         mem_line = mem_bit_lines[-1].replace("\n","")
-        mem_str[mem_filename] += f"\t{mem_line}"
-
-with open(bitstream_tpl_name) as t:
-    template = string.Template(t.read())
-final_output = template.substitute(\
-                                    word_config     =   mem_str[kmem_bit_name],\
-                                    machine_code    =   mem_str[imem_bit_name],\
-                                    date            =   "Today",\
-                                    description     =   "This is a kernel description",\
-                                    FILENAME        =   FILENAME,\
-                                    filename        =   filename,\
-                                    Filename        =   Filename,\
-                                    )
-
-
-with open(bitstream_file_name, "w") as output:
-    output.write(final_output)
-
-print( bitstream_file_name + ">>>\n" + final_output )
-
+        mem_str[mem_filename] += f" {mem_line}"
 
 ########################
 # Source file generation #
@@ -111,17 +95,26 @@ with open(io_file_name) as f:
 
 # In/out Variables
 in_vars_str = ""
+in_args_str = ""
 for in_vars in io_data["inputs"]: # There should only be 1! 
     in_var = f"{in_vars['name']}"
     in_var_depth = f"{in_vars['num']}"
-    in_vars_str += f"{in_vars['type']}\t{in_vars['name']}\t[{in_vars['num']}];\n"
+    index = ""
+    if in_vars['num'] > 1:
+        index = f"\t[{in_vars['num']}]"
+    in_vars_str += f"static {in_vars['type']}\t{in_vars['name']}{index};\n"
+    in_args_str += f"{in_vars['name']}, "
+in_args_str = in_args_str[:-2] # Remove the last comma + space
 
 out_vars_str = ""
 out_var = ""
 for out_vars in io_data["outputs"]: # There should only be 1! 
     out_var = f"{out_vars['name']}"
-    out_vars_str += f"{out_vars['type']}\t{out_vars['name']}\t[{out_vars['num']}];\n"
-    out_vars_str += f"{out_vars['type']}\t{out_vars['name']}_sw\t[{out_vars['num']}];\n"
+    index = ""
+    if out_vars['num'] > 1:
+        index = f"\t[{out_vars['num']}]"
+    out_vars_str += f"static {out_vars['type']}\t{out_vars['name']}{index};\n"
+    out_vars_str += f"static {out_vars['type']}\t{out_vars['name']}_sw{index};\n"
 
 
 print("IN vars: >>>\n" + in_vars_str)
@@ -136,13 +129,11 @@ for inout in io_data["inputs"]:
         min_val = str(inout.get("min"))
     if inout.get("max") : 
         max_val = str(inout.get("max"))
-
-    config_str += f"\tfor(int i = 0; i < {inout['num']}; i++ )\n"
-    config_str += f"\t\t{inout['name']}[i] = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
-
-
-
-
+    if inout['num'] == 1:
+        config_str += f"\t{inout['name']} = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
+    else:
+        config_str += f"\tfor(int i = 0; i < {inout['num']}; i++ )\n"
+        config_str += f"\t\t{inout['name']}[i] = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
 
 # Adding the input to the CGRA input
 input_max = [0,0,0,0]
@@ -193,8 +184,12 @@ final_output = template.substitute( \
                                     in_var_depth    = in_var_depth,\
                                     date            = "Today",\
                                     description     = "A description",\
-                                    shortname       = filename[:3],\
+                                    shortname       = shortname,\
                                     function        = filename,\
+                                    aux_folder      = auxFolder_name,\
+                                    imem            = mem_str[imem_bit_name],\
+                                    kmem            = mem_str[kmem_bit_name],\
+                                    in_args         = in_args_str, \
                                     )
 
 print("Sourcefile: >>> \n"+ final_output)
@@ -220,7 +215,7 @@ final_output = template.substitute( \
                                     in_var_depth    = in_var_depth,\
                                     date            = "Today",\
                                     description     = "A description",\
-                                    shortname       = filename[:3],\
+                                    shortname       = shortname,\
                                     function        = filename,\
                                     )
 

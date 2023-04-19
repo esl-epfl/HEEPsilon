@@ -36,8 +36,7 @@
 #include <stdint.h>
 
 #include "${filename}.h"
-#include "cgra/cgra_bitstream.h"
-#include "cgra/function.h"
+#include "${aux_folder}function.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -55,9 +54,9 @@
 /**                                                                        **/
 /****************************************************************************/
 
-void        config  (void);
-void        software(void);
-uint32_t    check   (void);
+static void        config  (void);
+static void        software(void);
+static uint32_t    check   (void);
 
 /****************************************************************************/
 /**                                                                        **/
@@ -65,9 +64,12 @@ uint32_t    check   (void);
 /**                                                                        **/
 /****************************************************************************/
 
-int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
-int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
-int32_t sw_res, cgra_res;
+static uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = { ${imem} };
+static uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = { ${kmem} };
+
+static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
+static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
+static int32_t sw_res, cgra_res;
 
 ${in_vars}
 ${out_vars}
@@ -103,7 +105,7 @@ ${config}
 
 void software(void) 
 {
-    sw_res = ${function}( x );
+    sw_res = ${function}( ${in_args} );
 }
 
 uint32_t check(void) 

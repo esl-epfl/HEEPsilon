@@ -55,7 +55,7 @@
 
 /* Operation Configurations */
 #define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     1
+#define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
@@ -71,6 +71,7 @@
 
 #define PIN_TO_TOGGLE           30
 #define ITERATIONS_PER_KERNEL   10
+#define PERF_PLOT_SCALE_DOWN    5 
 
 
 /* Constants */

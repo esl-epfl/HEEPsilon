@@ -49,8 +49,9 @@
 #include "pad_control_regs.h"
 
 //Include kernels!
-#include "bitcount/bitcount.h"
-#include "gsm/gsm.h"
+#include "kernels/bitcount/bitcount.h"
+#include "kernels/reversebits/reversebits.h"
+#include "kernels/gsm/gsm.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -84,6 +85,8 @@
 
 static kcom_kernel_t *kernels[] = { 
         &bitc_kernel,
+        &reve_kernel,
+        //&bitc_kernel,
         //&gsm_kernel, 
         // Add all other kernels here
     };
@@ -243,7 +246,7 @@ void main()
 
             /* Load (of inputs). */
 #if REPEAT_FIRST_INPUT
-            if( it_idx < 3 ) kcom_resetRand(); 
+            if( it_idx < 2 ) kcom_resetRand(); 
 #endif //REPEAT_FIRST_INPUT
             kernel->config();
 

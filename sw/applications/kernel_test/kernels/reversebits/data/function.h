@@ -28,7 +28,7 @@ write_col3
 /* 
   Revert a specified number of bits (starting from lsb) of the variable index
 */
-unsigned ReverseBits ( unsigned index, unsigned NumBits )
+unsigned reversebits ( unsigned index, unsigned NumBits )
 {
     unsigned i, rev;
 

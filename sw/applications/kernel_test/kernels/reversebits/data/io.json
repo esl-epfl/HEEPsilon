@@ -1,0 +1,35 @@
+{
+    "function_name": "ReverseBits",
+    "inputs": [
+        {"type":"uint32_t" , "num":1 , "name":"index"},
+        {"type":"uint32_t" , "num":1 , "name":"NumBits" , "max":31}
+    ],
+    "outputs": [
+        {"type":"uint32_t" , "num":1 , "name":"ret"}
+    ],
+    "read_col0" : [
+        {"name":"index"},
+        {"name":"NumBits"}
+    ] ,
+    "read_col1" : [
+        
+    ] ,
+    "read_col2" : [
+        
+    ] ,
+    "read_col3" : [
+        
+    ] ,
+    "write_col0" : [
+        
+    ] ,
+    "write_col1" : [
+        
+    ] ,
+    "write_col2" : [
+        {"name":"ret"}
+    ] ,
+    "write_col3" : [
+        
+    ]
+}
