@@ -225,17 +225,23 @@ void main()
 
     kcom_timerInit( &(kperf.time.timer) );
     plic_interrupt_init(CGRA_INTR);
-
     initPin();
 
     kcom_kernel_t* kernel;
 
     for( uint8_t ker_idx = 0; ker_idx < kernels_n; ker_idx++ )
     {
-        
         kernel = kernels[ ker_idx ];
         stats.name = kernel->name;
         stats.n = ITERATIONS_PER_KERNEL;
+        
+        
+        /* CGRA load */
+        togglePin(); 
+        kcom_timeStart( &(kperf.time.load), &(kperf.time.timer) );
+            cgra_load( kernel );
+        kcom_timeStop(  &(kperf.time.load), &(kperf.time.timer) );
+        togglePin(); 
         
         for( uint8_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
         {
@@ -262,21 +268,16 @@ void main()
                 kernel->func();
             kcom_timeStop(  &(kperf.time.sw), &(kperf.time.timer) );
             togglePin();    
-
-            /* CGRA load */
-            togglePin(); 
-            kcom_timeStart( &(kperf.time.load), &(kperf.time.timer) );
-                cgra_load( kernel );
-            kcom_timeStop(  &(kperf.time.load), &(kperf.time.timer) );
-            togglePin(); 
             
             /* CGRA Execution */
             cgra_perf_cnt_reset( &cgra );
             togglePin(); 
             kcom_timeStart( &(kperf.time.cgra), &(kperf.time.timer) );
-                cgra_set_kernel(&cgra, cgra_slot, 1 );
+                cgra_set_kernel(&cgra, cgra_slot, 1 ); 
                 while(cgra_intr_flag==0) wait_for_interrupt();
             // Time is stopped inside the interrupt handler to make it as fast as possible
+
+            cgra_set_kernel(&cgra, cgra_slot, 0);
 
             /* Result comparison */
             stats.errors += kernel->check();
