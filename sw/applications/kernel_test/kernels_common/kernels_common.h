@@ -54,23 +54,37 @@
 /****************************************************************************/
 
 /* Operation Configurations */
-#define ENABLE_PRINTF           0
+#define ENABLE_PRINTF           1
 #define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
-#define PRINT_KERNEL_STATS      0  
+#define PRINT_KERNEL_STATS      1  
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
 
-#define ENABLE_PIN_TOGGLE       1
-#define ENABLE_TIME_MEASURE     1
 #define REPEAT_FIRST_INPUT      1
 
 
+#define ENABLE_PIN_TOGGLE       1
+#define CTRL_VCD_W_PIN          0
+#define PIN_TO_CTRL_VCD         0
+
+#if CTRL_VCD_W_PIN
+    #define ENABLE_TIME_MEASURE 0
+#else
+    #define ENABLE_TIME_MEASURE 1
+#endif
+
+#if CTRL_VCD_W_PIN
+#define PIN_TO_TOGGLE           PIN_TO_CTRL_VCD
+#else
 #define PIN_TO_TOGGLE           30
-#define ITERATIONS_PER_KERNEL   3
+#endif //CTRL_VCD_W_PIN
+
+
+#define ITERATIONS_PER_KERNEL   10
 #define PERF_PLOT_SCALE_DOWN    5 
 
 

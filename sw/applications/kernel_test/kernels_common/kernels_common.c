@@ -136,24 +136,31 @@ uint64_t kcom_getTime( rv_timer_t *timer )
 
 void kcom_timeStart( kcom_time_diff_t *perf, rv_timer_t *timer )
 {
+#if ENABLE_TIME_MEASURE
     perf->start_cy = kcom_getTime( timer );
+#endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_timeStop( kcom_time_diff_t *perf,  rv_timer_t *timer )
 {
+#if ENABLE_TIME_MEASURE
     perf->end_cy = kcom_getTime( timer );
     perf->spent_cy = perf->end_cy - perf->start_cy;
+#endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_subtractDead( kcom_time_t *time, kcom_time_t dead )
 {
+#if ENABLE_TIME_MEASURE
     *time -= dead;
+#endif //ENABLE_TIME_MEASURE
 }
 
 /* COMPUTATIONS */
 
 void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 {
+#if ENABLE_TIME_MEASURE
     // These times have already been subtracted the dead time.
     (run[ it_idx ]).sw          = perf->time.sw.spent_cy;     
     (run[ it_idx ]).conf        = 0;     
@@ -161,10 +168,12 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
     (run[ it_idx ]).repo        = perf->cols_max.cyc_act + perf->cols_max.cyc_stl;
     (run[ it_idx ]).repo_conf   = 0;   
     (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio; 
+#endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
 {
+#if ENABLE_TIME_MEASURE
 #if REPEAT_FIRST_INPUT
     run[0].conf         = run[0].cgra - run[1].cgra;
     run[0].repo_conf    = run[0].repo - run[1].repo;
@@ -194,12 +203,13 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
     run[0].cgra         = run[0].cgra - avg;  
     run[0].repo         = run[0].repo - repo_avg; 
 #endif //REPEAT_FIRST_INPUT
-
+#endif //ENABLE_TIME_MEASURE
 }
 
 
 void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
 {
+#if ENABLE_TIME_MEASURE
     kcom_run_t *avg = &( stats->avg );
     kcom_run_t *stdev = &( stats->stdev );
     uint32_t iterations = stats->n - 1; // Because the first iteration is discarded
@@ -244,6 +254,7 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
         }
     }
 
+#endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
@@ -302,11 +313,12 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
     PRINTF("\t\t\\textbf{Parameter}&\\textbf{Value}&\\textbf{Unit}\\\\\n");
 
     PRINTF("\t\t\\midrule \n");
-
     PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
     PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
+#if ENABLE_TIME_MEASURE
     PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent_cy );
     PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent_cy );
+#endif //ENABLE_TIME_MEASURE
 
     PRINTF("\t\t\\bottomrule \n");
 	PRINTF("\t\\end{tabular} \n");
@@ -329,6 +341,7 @@ void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
 
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
+#if ENABLE_TIME_MEASURE
     PRINTF("\n===================\n %s \n", stats->name);
     PRINTF("PARA\tAVG(cy)\tDEV\n");
     PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->stdev.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.sw%CGRA_STAT_PERCENT_MULTIPLIER );
@@ -338,11 +351,11 @@ void kcom_printKernelStats( kcom_stats_t *stats  )
     PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
     PRINTF("Errs\t%d\n", stats->errors);
+#endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_printSummary( cgra_t *cgra )
 {
-    PRINTF("\nCGRA kernels executed: %d\n", cgra_perf_cnt_get_kernel(cgra));
     PRINTF("Clock freq: %d MHz\n", freq_hz/1000000);
 }
 

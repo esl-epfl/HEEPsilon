@@ -86,8 +86,7 @@
 static kcom_kernel_t *kernels[] = { 
         &bitc_kernel,
         &reve_kernel,
-        //&bitc_kernel,
-        //&gsm_kernel, 
+        &gsm_kernel, 
         // Add all other kernels here
     };
 
@@ -234,8 +233,14 @@ void main()
         kernel = kernels[ ker_idx ];
         stats.name = kernel->name;
         stats.n = ITERATIONS_PER_KERNEL;
-        
-        
+                
+        /* Set the kernel ID */
+        // Must be between 1 and (KMEM_SIZE - 1). 
+        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) )+ 1;
+        // By default the kernels come located with id = 1.
+        kernel->kmem[ kernel_id ] = kernel->kmem[1];
+        // The kernel = 1 is kept, so we can always take it from there. 
+
         /* CGRA load */
         togglePin(); 
         kcom_timeStart( &(kperf.time.load), &(kperf.time.timer) );
@@ -273,11 +278,11 @@ void main()
             cgra_perf_cnt_reset( &cgra );
             togglePin(); 
             kcom_timeStart( &(kperf.time.cgra), &(kperf.time.timer) );
-                cgra_set_kernel(&cgra, cgra_slot, 1 ); 
+                cgra_set_kernel(&cgra, cgra_slot, kernel_id ); 
                 while(cgra_intr_flag==0) wait_for_interrupt();
             // Time is stopped inside the interrupt handler to make it as fast as possible
 
-            cgra_set_kernel(&cgra, cgra_slot, 0);
+            //cgra_set_kernel(&cgra, cgra_slot, 0);
 
             /* Result comparison */
             stats.errors += kernel->check();
