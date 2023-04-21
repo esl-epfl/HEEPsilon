@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : reversebits.c                                                 **
 ** version  : 1                                                            **
-** date     : Today                                                       **
+** date     : 2023-04-21                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,8 +21,8 @@
 
 /**
 * @file   reversebits.c
-* @date   Today
-* @brief  A description
+* @date   2023-04-21
+* @brief  A description of the kernel...
 *
 */
 
@@ -45,7 +45,7 @@
 /****************************************************************************/
 
 #define CGRA_COLS       4
-#define IN_VAR_DEPTH    1
+#define IN_VAR_DEPTH    2
 #define OUT_VAR_DEPTH   1
 
 /****************************************************************************/
@@ -69,13 +69,12 @@ static uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {  0x0,  0xf005,  0x0,  0x
 
 static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
 static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
-static int32_t sw_res, cgra_res;
 
 static uint32_t	index;
 static uint32_t	NumBits;
 
-static uint32_t	ret;
-static uint32_t	ret_sw;
+static uint32_t	ret_cgra;
+static uint32_t	ret_soft;
 
 
 /****************************************************************************/
@@ -104,7 +103,7 @@ extern kcom_kernel_t reve_kernel = {
 
 void config()
 {
-	index = kcom_getRand() % (0 - 0 + 1) + 0;
+	index = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
 	NumBits = kcom_getRand() % (31 - 0 + 1) + 0;
 	cgra_input[0][0] = index;
 	cgra_input[0][1] = NumBits;
@@ -113,15 +112,21 @@ void config()
 
 void software(void) 
 {
-    sw_res = reversebits( index, NumBits );
+    ret_soft = reversebits( index, NumBits );
 }
 
 uint32_t check(void) 
 {
     uint32_t errors = 0;
-    cgra_res = cgra_output[2][0];   
-    if (cgra_res != sw_res) {
-        errors++;
+    
+	ret_cgra = cgra_output[2][0];
+
+
+    for( int i = 0; i < 1; i++ )
+    {
+        if (ret_cgra != ret_soft) {
+            errors++;
+        }
     }
     return errors;
 }

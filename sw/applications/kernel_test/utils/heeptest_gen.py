@@ -244,7 +244,7 @@ for col_idx in range(cols_n):
         # Otherwise, the output variable is an array and each element (id) 
         # gets the value of a column-value pair.
         if value.get("name") == out_var_name:
-            check_load_str  +=  f"\t{out_var_cgra_str} = cgra_output[{col_idx}][{value['id']}];\n"
+            check_load_str  +=  f"\t{out_var_cgra_str} = cgra_output[{col_idx}][{val_idx}];\n"
         else:
             check_load_str  +=  f"\t{out_var_cgra_str}[{val_idx}] = cgra_output[{col_idx}][{value['id']}];\n"
             val_idx         += 1

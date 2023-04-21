@@ -119,7 +119,7 @@ uint32_t check(void)
 {
     uint32_t errors = 0;
     
-	ret_cgra =cgra_output[3][0];
+	ret_cgra = cgra_output[3][0];
 
 
     for( int i = 0; i < 1; i++ )
