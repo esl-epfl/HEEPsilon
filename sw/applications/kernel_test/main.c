@@ -74,7 +74,7 @@
 static kcom_kernel_t *kernels[] = { 
         //&bitc_kernel,
         //&reve_kernel,
-        //&gsm_kernel,
+        &gsm_kernel,
         &sha2_kernel, 
         // Add all other kernels here
     };
