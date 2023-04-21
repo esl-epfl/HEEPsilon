@@ -191,7 +191,7 @@ Afterwards, this input variables are copied into the CGRA input array.
 config_str = ""
 for inout in io_data["inputs"]:
     min_val = "0"
-    max_val = "0"
+    max_val = "UINT_MAX - 1"
 
     if inout.get("min") : 
         min_val = str(inout.get("min"))
@@ -236,19 +236,18 @@ output variable.
 
 check_load_str = ""
 
+val_idx = 0
 for col_idx in range(cols_n):
-    val_idx = 0
     for value in io_data[f"write_col{col_idx}"] :
         # If one of the elements of the CGRA outputs its value to an output
         # variable, that value is directly copied to it.
         # Otherwise, the output variable is an array and each element (id) 
         # gets the value of a column-value pair.
         if value.get("name") == out_var_name:
-            check_load_str  +=  f"\t{out_var_cgra_str} =cgra_output[{col_idx}][{val_idx}];\n"
+            check_load_str  +=  f"\t{out_var_cgra_str} = cgra_output[{col_idx}][{value['id']}];\n"
         else:
-            check_load_str  +=  f"\t{out_var_cgra_str}[{value['id']}] = cgra_output[{col_idx}][{val_idx}];\n"
+            check_load_str  +=  f"\t{out_var_cgra_str}[{val_idx}] = cgra_output[{col_idx}][{value['id']}];\n"
             val_idx         += 1
-
 # The check expression is comparing the values stored in the variable if it is
 # an array, otherwise, performs an elemnt-wise comparison.
 sufix = "[i]" if out_vars_n > 1 else ""

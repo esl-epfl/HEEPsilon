@@ -103,7 +103,7 @@ extern kcom_kernel_t sha2_kernel = {
 void config()
 {
 	for(int i = 0; i < 20; i++ )
-		W[i] = kcom_getRand() % (0 - 0 + 1) + 0;
+		W[i] = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
 	cgra_input[0][0] = W;
 	cgra_input[1][0] = 1518500249;
 
@@ -118,11 +118,11 @@ uint32_t check(void)
 {
     uint32_t errors = 0;
     
-	ret_cgra[1] = cgra_output[1][0];
-	ret_cgra[0] = cgra_output[1][1];
-	ret_cgra[2] = cgra_output[3][0];
-	ret_cgra[3] = cgra_output[3][1];
-	ret_cgra[4] = cgra_output[3][2];
+	ret_cgra[0] = cgra_output[0][2];
+	ret_cgra[1] = cgra_output[0][1];
+	ret_cgra[2] = cgra_output[1][0];
+	ret_cgra[3] = cgra_output[1][1];
+	ret_cgra[4] = cgra_output[1][2];
 
 
     for( int i = 0; i < 5; i++ )
