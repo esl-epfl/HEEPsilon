@@ -4,7 +4,7 @@
         {"type":"int32_t" , "num":20 , "name":"W"}
     ],
     "outputs": [
-        {"type":"int32_t", "num":5 , "name":"return"}
+        {"type":"int32_t", "num":5 , "name":"ret"}
     ],
     "read_col0" : [
         {"name":"W"}

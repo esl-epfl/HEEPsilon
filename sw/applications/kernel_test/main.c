@@ -39,6 +39,7 @@
 #include "kernels/bitcount/bitcount.h"
 #include "kernels/reversebits/reversebits.h"
 #include "kernels/gsm/gsm.h"
+#include "kernels/sha2/sha2.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -71,9 +72,10 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
-        &bitc_kernel,
-        &reve_kernel,
-        &gsm_kernel, 
+        //&bitc_kernel,
+        //&reve_kernel,
+        //&gsm_kernel,
+        &sha2_kernel, 
         // Add all other kernels here
     };
 

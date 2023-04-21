@@ -131,7 +131,7 @@ int main(void) {
 		
 
         int32_t * res_sw;
-		res_sw = sha1 ( W_sw );
+		res_sw = sha2 ( W_sw );
      
 
         // CGRA execution 

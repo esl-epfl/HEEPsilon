@@ -27,7 +27,7 @@
 
 
 
-int32_t * sha1(int32_t W[20]){
+int32_t * sha2(int32_t W[20]){
     static int32_t res[5];
     int32_t temp=0;
     int32_t A=0;
