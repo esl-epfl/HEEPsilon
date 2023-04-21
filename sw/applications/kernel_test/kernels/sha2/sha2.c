@@ -125,8 +125,33 @@ uint32_t check(void)
 	ret_cgra[4] = cgra_output[1][2];
 
 
+#if PRINT_CGRA_RESULTS
+    PRINTF("------------------------------\n");
+    for( uint8_t c = 0; c < CGRA_COLS; c ++)
+    {
+        for( uint8_t r = 0; r < OUT_VAR_DEPTH; r++ )
+        {
+            PRINTF("[%d][%d]:%08x\t\t",c,r,cgra_output[c][r]);
+        }
+        PRINTF("\n");
+    }
+#endif //PRINT_CGRA_RESULTS
+
+
+#if PRINT_RESULTS
+        PRINTF("Soft\t\tCGRA\n");
+#endif
+
     for( int i = 0; i < 5; i++ )
     {
+#if PRINT_RESULTS
+        PRINTF("%08x\t%08x\t%s\n",
+        ret_cgra[i],
+        ret_soft[i],
+        (ret_cgra[i] != ret_soft[i]) ? "Wrong!" : ""
+        );
+#endif
+
         if (ret_cgra[i] != ret_soft[i]) {
             errors++;
         }

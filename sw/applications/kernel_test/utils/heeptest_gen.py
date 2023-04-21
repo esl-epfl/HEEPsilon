@@ -251,7 +251,8 @@ for col_idx in range(cols_n):
 # The check expression is comparing the values stored in the variable if it is
 # an array, otherwise, performs an elemnt-wise comparison.
 sufix = "[i]" if out_vars_n > 1 else ""
-check_expr_str = out_var_cgra_str + sufix + " != " + out_var_soft_str + sufix
+cgra_res_elem_str = out_var_cgra_str + sufix
+soft_res_elem_str = out_var_soft_str + sufix
 
 
 '''``````````````````````````````````````````````````````````````````````````
@@ -302,7 +303,8 @@ final_output = template.substitute(\
                                     out_var_soft        = out_var_soft_str      ,\
                                     function            = filename              ,\
                                     check_load          = check_load_str        ,\
-                                    check_expr          = check_expr_str        ,\
+                                    cgra_res_elem       = cgra_res_elem_str     ,\
+                                    soft_res_elem       = soft_res_elem_str     ,\
                                     )
 
 

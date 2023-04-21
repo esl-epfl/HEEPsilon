@@ -60,6 +60,8 @@
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
+#define PRINT_RESULTS           0
+#define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
 

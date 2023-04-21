@@ -113,9 +113,34 @@ uint32_t check(void)
     
 ${check_load}
 
+#if PRINT_CGRA_RESULTS
+    PRINTF("------------------------------\n");
+    for( uint8_t c = 0; c < CGRA_COLS; c ++)
+    {
+        for( uint8_t r = 0; r < OUT_VAR_DEPTH; r++ )
+        {
+            PRINTF("[%d][%d]:%08x\t\t",c,r,cgra_output[c][r]);
+        }
+        PRINTF("\n");
+    }
+#endif //PRINT_CGRA_RESULTS
+
+
+#if PRINT_RESULTS
+        PRINTF("\nSoft\t\tCGRA\n");
+#endif
+
     for( int i = 0; i < ${out_vars_n}; i++ )
     {
-        if (${check_expr}) {
+#if PRINT_RESULTS
+        PRINTF("%08x\t%08x\t%s\n",
+        ${cgra_res_elem},
+        ${soft_res_elem},
+        (${cgra_res_elem} != ${soft_res_elem}) ? "Wrong!" : ""
+        );
+#endif
+
+        if (${cgra_res_elem} != ${soft_res_elem}) {
             errors++;
         }
     }
