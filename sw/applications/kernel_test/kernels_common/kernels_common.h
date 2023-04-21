@@ -41,11 +41,7 @@
 #include "cgra.h"
 #include "cgra_x_heep.h"
 
-
-// For the timer
-#include "rv_timer.h"
-#include "soc_ctrl.h"
-#include "core_v_mini_mcu.h"
+#include "hart.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -55,9 +51,9 @@
 
 /* Operation Configurations */
 #define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     0
+#define ENABLE_DEBUG_PRINTF     1
 
-#define PRINT_ITERATION_VALUES  0
+#define PRINT_ITERATION_VALUES  1
 #define PRINT_KERNEL_STATS      1  
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
@@ -164,7 +160,6 @@ typedef struct
     kcom_time_diff_t    load;
     kcom_time_diff_t    conf;
     kcom_time_diff_t    dead;
-    rv_timer_t          timer;
 } kcom_timing_t;
 
 typedef struct
@@ -210,20 +205,28 @@ typedef struct
 uint32_t kcom_getRand();
 void kcom_resetRand();
 
-void kcom_timerInit(    rv_timer_t *timer);
-uint64_t kcom_getTime(  rv_timer_t *timer );
-void kcom_timeStart(    kcom_time_diff_t    *perf, rv_timer_t   *timer );
-void kcom_timeStop(     kcom_time_diff_t    *perf, rv_timer_t   *timer );
 void kcom_subtractDead( kcom_time_t         *time, kcom_time_t  dead );
 
-void kcom_getPerf(          cgra_t      *cgra,  kcom_perf_t     *perf );
+void kcom_perfRecordStart(  kcom_time_diff_t *perf );
+void kcom_perfRecordStop(   kcom_time_diff_t *perf );
+void kcom_perfRecordIntrSet( kcom_time_diff_t *perf );
+
+void kcom_getPerf(          kcom_perf_t *perf );
 void kcom_populateRun(      kcom_run_t  *run,   kcom_perf_t     *perf, uint32_t it_idx );
 void kcom_extractConfTime(  kcom_run_t  *run,   uint32_t        it_n );
 void kcom_getKernelStats(   kcom_run_t  *run,   kcom_stats_t    *stats );
 
-void kcom_printPerf(        cgra_t          *cgra, kcom_perf_t *perf );
+void kcom_printPerf(        kcom_perf_t *perf );
 void kcom_printKernelStats( kcom_stats_t    *stats );
-void kcom_printSummary(     cgra_t          *cgra );
+void kcom_printSummary( );
+
+void kcom_init();
+void kcom_load(  kcom_kernel_t *ker );
+void kcom_rstPerfCounter();
+void kcom_launchKernel( uint8_t Id );
+__attribute__((optimize("O0"))) void kcom_waitingForIntr();
+
+
 
 /****************************************************************************/
 /**                                                                        **/
@@ -239,26 +242,3 @@ void kcom_printSummary(     cgra_t          *cgra );
 /**                                EOF                                     **/
 /**                                                                        **/
 /****************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -37,6 +37,23 @@
 
 #include "kernels_common.h"
 
+// For GPIO managing
+#include "gpio.h"
+#include "pad_control.h"
+#include "pad_control_regs.h"
+
+// For interrupt handling
+#include "csr.h"
+#include "handler.h"
+#include "core_v_mini_mcu.h"
+#include "rv_plic.h"
+#include "rv_plic_regs.h"
+
+// For the timer
+#include "rv_timer.h"
+#include "soc_ctrl.h"
+#include "core_v_mini_mcu.h"
+
 /****************************************************************************/
 /**                                                                        **/
 /*                        DEFINITIONS AND MACROS                            */
@@ -55,6 +72,13 @@
 /**                                                                        **/
 /****************************************************************************/
 
+inline __attribute__((always_inline)) void pinHigh();
+inline __attribute__((always_inline)) void pinLow();
+
+uint64_t    getTime();
+void        timeStart(    kcom_time_diff_t    *perf );
+void        timeStop(     kcom_time_diff_t    *perf );
+
 /****************************************************************************/
 /**                                                                        **/
 /*                           EXPORTED VARIABLES                             */
@@ -67,18 +91,77 @@
 /**                                                                        **/
 /****************************************************************************/
 
-uint32_t freq_hz; 
+static uint32_t freq_hz; 
 
 static uint32_t z1 = RANDOM_SEED, \
                 z2 = RANDOM_SEED, \
                 z3 = RANDOM_SEED, \
                 z4 = RANDOM_SEED;
 
+// Controlling a pin
+static gpio_t  gpio;
+
+// Timer 
+static rv_timer_t          timer;
+
+// Plic controller variables
+static dif_plic_params_t    rv_plic_params;
+static dif_plic_t           rv_plic;
+static dif_plic_result_t    plic_res;
+static dif_plic_irq_id_t    intr_num;
+volatile bool                 cgra_intr_flag;
+static cgra_t               cgra;
+static uint8_t              cgra_slot;
+// To stop the counter inside the interupt handler
+static kcom_time_diff_t     *cgraPerf;
+
 /****************************************************************************/
 /**                                                                        **/
 /*                           EXPORTED FUNCTIONS                             */
 /**                                                                        **/
 /****************************************************************************/
+
+void plic_interrupt_init(dif_plic_irq_id_t irq) {
+    // Init the PLIC
+    rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
+    plic_res = dif_plic_init(rv_plic_params, &rv_plic);
+    if (plic_res != kDifPlicOk) {
+        PRINTF("PLIC init failed\n;");
+    }
+
+    // Set CGRA priority to 1 (target threshold is by default 0) to trigger an interrupt to the target (the processor)
+    plic_res = dif_plic_irq_set_priority(&rv_plic, irq, 1);
+    if (plic_res != kDifPlicOk) {
+        PRINTF("Set interrupt priority to 1 failed\n");
+    }
+
+    plic_res = dif_plic_irq_set_enabled(&rv_plic, irq, 0, kDifPlicToggleEnabled);
+    if (plic_res != kDifPlicOk) {
+        PRINTF("Enable interrupt failed\n");
+    }
+
+    // Enable interrupt on processor side
+    // Enable global interrupt for machine-level interrupts
+    CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
+    // Set mie.MEIE bit to one to enable machine-level external interrupts
+    const uint32_t mask = 1 << 11;//IRQ_EXT_ENABLE_OFFSET;
+    CSR_SET_BITS(CSR_REG_MIE, mask);
+}
+
+void handler_irq_external(void) {
+    // Claim/clear interrupt
+    plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
+    if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
+        kcom_perfRecordStop( cgraPerf );
+        cgra_intr_flag = 1;
+    }
+
+    // Complete the interrupt
+    plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
+    if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
+        PRINTF("CGRA interrupt complete failed\n");
+    }
+}
 
 /* MISCELANEOUS */
 
@@ -104,56 +187,39 @@ void kcom_resetRand()
 
 /* TIME OPERATIONS */
 
-void kcom_timerInit( rv_timer_t *timer)
-{
-    soc_ctrl_t soc_ctrl;
-    soc_ctrl.base_addr  = mmio_region_from_addr((uintptr_t)SOC_CTRL_START_ADDRESS);
-    freq_hz             = soc_ctrl_get_frequency(&soc_ctrl);
-
-    mmio_region_t timer_0_reg = mmio_region_from_addr(RV_TIMER_AO_START_ADDRESS);
-    
-    rv_timer_init( timer_0_reg, (rv_timer_config_t) { .hart_count = 2, .comparator_count = 1 }, timer );
-
-    rv_timer_tick_params_t tick_params;
-
-    rv_timer_approximate_tick_params( freq_hz, (uint64_t) (TICK_FREQ_HZ), &tick_params );
-    rv_timer_set_tick_params(timer, HART_ID, tick_params); 
-
-    // Juan: see if i cannot remove this!
-    rv_timer_irq_enable(timer, HART_ID, 0, kRvTimerEnabled);
-    rv_timer_arm(timer, HART_ID, 0, 1);
-
-    rv_timer_counter_set_enabled(timer, HART_ID, kRvTimerEnabled);
-    
-}
-
-uint64_t kcom_getTime( rv_timer_t *timer )
-{
-    static uint64_t out;
-    rv_timer_counter_read( timer, HART_ID, &out );
-    return out;
-}
-
-void kcom_timeStart( kcom_time_diff_t *perf, rv_timer_t *timer )
-{
-#if ENABLE_TIME_MEASURE
-    perf->start_cy = kcom_getTime( timer );
-#endif //ENABLE_TIME_MEASURE
-}
-
-void kcom_timeStop( kcom_time_diff_t *perf,  rv_timer_t *timer )
-{
-#if ENABLE_TIME_MEASURE
-    perf->end_cy = kcom_getTime( timer );
-    perf->spent_cy = perf->end_cy - perf->start_cy;
-#endif //ENABLE_TIME_MEASURE
-}
-
 void kcom_subtractDead( kcom_time_t *time, kcom_time_t dead )
 {
 #if ENABLE_TIME_MEASURE
     *time -= dead;
 #endif //ENABLE_TIME_MEASURE
+}
+
+void kcom_perfRecordStart( kcom_time_diff_t *perf )
+{
+#if ENABLE_PIN_TOGGLE
+    pinHigh();
+#endif //ENABLE_PIN_TOGGLE
+
+#if ENABLE_TIME_MEASURE
+    timeStart( perf );
+#endif //ENABLE_TIME_MEASURE
+}
+
+void kcom_perfRecordStop( kcom_time_diff_t *perf )
+{
+#if ENABLE_PIN_TOGGLE
+    pinLow();
+#endif //ENABLE_PIN_TOGGLE
+
+#if ENABLE_TIME_MEASURE
+    timeStop( perf );
+#endif //ENABLE_TIME_MEASURE
+}
+
+void kcom_perfRecordIntrSet( kcom_time_diff_t *perf )
+{
+    cgraPerf = perf;
+    cgra_intr_flag = 0;
 }
 
 /* COMPUTATIONS */
@@ -206,7 +272,6 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
 #endif //ENABLE_TIME_MEASURE
 }
 
-
 void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
 {
 #if ENABLE_TIME_MEASURE
@@ -214,7 +279,6 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
     kcom_run_t *stdev = &( stats->stdev );
     uint32_t iterations = stats->n - 1; // Because the first iteration is discarded
 
-    
     uint8_t paramCount = sizeof( kcom_run_t ) / sizeof( kcom_param_t );
 
     for( uint8_t p_idx = 0; p_idx < paramCount; p_idx++ )
@@ -246,7 +310,7 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
         {
             kcom_param_t sqr = value / 2;
             kcom_param_t temp;
-            while( sqr != temp ){
+            while( ( sqr != temp ) && ( sqr + 1 != temp ) ){
                 temp = sqr;
                 sqr = ( value/temp + temp) / 2;
             }
@@ -257,14 +321,14 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
 #endif //ENABLE_TIME_MEASURE
 }
 
-void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
+void kcom_getPerf( kcom_perf_t *perf )
 {
     perf->cols_max.cyc_act = 0;
     perf->cols_max.cyc_stl = 0;
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++)
     {
-        perf->cols[col_idx].cyc_act    = cgra_perf_cnt_get_col_active(cgra, col_idx);
-        perf->cols[col_idx].cyc_stl    = cgra_perf_cnt_get_col_stall (cgra, col_idx);
+        perf->cols[col_idx].cyc_act    = cgra_perf_cnt_get_col_active(&cgra, col_idx);
+        perf->cols[col_idx].cyc_stl    = cgra_perf_cnt_get_col_stall (&cgra, col_idx);
         if( perf->cols[col_idx].cyc_act > perf->cols_max.cyc_act )
         {
             perf->cols_max.cyc_act       = perf->cols[col_idx].cyc_act;
@@ -279,7 +343,7 @@ void kcom_getPerf( cgra_t *cgra, kcom_perf_t *perf )
 
 /* PRESENTING THE RESULTS */
 
-void kcom_printPerf( cgra_t *cgra, kcom_perf_t *perf )
+void kcom_printPerf( kcom_perf_t *perf )
 {
 
 #if PRINT_PLOT
@@ -354,18 +418,142 @@ void kcom_printKernelStats( kcom_stats_t *stats  )
 #endif //ENABLE_TIME_MEASURE
 }
 
-void kcom_printSummary( cgra_t *cgra )
+void kcom_printSummary( )
 {
     PRINTF("Clock freq: %d MHz\n", freq_hz/1000000);
 }
 
 
+/*  GENERAL */
+
+void kcom_init()
+{
+    pinInit();
+    timerInit();
+    plic_interrupt_init( CGRA_INTR );
+}
+
+void kcom_load( kcom_kernel_t *ker )
+{
+    cgra_cmem_init(ker->imem, ker->kmem );
+    cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
+    // Select request slot of CGRA
+    cgra_slot = cgra_get_slot(&cgra);
+    cgra_perf_cnt_enable(&cgra, 1);
+    // Set CGRA kernel L/S pointers
+    for(int8_t col_idx = 0 ; col_idx < ker->col_n ; col_idx++){
+        cgra_set_read_ptr ( &cgra, cgra_slot, &((ker->input[col_idx])),  col_idx );
+        cgra_set_write_ptr( &cgra, cgra_slot, &((ker->output[col_idx])),  col_idx );
+    }
+}
+
+void kcom_rstPerfCounter()
+{
+    cgra_perf_cnt_reset( &cgra );
+} 
+
+void kcom_launchKernel( uint8_t Id )
+{
+    cgra_set_kernel( &cgra, cgra_slot, Id ); 
+} 
+
+__attribute__((optimize("O0"))) void kcom_waitingForIntr()
+{
+    while( cgra_intr_flag == 0 );
+}
 
 /****************************************************************************/
 /**                                                                        **/
 /*                            LOCAL FUNCTIONS                               */
 /**                                                                        **/
 /****************************************************************************/
+
+inline __attribute__((always_inline)) void pinHigh()
+{
+#if ENABLE_PIN_TOGGLE
+    gpio_write(&gpio, PIN_TO_TOGGLE, true );
+#endif
+}
+
+inline __attribute__((always_inline)) void pinLow()
+{
+#if ENABLE_PIN_TOGGLE
+    gpio_write(&gpio, PIN_TO_TOGGLE, false );
+#endif
+}
+
+void pinInit()
+{
+#if ENABLE_PIN_TOGGLE
+    gpio_result_t gpio_res;
+    gpio_params_t gpio_params;
+    pad_control_t pad_control;
+
+    pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
+    gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
+    
+    gpio_res = gpio_init(gpio_params, &gpio);
+    if (gpio_res != kGpioOk) {
+        printf("Failed\n;");
+        return -1;
+    }
+
+    gpio_res = gpio_output_set_enabled(&gpio, PIN_TO_TOGGLE, true);
+    if (gpio_res != kGpioOk) {
+        printf("Failed\n;");
+        return -1;
+    }
+
+    pad_control_set_mux(&pad_control, (ptrdiff_t)(PAD_CONTROL_PAD_MUX_I2C_SDA_REG_OFFSET), 1);
+
+    gpio_write(&gpio, PIN_TO_TOGGLE, false);
+#endif
+}
+
+void timerInit()
+{
+    soc_ctrl_t soc_ctrl;
+    soc_ctrl.base_addr  = mmio_region_from_addr((uintptr_t)SOC_CTRL_START_ADDRESS);
+    freq_hz             = soc_ctrl_get_frequency(&soc_ctrl);
+
+    mmio_region_t timer_0_reg = mmio_region_from_addr(RV_TIMER_AO_START_ADDRESS);
+    
+    rv_timer_init( timer_0_reg, (rv_timer_config_t) { .hart_count = 2, .comparator_count = 1 }, &timer );
+
+    rv_timer_tick_params_t tick_params;
+
+    rv_timer_approximate_tick_params( freq_hz, (uint64_t) (TICK_FREQ_HZ), &tick_params );
+    rv_timer_set_tick_params(&timer, HART_ID, tick_params); 
+
+    // Juan: see if i cannot remove this!
+    rv_timer_irq_enable(&timer, HART_ID, 0, kRvTimerEnabled);
+    rv_timer_arm(&timer, HART_ID, 0, 1);
+
+    rv_timer_counter_set_enabled(&timer, HART_ID, kRvTimerEnabled);
+    
+}
+
+uint64_t getTime( )
+{
+    static uint64_t out;
+    rv_timer_counter_read( &timer, HART_ID, &out );
+    return out;
+}
+
+void timeStart( kcom_time_diff_t *perf )
+{
+#if ENABLE_TIME_MEASURE
+    perf->start_cy = getTime();
+#endif //ENABLE_TIME_MEASURE
+}
+
+void timeStop( kcom_time_diff_t *perf )
+{
+#if ENABLE_TIME_MEASURE
+    perf->end_cy = getTime();
+    perf->spent_cy = perf->end_cy - perf->start_cy;
+#endif //ENABLE_TIME_MEASURE
+}
 
 /****************************************************************************/
 /**                                                                        **/

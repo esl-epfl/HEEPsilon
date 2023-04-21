@@ -35,19 +35,6 @@
 /**                                                                        **/
 /****************************************************************************/
 
-// For interrupt handling
-#include "csr.h"
-#include "hart.h"
-#include "handler.h"
-#include "core_v_mini_mcu.h"
-#include "rv_plic.h"
-#include "rv_plic_regs.h"
-
-// For GPIO managing
-#include "gpio.h"
-#include "pad_control.h"
-#include "pad_control_regs.h"
-
 //Include kernels!
 #include "kernels/bitcount/bitcount.h"
 #include "kernels/reversebits/reversebits.h"
@@ -90,24 +77,9 @@ static kcom_kernel_t *kernels[] = {
         // Add all other kernels here
     };
 
-
-static uint8_t      cgra_slot;
-static cgra_t       cgra;
 static kcom_perf_t  kperf;
 static kcom_run_t   run[ ITERATIONS_PER_KERNEL ];
 static kcom_stats_t stats;
-
-// Plic controller variables
-dif_plic_params_t           rv_plic_params;
-dif_plic_t                  rv_plic;
-dif_plic_result_t           plic_res;
-dif_plic_irq_id_t           intr_num;
-int8_t                      cgra_intr_flag;
-
-
-// Controlling a pin
-gpio_t  gpio;
-uint8_t pinState = 0;
 
 /****************************************************************************/
 /**                                                                        **/
@@ -121,113 +93,14 @@ uint8_t pinState = 0;
 /**                                                                        **/
 /****************************************************************************/
 
-
-void cgra_load( kcom_kernel_t *ker )
-{
-    cgra_cmem_init(ker->imem, ker->kmem );
-    cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
-    // Select request slot of CGRA
-    cgra_slot = cgra_get_slot(&cgra);
-    cgra_perf_cnt_enable(&cgra, 1);
-    // Set CGRA kernel L/S pointers
-    for(int8_t col_idx = 0 ; col_idx < ker->col_n ; col_idx++){
-        cgra_set_read_ptr ( &cgra, cgra_slot, &((ker->input[col_idx])),  col_idx );
-        cgra_set_write_ptr( &cgra, cgra_slot, &((ker->output[col_idx])),  col_idx );
-    }
-}
-
-void plic_interrupt_init(dif_plic_irq_id_t irq) {
-    // Init the PLIC
-    rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
-    plic_res = dif_plic_init(rv_plic_params, &rv_plic);
-    if (plic_res != kDifPlicOk) {
-        PRINTF("PLIC init failed\n;");
-    }
-
-    // Set CGRA priority to 1 (target threshold is by default 0) to trigger an interrupt to the target (the processor)
-    plic_res = dif_plic_irq_set_priority(&rv_plic, irq, 1);
-    if (plic_res != kDifPlicOk) {
-        PRINTF("Set interrupt priority to 1 failed\n");
-    }
-
-    plic_res = dif_plic_irq_set_enabled(&rv_plic, irq, 0, kDifPlicToggleEnabled);
-    if (plic_res != kDifPlicOk) {
-        PRINTF("Enable interrupt failed\n");
-    }
-
-    // Enable interrupt on processor side
-    // Enable global interrupt for machine-level interrupts
-    CSR_SET_BITS(CSR_REG_MSTATUS, 0x8);
-    // Set mie.MEIE bit to one to enable machine-level external interrupts
-    const uint32_t mask = 1 << 11;//IRQ_EXT_ENABLE_OFFSET;
-    CSR_SET_BITS(CSR_REG_MIE, mask);
-}
-
-void handler_irq_external(void) {
-    // Claim/clear interrupt
-    plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
-    if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
-        kcom_timeStop( &(kperf.time.cgra), &(kperf.time.timer) );  
-        togglePin();    
-        cgra_intr_flag = 1;
-    }
-
-
-    // Complete the interrupt
-    plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
-    if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
-        PRINTF("CGRA interrupt complete failed\n");
-    }
-}
-
-void initPin()
-{
-#if ENABLE_PIN_TOGGLE
-    gpio_result_t gpio_res;
-    gpio_params_t gpio_params;
-    pad_control_t pad_control;
-
-    pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
-    gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
-    
-    gpio_res = gpio_init(gpio_params, &gpio);
-    if (gpio_res != kGpioOk) {
-        printf("Failed\n;");
-        return -1;
-    }
-
-    gpio_res = gpio_output_set_enabled(&gpio, PIN_TO_TOGGLE, true);
-    if (gpio_res != kGpioOk) {
-        printf("Failed\n;");
-        return -1;
-    }
-
-    pad_control_set_mux(&pad_control, (ptrdiff_t)(PAD_CONTROL_PAD_MUX_I2C_SDA_REG_OFFSET), 1);
-
-    gpio_write(&gpio, PIN_TO_TOGGLE, false);
-#endif
-}
-
-inline __attribute__((always_inline)) void togglePin()
-{
-#if ENABLE_PIN_TOGGLE
-    gpio_write(&gpio, PIN_TO_TOGGLE, (pinState = !pinState) );
-#endif
-}
-
 void main()
 {
-
     uint8_t kernels_n = sizeof( kernels ) / sizeof( kcom_kernel_t * );
-    
-    PRINTF("Will execute %d kernels %d times each! \n",kernels_n, ITERATIONS_PER_KERNEL );
-
-    kcom_timerInit( &(kperf.time.timer) );
-    plic_interrupt_init(CGRA_INTR);
-    initPin();
-
     kcom_kernel_t* kernel;
 
+    PRINTF("Will execute %d kernels %d times each! \n",kernels_n, ITERATIONS_PER_KERNEL );
+    kcom_init();
+    
     for( uint8_t ker_idx = 0; ker_idx < kernels_n; ker_idx++ )
     {
         kernel = kernels[ ker_idx ];
@@ -235,25 +108,19 @@ void main()
         stats.n = ITERATIONS_PER_KERNEL;
                 
         /* Set the kernel ID */
-        // Must be between 1 and (KMEM_SIZE - 1). 
-        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) )+ 1;
-        // By default the kernels come located with id = 1.
-        kernel->kmem[ kernel_id ] = kernel->kmem[1];
+        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) ) + 1; // Must be between 1 and (KMEM_SIZE - 1). 
+        kernel->kmem[ kernel_id ] = kernel->kmem[1]; // By default the kernels come located with id = 1.
         // The kernel = 1 is kept, so we can always take it from there. 
 
         /* CGRA load */
-        togglePin(); 
-        kcom_timeStart( &(kperf.time.load), &(kperf.time.timer) );
-            cgra_load( kernel );
-        kcom_timeStop(  &(kperf.time.load), &(kperf.time.timer) );
-        togglePin(); 
-        
+        kcom_perfRecordStart( &(kperf.time.load) );
+            kcom_load( kernel );
+        kcom_perfRecordStop( &(kperf.time.load) );
+
         for( uint8_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
         {
-            cgra_intr_flag = 0;
-            
             /* Reset the CGRA performance counters */
-            cgra_perf_cnt_reset( &cgra );
+            kcom_rstPerfCounter();
 
             /* Load (of inputs). */
 #if REPEAT_FIRST_INPUT
@@ -262,28 +129,21 @@ void main()
             kernel->config();
 
             /* Obtention of dead-zone-time */
-            togglePin();
-            kcom_timeStart( &(kperf.time.dead), &(kperf.time.timer) );
-            kcom_timeStop(  &(kperf.time.dead), &(kperf.time.timer) );
-            togglePin();
+            kcom_perfRecordStart(   &(kperf.time.dead) );
+            kcom_perfRecordStop(    &(kperf.time.dead) );
 
             /* Software */
-            togglePin();
-            kcom_timeStart( &(kperf.time.sw), &(kperf.time.timer) );
+            kcom_perfRecordStart(   &(kperf.time.sw) );
                 kernel->func();
-            kcom_timeStop(  &(kperf.time.sw), &(kperf.time.timer) );
-            togglePin();    
-            
+            kcom_perfRecordStop(    &(kperf.time.sw) );    
+
             /* CGRA Execution */
-            cgra_perf_cnt_reset( &cgra );
-            togglePin(); 
-            kcom_timeStart( &(kperf.time.cgra), &(kperf.time.timer) );
-                cgra_set_kernel(&cgra, cgra_slot, kernel_id ); 
-                while(cgra_intr_flag==0) wait_for_interrupt();
+            kcom_perfRecordIntrSet( &(kperf.time.cgra) );
+            kcom_perfRecordStart(   &(kperf.time.cgra) );
+                kcom_launchKernel( kernel_id );
+                kcom_waitingForIntr();
             // Time is stopped inside the interrupt handler to make it as fast as possible
-
-            //cgra_set_kernel(&cgra, cgra_slot, 0);
-
+  
             /* Result comparison */
             stats.errors += kernel->check();
 
@@ -293,9 +153,9 @@ void main()
             kcom_subtractDead( &(kperf.time.cgra.spent_cy),  kperf.time.dead.spent_cy + CGRA_ACCESS_FLAT_COST_CYCLES );
 
             /* Performance report */
-            kcom_getPerf(&cgra, &kperf );
+            kcom_getPerf(   &kperf );
 #if PRINT_ITERATION_VALUES
-            kcom_printPerf( &cgra, &kperf );
+            kcom_printPerf( &kperf );
 #endif //PRINT_ITERATION_VALUES
             
             /* Add this iteration to the runs vector */
@@ -308,9 +168,9 @@ void main()
         /* Get statistical values from the whole set of runs for this kernel. */
         kcom_getKernelStats( &run, &stats );
         kcom_printKernelStats( &stats );
-    }
 
-    kcom_printSummary( &cgra );
+    }
+    kcom_printSummary( );
 }
 
 
