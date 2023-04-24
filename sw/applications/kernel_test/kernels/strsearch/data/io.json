@@ -16,7 +16,7 @@
         {"name":"patlen"}
     ] ,
     "read_col2" : [
-        {"name":"lowerc(pattern[patlen - 1])"},
+        {"name":"lowerc(i_pattern_cgra[i_patlen_cgra - 1])"},
         {"name":"skip2"}
     ] ,
     "read_col3" : [

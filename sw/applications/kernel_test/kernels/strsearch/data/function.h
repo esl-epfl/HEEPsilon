@@ -30,7 +30,7 @@ unsigned char lowervec[1000+1] = {                     /* rdg 10/93 */
 };
 
 
-int stringsearch(int patlen, int skip2, char *pattern){
+int strsearch(int patlen, int skip2, char *pattern){
     char *pat = (char *)pattern;
     int i = 0;
     for (i = 0; i < patlen - 1; ++i)

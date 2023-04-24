@@ -52,7 +52,7 @@
 
 /* Operation Configurations */
 #define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     0
+#define ENABLE_DEBUG_PRINTF     1
 
 #define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
@@ -65,10 +65,9 @@
 
 #define REPEAT_FIRST_INPUT      1
 
-
 #define ENABLE_PIN_TOGGLE       1
 #define CTRL_VCD_W_PIN          0
-#define PIN_TO_CTRL_VCD         0
+
 
 #if CTRL_VCD_W_PIN
     #define ENABLE_TIME_MEASURE 0
@@ -95,6 +94,7 @@
 #define TICK_FREQ_HZ                    20 * 1000 * 1000 // 20 MHz
 #define KERNEL_NAME_LENGTH_MAX          20
 #define RANDOM_SEED                     12346
+#define PIN_TO_CTRL_VCD                 0   // In sync w/ hardware, do not change
 
 #define CGRA_ACCESS_FLAT_COST_CYCLES    55  // Measured in Questasim, do not change
 

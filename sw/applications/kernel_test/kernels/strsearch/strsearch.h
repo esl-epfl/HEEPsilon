@@ -4,7 +4,7 @@
 **                            *******************                          **
 **                                                                         **
 ** project  : CGRA-X-HEEP                                                  **
-** filename : sha.h                                                   **
+** filename : strsearch.h                                                   **
 ** version  : 1                                                            **
 ** date     : 2023-04-24                                                    **
 **                                                                         **
@@ -20,14 +20,14 @@
 /***************************************************************************/
 
 /**
-* @file   sha.h
+* @file   strsearch.h
 * @date   2023-04-24
 * @brief  A description of the kernel...
 *
 */
 
-#ifndef _SHA_H_
-#define _SHA_H_
+#ifndef _STRSEARCH_H_
+#define _STRSEARCH_H_
 
 /****************************************************************************/
 /**                                                                        **/
@@ -43,9 +43,9 @@
 /**                                                                        **/
 /****************************************************************************/
 
-extern kcom_kernel_t sha_kernel;
+extern kcom_kernel_t strs_kernel;
 
-#endif // _SHA_H_
+#endif // _STRSEARCH_H_
 /****************************************************************************/
 /**                                                                        **/
 /**                                EOF                                     **/

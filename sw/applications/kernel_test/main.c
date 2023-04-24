@@ -41,7 +41,8 @@
 #include "kernels/gsm/gsm.h"
 #include "kernels/sha2/sha2.h"
 #include "kernels/sha/sha.h"
-#include "kernels/sqrt/sqrt.h"
+#include "kernels/strsearch/strsearch.h"
+//#include "kernels/sqrt/sqrt.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -80,6 +81,7 @@ static kcom_kernel_t *kernels[] = {
         &sha_kernel,
         &reve_kernel,
         &bitc_kernel,
+        //&strs_kernel,
         // Add all other kernels here
     };
 
@@ -142,6 +144,7 @@ void main()
             kcom_perfRecordStart(   &(kperf.time.sw) );
                 kernel->func();
             kcom_perfRecordStop(    &(kperf.time.sw) );    
+
             /* CGRA Execution */
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
             kcom_perfRecordStart(   &(kperf.time.cgra) );
