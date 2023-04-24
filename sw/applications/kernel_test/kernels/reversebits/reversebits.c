@@ -111,6 +111,7 @@ void config()
 	i_NumBits_cgra = i_NumBits_soft;
 	cgra_input[0][0] = i_index_cgra;
 	cgra_input[0][1] = i_NumBits_cgra;
+
 }
 
 void software(void) 
