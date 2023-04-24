@@ -75,11 +75,11 @@
 
 static kcom_kernel_t *kernels[] = { 
         //&sqrt_kernel, // Does not work!
-        //&sha_kernel,
-        &bitc_kernel,
-        &reve_kernel,
         &gsm_kernel,
         &sha2_kernel, 
+        &sha_kernel,
+        &reve_kernel,
+        &bitc_kernel,
         // Add all other kernels here
     };
 
