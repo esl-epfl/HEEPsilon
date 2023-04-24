@@ -86,6 +86,12 @@ kmem_bit_name       = source_path + "/" + auxFolder_name + "cgra_kmem.bit"
 io_file_name        = source_path + "/" + auxFolder_name + "io.json"
 function_name       = source_path + "/" + auxFolder_name + "function.h"
 
+# Variable prefixes and sufixes
+prefix_in   = "i_"
+prefix_out  = "o_"
+sufix_cgra  = "_cgra"
+sufix_soft  = "_soft"
+
 '''``````````````````````````````````````````````````````````````````````````
 CONFIGURATIONS
 ``````````````````````````````````````````````````````````````````````````'''
@@ -130,7 +136,6 @@ for mem_filename in [imem_bit_name, kmem_bit_name]:
 VARIABLE DECLARATION
 
 ``````````````````````````````````````````````````````````````````````````'''
-
 with open(io_file_name) as f:
     io_data = json.loads(f.read())
 
@@ -141,11 +146,14 @@ with open(io_file_name) as f:
 in_vars_str     = ""
 in_args_str     = ""
 in_vars_n       = len( io_data["inputs"] )
+in_vars_soft    = []
+in_vars_cgra    = []
+in_vars_name    = []
 
-for in_vars in io_data["inputs"]: 
-
-    in_var_name     = f"{in_vars['name']}"
-    in_var_depth    = in_vars['num']
+for in_var in io_data["inputs"]: 
+    in_var_name     = f"{in_var['name']}"
+    in_vars_name.append(in_var_name)
+    in_var_depth    = in_var['num']
 
     sufix = ""
     if in_var_depth > 1:
@@ -154,30 +162,44 @@ for in_vars in io_data["inputs"]:
     # Two strings are generated, one with the declaration of the variable
     # (in_vars_str) and the other with planly its name (in_args_str) to be
     # used as argument in the software call. 
-    in_vars_str += f"static {in_vars['type']}\t{in_var_name}{sufix};\n"
-    in_args_str += f"{in_vars['name']}, "
-
+    in_var_soft_str = prefix_in + in_var_name + sufix_soft
+    in_var_cgra_str = prefix_in + in_var_name + sufix_cgra 
+    in_vars_soft.append( in_var_soft_str )
+    in_vars_cgra.append( in_var_cgra_str )
+    in_vars_str += f"static {in_var['type']}\t{in_var_soft_str}{sufix};\n"
+    in_vars_str += f"static {in_var['type']}\t{in_var_cgra_str}{sufix};\n"
+    in_args_str += f"{in_var_soft_str}, "
 in_args_str = in_args_str[:-2] # Remove the last comma + space from the arg.
+    
 
 # Setting up the output variables. 
 # There should only be one!
 # ------------------------------------------------------------------------------------------------------ complete this
 
 out_vars_str    = ""
-for out_vars in io_data["outputs"]: 
-    out_var_name    = f"{out_vars['name']}"
-    out_vars_n   = out_vars['num']
+out_vars_soft   = []
+out_vars_cgra   = []
+for out_var in io_data["outputs"]: 
+    out_var_name    = f"{out_var['name']}"
+    out_vars_n      = out_var['num']
 
-    sufix   = ""
-    prefix = ""
-    if out_vars_n > 1:
-        sufix   = f"[{out_vars_n}]"
-        prefix  = "*"
-    out_var_cgra_str   = f"{out_var_name}_cgra"
-    out_var_soft_str   = f"{out_var_name}_soft"
-    out_vars_str += f"static {out_vars['type']}\t{out_var_cgra_str}{sufix};\n"
-    out_vars_str += f"static {out_vars['type']}\t{prefix}{out_var_soft_str};\n"
+    out_var_soft_str   = f"{prefix_out}{out_var_name}{sufix_soft}"
+    out_var_cgra_str   = f"{prefix_out}{out_var_name}{sufix_cgra}"
+    
+    out_vars_soft.append(out_var_soft_str)
+    out_vars_cgra.append(out_var_cgra_str)
+    
 
+    if out_var_name in in_vars_name:
+        out_vars_str += f"static {out_var['type']}\t*{out_var_soft_str};\n"
+        out_vars_str += f"static {out_var['type']}\t*{out_var_cgra_str};\n"
+    elif out_vars_n > 1:
+        out_vars_str += f"static {out_var['type']}\t*{out_var_soft_str};\n"
+        out_vars_str += f"static {out_var['type']}\t{out_var_cgra_str}[{out_vars_n}];\n"
+    else:
+        out_vars_str += f"static {out_var['type']}\t{out_var_soft_str};\n"
+        out_vars_str += f"static {out_var['type']}\t{out_var_cgra_str};\n"
+    
 '''``````````````````````````````````````````````````````````````````````````
 CONFIGURATION FUNCTION
 
@@ -189,40 +211,47 @@ Afterwards, this input variables are copied into the CGRA input array.
 
 # First, the random (bounded) values are obtained into the input variables.
 config_str = ""
-for inout in io_data["inputs"]:
+for in_var, in_soft, in_cgra in zip( io_data["inputs"], in_vars_soft, in_vars_cgra):
     min_val = "0"
     max_val = "UINT_MAX - 1"
 
-    if inout.get("min") : 
-        min_val = str(inout.get("min"))
-    if inout.get("max") : 
-        max_val = str(inout.get("max"))
+    if in_var.get("min") : 
+        min_val = str(in_var.get("min"))
+    if in_var.get("max") : 
+        max_val = str(in_var.get("max"))
 
     # If the variable is an array, a for loop is used to fill the random values.     
-    if inout['num'] == 1:
-        config_str  +=  f"\t{inout['name']} = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
+    if in_var['num'] == 1:
+        config_str  += f"\t{in_soft} = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
+        config_str  += f"\t{in_cgra} = {in_soft};\n" 
     else:
-        config_str  +=  f"\tfor(int i = 0; i < {inout['num']}; i++ )\n"
-        config_str  +=  f"\t\t{inout['name']}[i] = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
+        config_str  += f"\tfor(int i = 0; i < {in_var['num']}; i++ )\n\t{{\n"
+        config_str  += f"\t\t{in_soft}[i] = kcom_getRand() % ({max_val} - {min_val} + 1) + {min_val};\n"
+        config_str  += f"\t\t{in_cgra}[i] = {in_soft}[i];\n\t}}\n"
 
 # The input variables are copied into the CGRA input array.
 input_max = [0,0,0,0]
 for col_num in range(cols_n):
     var_num = 0
+    for in_var in io_data[f"read_col{col_num}"]:
+        var_name = in_var['name'] 
+        # If the input is one of the input variables, then rename it to match its new name format
+        if var_name in in_vars_name:
+            var_name = in_vars_cgra[ in_vars_name.index(in_var['name']) ]
+        config_str          += f"\tcgra_input[{col_num}][{var_num}] = {var_name};\n"
+        var_num             += 1
+        input_max[col_num]  += 1
 
-    for inout in io_data[f"read_col{col_num}"]:
-        config_str  +=  f"\tcgra_input[{col_num}][{var_num}] = {inout['name']};\n"
-        var_num     +=  1
-        input_max[col_num] += 1
+input_max.append(1) # At least one object we will have
+in_vars_depth = max(input_max)
 
 output_max = [0,0,0,0]
 for col_num in range(cols_n):
-    for inout in io_data[f"write_col{col_num}"]:
+    for out_var in io_data[f"write_col{col_num}"]:
         output_max[col_num] += 1
 
 output_max.append(1) # At least one object we will have
-o_max = max(output_max)
-out_var_cols_used_str = str(o_max) # The maximum number of used columns.
+out_vars_depth = max(output_max)
 
 '''``````````````````````````````````````````````````````````````````````````
 RESULT CROSS-CHECK
@@ -237,8 +266,10 @@ output variable.
 check_load_str = ""
 
 val_idx = 0
+outputs = 0
 for col_idx in range(cols_n):
     for value in io_data[f"write_col{col_idx}"] :
+        outputs += 1
         # If one of the elements of the CGRA outputs its value to an output
         # variable, that value is directly copied to it.
         # Otherwise, the output variable is an array and each element (id) 
@@ -248,6 +279,9 @@ for col_idx in range(cols_n):
         else:
             check_load_str  +=  f"\t{out_var_cgra_str}[{val_idx}] = cgra_output[{col_idx}][{value['id']}];\n"
             val_idx         += 1
+
+if outputs == 0: # The input is the output!
+    check_load_str  +=  f"\t{out_var_cgra_str} = {in_var_cgra_str};\n"
 # The check expression is comparing the values stored in the variable if it is
 # an array, otherwise, performs an elemnt-wise comparison.
 sufix = "[i]" if out_vars_n > 1 else ""
@@ -292,10 +326,10 @@ final_output = template.substitute(\
                                     aux_folder          = auxFolder_name        ,\
                                     cols_n              = str(cols_n)           ,\
                                     in_vars             = in_vars_str           ,\
-                                    in_vars_n           = str(in_vars_n)        ,\
+                                    in_vars_depth       = str(in_vars_depth)    ,\
                                     out_vars            = out_vars_str          ,\
                                     out_vars_n          = str(out_vars_n)       ,\
-                                    out_var_cols_used   = out_var_cols_used_str ,\
+                                    out_vars_depth      = str(out_vars_depth)   ,\
                                     in_args             = in_args_str           ,\
                                     imem                = mem_str[imem_bit_name],\
                                     kmem                = mem_str[kmem_bit_name],\
@@ -324,11 +358,11 @@ with open(header_tpl_name) as t:
     template = string.Template(t.read())
 
 final_output = template.substitute( \
-                                    filename        = filename,\
-                                    FILENAME        = FILENAME,\
-                                    shortname       = shortname,\
-                                    date            = date_str,\
-                                    description     = description_str,\
+                                    filename        = filename          ,\
+                                    FILENAME        = FILENAME          ,\
+                                    shortname       = shortname         ,\
+                                    date            = date_str      ,\
+                                    description     = description_str   ,\
                                     )
 
 with open(header_file_name, "w") as output:

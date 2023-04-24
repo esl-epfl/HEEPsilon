@@ -40,6 +40,8 @@
 #include "kernels/reversebits/reversebits.h"
 #include "kernels/gsm/gsm.h"
 #include "kernels/sha2/sha2.h"
+#include "kernels/sha/sha.h"
+#include "kernels/sqrt/sqrt.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -72,10 +74,12 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
-        &bitc_kernel,
-        &reve_kernel,
-        &gsm_kernel,
-        &sha2_kernel, 
+        //&sqrt_kernel, // Does not work!
+        &sha_kernel,
+        //&bitc_kernel,
+        //&reve_kernel,
+        //&gsm_kernel,
+        //&sha2_kernel, 
         // Add all other kernels here
     };
 
@@ -138,14 +142,12 @@ void main()
             kcom_perfRecordStart(   &(kperf.time.sw) );
                 kernel->func();
             kcom_perfRecordStop(    &(kperf.time.sw) );    
-
             /* CGRA Execution */
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
             kcom_perfRecordStart(   &(kperf.time.cgra) );
                 kcom_launchKernel( kernel_id );
                 kcom_waitingForIntr();
             // Time is stopped inside the interrupt handler to make it as fast as possible
-  
             /* Result comparison */
             stats.errors += kernel->check();
 

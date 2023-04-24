@@ -45,8 +45,8 @@
 /****************************************************************************/
 
 #define CGRA_COLS       ${cols_n}
-#define IN_VAR_DEPTH    ${in_vars_n}
-#define OUT_VAR_DEPTH   ${out_var_cols_used}
+#define IN_VAR_DEPTH    ${in_vars_depth}
+#define OUT_VAR_DEPTH   ${out_vars_depth}
 
 /****************************************************************************/
 /**                                                                        **/
@@ -127,7 +127,7 @@ ${check_load}
 
 
 #if PRINT_RESULTS
-        PRINTF("\nSoft\t\tCGRA\n");
+        PRINTF("\nCGRA\t\tSoft\n");
 #endif
 
     for( int i = 0; i < ${out_vars_n}; i++ )

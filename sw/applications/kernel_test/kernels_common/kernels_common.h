@@ -60,7 +60,7 @@
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           0
+#define PRINT_RESULTS           1
 #define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
@@ -107,10 +107,13 @@
 #endif //ENABLE_PRINTF
 #if ENABLE_DEBUG_PRINTF
     #define PRINTDBG(fmt, ...)  printf(fmt, ## __VA_ARGS__)
+    #define PRINTLINE()         printf("%d\n", __LINE__)
 #else
     #define PRINTDBG(...)
+    #define PRINTLINE()
 #endif //ENABLE_DEBUG_PRINTF
 #define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
+
 
 
 /****************************************************************************/
