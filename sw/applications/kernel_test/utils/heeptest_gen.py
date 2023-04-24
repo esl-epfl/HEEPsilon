@@ -238,6 +238,9 @@ for col_num in range(cols_n):
         # If the input is one of the input variables, then rename it to match its new name format
         if var_name in in_vars_name:
             var_name = in_vars_cgra[ in_vars_name.index(in_var['name']) ]
+        try: 
+            var_num = in_var['id']
+        except: pass
         config_str          += f"\tcgra_input[{col_num}][{var_num}] = {var_name};\n"
         var_num             += 1
         input_max[col_num]  += 1

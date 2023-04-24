@@ -52,15 +52,15 @@
 
 /* Operation Configurations */
 #define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     1
+#define ENABLE_DEBUG_PRINTF     0
 
-#define PRINT_ITERATION_VALUES  1
+#define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           1
+#define PRINT_RESULTS           0
 #define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1

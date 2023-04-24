@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : sha2.c                                                 **
 ** version  : 1                                                            **
-** date     : 2023-04-21                                                       **
+** date     : 2023-04-24                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   sha2.c
-* @date   2023-04-21
+* @date   2023-04-24
 * @brief  A description of the kernel...
 *
 */
@@ -70,10 +70,11 @@ static uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {  0x0,  0xf00a,  0x0,  0x
 static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
 static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
 
-static int32_t	W[20];
+static int32_t	i_W_soft[20];
+static int32_t	i_W_cgra[20];
 
-static int32_t	ret_cgra[5];
-static int32_t	*ret_soft;
+static int32_t	*o_ret_soft;
+static int32_t	o_ret_cgra[5];
 
 
 /****************************************************************************/
@@ -103,26 +104,29 @@ extern kcom_kernel_t sha2_kernel = {
 void config()
 {
 	for(int i = 0; i < 20; i++ )
-		W[i] = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
-	cgra_input[0][0] = W;
+	{
+		i_W_soft[i] = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
+		i_W_cgra[i] = i_W_soft[i];
+	}
+	cgra_input[0][0] = i_W_cgra;
 	cgra_input[1][0] = 1518500249;
 
 }
 
 void software(void) 
 {
-    ret_soft = sha2( W );
+    o_ret_soft = sha2( i_W_soft );
 }
 
 uint32_t check(void) 
 {
     uint32_t errors = 0;
     
-	ret_cgra[0] = cgra_output[0][2];
-	ret_cgra[1] = cgra_output[0][1];
-	ret_cgra[2] = cgra_output[1][0];
-	ret_cgra[3] = cgra_output[1][1];
-	ret_cgra[4] = cgra_output[1][2];
+	o_ret_cgra[0] = cgra_output[0][2];
+	o_ret_cgra[1] = cgra_output[0][1];
+	o_ret_cgra[2] = cgra_output[1][0];
+	o_ret_cgra[3] = cgra_output[1][1];
+	o_ret_cgra[4] = cgra_output[1][2];
 
 
 #if PRINT_CGRA_RESULTS
@@ -139,20 +143,20 @@ uint32_t check(void)
 
 
 #if PRINT_RESULTS
-        PRINTF("Soft\t\tCGRA\n");
+        PRINTF("\nCGRA\t\tSoft\n");
 #endif
 
     for( int i = 0; i < 5; i++ )
     {
 #if PRINT_RESULTS
         PRINTF("%08x\t%08x\t%s\n",
-        ret_cgra[i],
-        ret_soft[i],
-        (ret_cgra[i] != ret_soft[i]) ? "Wrong!" : ""
+        o_ret_cgra[i],
+        o_ret_soft[i],
+        (o_ret_cgra[i] != o_ret_soft[i]) ? "Wrong!" : ""
         );
 #endif
 
-        if (ret_cgra[i] != ret_soft[i]) {
+        if (o_ret_cgra[i] != o_ret_soft[i]) {
             errors++;
         }
     }

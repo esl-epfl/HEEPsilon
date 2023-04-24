@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : reversebits.c                                                 **
 ** version  : 1                                                            **
-** date     : 2023-04-21                                                       **
+** date     : 2023-04-24                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   reversebits.c
-* @date   2023-04-21
+* @date   2023-04-24
 * @brief  A description of the kernel...
 *
 */
@@ -70,11 +70,13 @@ static uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {  0x0,  0xf005,  0x0,  0x
 static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
 static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
 
-static uint32_t	index;
-static uint32_t	NumBits;
+static uint32_t	i_index_soft;
+static uint32_t	i_index_cgra;
+static uint32_t	i_NumBits_soft;
+static uint32_t	i_NumBits_cgra;
 
-static uint32_t	ret_cgra;
-static uint32_t	ret_soft;
+static uint32_t	o_ret_soft;
+static uint32_t	o_ret_cgra;
 
 
 /****************************************************************************/
@@ -103,28 +105,54 @@ extern kcom_kernel_t reve_kernel = {
 
 void config()
 {
-	index = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
-	NumBits = kcom_getRand() % (31 - 0 + 1) + 0;
-	cgra_input[0][0] = index;
-	cgra_input[0][1] = NumBits;
-
+	i_index_soft = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
+	i_index_cgra = i_index_soft;
+	i_NumBits_soft = kcom_getRand() % (31 - 0 + 1) + 0;
+	i_NumBits_cgra = i_NumBits_soft;
+	cgra_input[0][0] = i_index_cgra;
+	cgra_input[0][1] = i_NumBits_cgra;
 }
 
 void software(void) 
 {
-    ret_soft = reversebits( index, NumBits );
+    o_ret_soft = reversebits( i_index_soft, i_NumBits_soft );
 }
 
 uint32_t check(void) 
 {
     uint32_t errors = 0;
     
-	ret_cgra = cgra_output[2][0];
+	o_ret_cgra = cgra_output[2][0];
 
+
+#if PRINT_CGRA_RESULTS
+    PRINTF("------------------------------\n");
+    for( uint8_t c = 0; c < CGRA_COLS; c ++)
+    {
+        for( uint8_t r = 0; r < OUT_VAR_DEPTH; r++ )
+        {
+            PRINTF("[%d][%d]:%08x\t\t",c,r,cgra_output[c][r]);
+        }
+        PRINTF("\n");
+    }
+#endif //PRINT_CGRA_RESULTS
+
+
+#if PRINT_RESULTS
+        PRINTF("\nCGRA\t\tSoft\n");
+#endif
 
     for( int i = 0; i < 1; i++ )
     {
-        if (ret_cgra != ret_soft) {
+#if PRINT_RESULTS
+        PRINTF("%08x\t%08x\t%s\n",
+        o_ret_cgra,
+        o_ret_soft,
+        (o_ret_cgra != o_ret_soft) ? "Wrong!" : ""
+        );
+#endif
+
+        if (o_ret_cgra != o_ret_soft) {
             errors++;
         }
     }

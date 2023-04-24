@@ -75,11 +75,11 @@
 
 static kcom_kernel_t *kernels[] = { 
         //&sqrt_kernel, // Does not work!
-        &sha_kernel,
-        //&bitc_kernel,
-        //&reve_kernel,
-        //&gsm_kernel,
-        //&sha2_kernel, 
+        //&sha_kernel,
+        &bitc_kernel,
+        &reve_kernel,
+        &gsm_kernel,
+        &sha2_kernel, 
         // Add all other kernels here
     };
 
@@ -112,7 +112,7 @@ void main()
         kernel = kernels[ ker_idx ];
         stats.name = kernel->name;
         stats.n = ITERATIONS_PER_KERNEL;
-                
+        stats.errors = 0;
         /* Set the kernel ID */
         uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) ) + 1; // Must be between 1 and (KMEM_SIZE - 1). 
         kernel->kmem[ kernel_id ] = kernel->kmem[1]; // By default the kernels come located with id = 1.
