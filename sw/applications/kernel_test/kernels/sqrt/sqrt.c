@@ -70,10 +70,11 @@ static uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {  0x0,  0xf008,  0x0,  0x
 static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
 static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
 
-static uint32_t	in_ptr;
+static uint32_t	i_in_ptr_soft;
+static uint32_t	i_in_ptr_cgra;
 
-static uint32_t	ret_cgra;
-static uint32_t	ret_soft;
+static uint32_t	o_ret_soft;
+static uint32_t	o_ret_cgra;
 
 
 /****************************************************************************/
@@ -102,23 +103,24 @@ extern kcom_kernel_t sqrt_kernel = {
 
 void config()
 {
-	in_ptr = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
+	i_in_ptr_soft = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
+	i_in_ptr_cgra = i_in_ptr_soft;
 	cgra_input[1][0] = 1;
 	cgra_input[1][1] = 16384;
-	cgra_input[3][0] = in_ptr;
+	cgra_input[3][0] = i_in_ptr_cgra;
 
 }
 
 void software(void) 
 {
-    ret_soft = sqrt( in_ptr );
+    o_ret_soft = sqrt( i_in_ptr_soft );
 }
 
 uint32_t check(void) 
 {
     uint32_t errors = 0;
     
-	ret_cgra = cgra_output[0][0];
+	o_ret_cgra = cgra_output[0][0];
 
 
 #if PRINT_CGRA_RESULTS
@@ -135,20 +137,20 @@ uint32_t check(void)
 
 
 #if PRINT_RESULTS
-        PRINTF("\nSoft\t\tCGRA\n");
+        PRINTF("\nCGRA\t\tSoft\n");
 #endif
 
     for( int i = 0; i < 1; i++ )
     {
 #if PRINT_RESULTS
         PRINTF("%08x\t%08x\t%s\n",
-        ret_cgra,
-        ret_soft,
-        (ret_cgra != ret_soft) ? "Wrong!" : ""
+        o_ret_cgra,
+        o_ret_soft,
+        (o_ret_cgra != o_ret_soft) ? "Wrong!" : ""
         );
 #endif
 
-        if (ret_cgra != ret_soft) {
+        if (o_ret_cgra != o_ret_soft) {
             errors++;
         }
     }

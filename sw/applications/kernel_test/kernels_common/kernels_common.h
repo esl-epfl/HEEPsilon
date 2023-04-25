@@ -66,6 +66,7 @@
 #define REPEAT_FIRST_INPUT      1
 
 #define ENABLE_PIN_TOGGLE       1
+#define ANALYZE_EVERYTHING      0
 #define CTRL_VCD_W_PIN          0
 
 

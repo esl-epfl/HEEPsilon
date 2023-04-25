@@ -42,7 +42,7 @@
 #include "kernels/sha2/sha2.h"
 #include "kernels/sha/sha.h"
 #include "kernels/strsearch/strsearch.h"
-//#include "kernels/sqrt/sqrt.h"
+#include "kernels/sqrt/sqrt.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -75,13 +75,13 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
-        //&sqrt_kernel, // Does not work!
-        &gsm_kernel,
-        &sha2_kernel, 
-        &sha_kernel,
-        &reve_kernel,
-        &bitc_kernel,
-        //&strs_kernel,
+        //&strs_kernel, // does not work
+        &sqrt_kernel, // Does not work!
+        //&gsm_kernel,
+        //&sha2_kernel, 
+        //&sha_kernel,
+        //&reve_kernel,
+        //&bitc_kernel,
         // Add all other kernels here
     };
 
@@ -121,9 +121,13 @@ void main()
         // The kernel = 1 is kept, so we can always take it from there. 
 
         /* CGRA load */
+#if ANALYZE_EVERYTHING
         kcom_perfRecordStart( &(kperf.time.load) );
+#endif //ANALYZE_EVERYTHING
             kcom_load( kernel );
+#if ANALYZE_EVERYTHING
         kcom_perfRecordStop( &(kperf.time.load) );
+#endif //ANALYZE_EVERYTHING
 
         for( uint8_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
         {
@@ -137,13 +141,19 @@ void main()
             kernel->config();
 
             /* Obtention of dead-zone-time */
+#if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.dead) );
             kcom_perfRecordStop(    &(kperf.time.dead) );
+#endif //ANALYZE_EVERYTHING
 
             /* Software */
+#if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.sw) );
+#endif //ANALYZE_EVERYTHING
                 kernel->func();
+#if ANALYZE_EVERYTHING
             kcom_perfRecordStop(    &(kperf.time.sw) );    
+#endif //ANALYZE_EVERYTHING
 
             /* CGRA Execution */
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
