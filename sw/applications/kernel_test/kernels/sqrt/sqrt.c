@@ -103,12 +103,32 @@ extern kcom_kernel_t sqrt_kernel = {
 
 void config()
 {
+    static uint8_t columns[3] = {0,0,0};
+    static uint8_t rows[3] = {0,0,0};
+
 	i_in_ptr_soft = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
 	i_in_ptr_cgra = i_in_ptr_soft;
-	cgra_input[1][0] = 1;
-	cgra_input[1][1] = 16384;
-	cgra_input[3][0] = i_in_ptr_cgra;
-
+	
+    cgra_input[ columns[0] ][ rows[0] ] = 1;
+	cgra_input[ columns[1] ][ rows[1] ] = 16384;
+	cgra_input[ columns[2] ][ rows[2] ] = i_in_ptr_cgra;
+    
+    PRINTDBG("cgra_input[%02d][%02d] =  1\n",       columns[0], rows[0]);
+    PRINTDBG("cgra_input[%02d][%02d] =  16384\n",   columns[1], rows[1]);
+    PRINTDBG("cgra_input[%02d][%02d] =  %d\n",      columns[2], rows[2], i_in_ptr_cgra );
+    
+    if( (rows[0] = (rows[0] + 1) % 2) == 0 ){
+        if( (columns[0] = (columns[0]+1) % 4) == 0 ){
+            if( (rows[1] = (rows[1] + 1) % 2) == 0){
+                if( (columns[1] = (columns[1]+1) % 4) == 0 ){
+                    if( (rows[2] = (rows[2] + 1) % 2) == 0 ){
+                        (columns[2] = (columns[2]+1) % 4);
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 void software(void) 
@@ -137,7 +157,7 @@ uint32_t check(void)
 
 
 #if PRINT_RESULTS
-        PRINTF("\nCGRA\t\tSoft\n");
+        PRINTF("\n\n");
 #endif
 
     for( int i = 0; i < 1; i++ )
@@ -146,7 +166,7 @@ uint32_t check(void)
         PRINTF("%08x\t%08x\t%s\n",
         o_ret_cgra,
         o_ret_soft,
-        (o_ret_cgra != o_ret_soft) ? "Wrong!" : ""
+        (o_ret_cgra == o_ret_soft) ? "COOOORRRECCCTTTTT!" : ""
         );
 #endif
 

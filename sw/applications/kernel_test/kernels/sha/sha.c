@@ -106,14 +106,14 @@ void config()
 	for(int i = 0; i < 80; i++ )
 	{
 		i_W_soft[i] = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
-		i_W_cgra[i] = i_W_soft[i];
+        i_W_cgra[i] = i_W_soft[i];
 	}
-	cgra_input[0][0] = i_W_cgra;
+    
+    cgra_input[0][0] = i_W_cgra;
+    cgra_input[1][0] = i_W_cgra;
+    cgra_input[2][0] = i_W_cgra; 
 	cgra_input[0][1] = i_W_cgra;
-	cgra_input[1][0] = i_W_cgra;
 	cgra_input[1][1] = i_W_cgra;
-	cgra_input[2][0] = i_W_cgra;
-
 }
 
 void software(void) 

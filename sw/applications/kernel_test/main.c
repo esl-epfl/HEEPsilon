@@ -129,7 +129,7 @@ void main()
         kcom_perfRecordStop( &(kperf.time.load) );
 #endif //ANALYZE_EVERYTHING
 
-        for( uint8_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
+        for( uint16_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
         {
             /* Reset the CGRA performance counters */
             kcom_rstPerfCounter();

@@ -459,7 +459,12 @@ void kcom_launchKernel( uint8_t Id )
 
 __attribute__((optimize("O0"))) void kcom_waitingForIntr()
 {
+#if WATCHDOG_CYCLES
+    uint32_t cycles = WATCHDOG_CYCLES;
+    while( cgra_intr_flag == 0 && cycles > 0){ cycles--; }
+#else
     while( cgra_intr_flag == 0 );
+#endif //WATCHDOG_CYCLES
 }
 
 /****************************************************************************/

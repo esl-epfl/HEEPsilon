@@ -243,7 +243,7 @@ for col_num in range(cols_n):
         except: pass
         config_str          += f"\tcgra_input[{col_num}][{var_num}] = {var_name};\n"
         var_num             += 1
-        input_max[col_num]  += 1
+        input_max[col_num]  = var_num
 
 input_max.append(1) # At least one object we will have
 in_vars_depth = max(input_max)

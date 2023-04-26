@@ -60,13 +60,15 @@
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           0
+#define PRINT_RESULTS           1
 #define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
 
+#define WATCHDOG_CYCLES         100000
+
 #define ENABLE_PIN_TOGGLE       1
-#define ANALYZE_EVERYTHING      0
+#define ANALYZE_EVERYTHING      1
 #define CTRL_VCD_W_PIN          0
 
 
@@ -83,6 +85,7 @@
 #endif //CTRL_VCD_W_PIN
 
 
+// #define ITERATIONS_PER_KERNEL   512 //  To debug sqrt
 #define ITERATIONS_PER_KERNEL   10
 #define PERF_PLOT_SCALE_DOWN    5 
 
