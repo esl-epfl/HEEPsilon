@@ -114,6 +114,10 @@ void config()
     cgra_input[2][0] = i_W_cgra; 
 	cgra_input[0][1] = i_W_cgra;
 	cgra_input[1][1] = i_W_cgra;
+    PRINTDBG("&in[0][0]=%d\t", &cgra_input[0][0]);
+    PRINTDBG("&in[0][1]=%d\t", &cgra_input[0][1]);
+    PRINTDBG("&in[0][2]=%d\t", &cgra_input[0][2]);
+    PRINTDBG("&in[1][0]=%d\n", &cgra_input[1][0]);
 }
 
 void software(void) 

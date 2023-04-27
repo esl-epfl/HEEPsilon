@@ -75,8 +75,8 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
-        //&strs_kernel, // does not work
-        &sqrt_kernel, // Does not work!
+        &strs_kernel, // does not work
+        //&sqrt_kernel, // Does not work!
         //&gsm_kernel,
         //&sha2_kernel, 
         //&sha_kernel,
@@ -134,27 +134,30 @@ void main()
             /* Reset the CGRA performance counters */
             kcom_rstPerfCounter();
 
+PRINTLINE();
             /* Load (of inputs). */
 #if REPEAT_FIRST_INPUT
             if( it_idx < 2 ) kcom_resetRand(); 
 #endif //REPEAT_FIRST_INPUT
             kernel->config();
 
+PRINTLINE();
             /* Obtention of dead-zone-time */
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.dead) );
             kcom_perfRecordStop(    &(kperf.time.dead) );
 #endif //ANALYZE_EVERYTHING
-
             /* Software */
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
                 kernel->func();
 #if ANALYZE_EVERYTHING
+
+PRINTLINE();
+
             kcom_perfRecordStop(    &(kperf.time.sw) );    
 #endif //ANALYZE_EVERYTHING
-
             /* CGRA Execution */
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
             kcom_perfRecordStart(   &(kperf.time.cgra) );
@@ -163,7 +166,6 @@ void main()
             // Time is stopped inside the interrupt handler to make it as fast as possible
             /* Result comparison */
             stats.errors += kernel->check();
-
             /* Subtract the dead times from the obtained values */
             kcom_subtractDead( &(kperf.time.sw.spent_cy),    kperf.time.dead.spent_cy );
             kcom_subtractDead( &(kperf.time.load.spent_cy),  kperf.time.dead.spent_cy );

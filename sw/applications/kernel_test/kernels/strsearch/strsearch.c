@@ -117,11 +117,19 @@ void config()
 		i_pattern_cgra[i] = i_pattern_soft[i];
 	}
 	cgra_input[0][0] = i_pattern_cgra;
+    PRINTDBG("[0][0] = %08x\n", i_patlen_cgra);
 	cgra_input[1][0] = lowervec;
-	cgra_input[1][1] = i_patlen_cgra;
+    PRINTDBG("[1][0] = %08x\n", lowervec);
+	cgra_input[1][1] = i_patlen_cgra -1;
+    PRINTDBG("[1][1] = %08x\n", i_patlen_cgra -1);
 	cgra_input[2][0] = lowerc(i_pattern_cgra[i_patlen_cgra - 1]);
+    PRINTDBG("[2][0] = %08x\n", lowerc(i_pattern_cgra[i_patlen_cgra - 1]));
 	cgra_input[2][1] = i_skip2_cgra;
+    PRINTDBG("[2][1] = %08x\n", i_skip2_cgra);
 	cgra_input[3][0] = i_patlen_cgra;
+    PRINTDBG("[3][0] = %08x\n", i_patlen_cgra);
+
+    for(uint32_t i = 0; i < 1000000; i++){ asm("nop");}
 
 }
 
