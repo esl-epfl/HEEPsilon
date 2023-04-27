@@ -1,10 +1,10 @@
 #ifndef _CGRA_FUNCTION_H_
 #define _CGRA_FUNCTION_H_
 
-#include<stdio.h>
+#include <stdio.h>
 
 #define lowerc(c) lowervec[(char)(c)]
-unsigned char lowervec[1000+1] = {                     /* rdg 10/93 */
+unsigned char __attribute__ ((__packed__)) lowervec[] = {                     /* rdg 10/93 */
   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
  32,'!','"','#','$','%','&','\'','(',')','*','+',',','-','.','/',
@@ -33,8 +33,11 @@ unsigned char lowervec[1000+1] = {                     /* rdg 10/93 */
 int strsearch(int patlen, int skip2, char *pattern){
     char *pat = (char *)pattern;
     int i = 0;
+
+printf("lowervec insie: %08x\n", lowervec);
     for (i = 0; i < patlen - 1; ++i)
       {
+            printf("%d=%d|%d=%d \t", pat[i],lowerc(pat[i]),pat[patlen-1],lowerc(pat[patlen - 1])  );
             if ( lowerc(pat[i]) == lowerc(pat[patlen - 1]) )
                   skip2 = patlen - i - 1;
       }
