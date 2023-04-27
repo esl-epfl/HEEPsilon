@@ -72,3 +72,44 @@ fileOut.close()
 fileRun = open("run.tcl", "w")
 fileRun.write("run -all; quit -code [expr [coverage attribute -name TESTSTATUS -concise] >= 2 ? [coverage attribute -name TESTSTATUS -concise] : 0]; exit")
 fileRun.close()
+
+
+
+with open("edalize_build_rtl.tcl","r") as f:
+	data = f.read()
+
+# Fix the ocurrences of hw/hw/ inside the edalize_build_rtl.tcl file
+data = data.replace("/hw/hw/","/hw/")
+
+# --------------------------------------
+# Things I have tried and do not help:
+
+# Remove the -sv argument from the vlog call https://www.edaboard.com/threads/how-to-compile-and-simulate-dpi-c-file-with-questasim.295751/post-1265085
+#data = data.replace("-sv","") 
+ 
+# Add the -dpiheader uartdpi.h in the vlog command calling uartdpi.sv\
+#searchString = "-work work ../../../hw/vendor/esl_epfl_x_heep/hw/vendor/lowrisc_opentitan/hw/dv/dpi/uartdpi/uartdpi.sv"
+#data = data.replace(searchString, " -dpiheader uartdpi.h " + searchString ) 
+
+# --------------------------------------
+
+
+instance = "tb_top/testharness_i/cgra_x_heep_top_i/cgra_top_wrapper_i"
+
+data = data + "\n\nvsim -vcddump -r tb_top\n" 
+data = data + "vsim -saifdump dump.saif tb_top\n"		
+
+data = data + "vcd file dump.vcd\n"
+data = data + "vcd add -inout "+instance+"\n"
+data = data + "vcd off dump.vcd\n"
+data = data + "run 2 ns\n"
+data = data + "vcd on dump.vcd\n"
+data = data + "run 5 ms\n"
+data = data + "quit\n"
+
+with open("edalize_build_rtl.tcl","w") as f:		
+	f.write(data)	
+	
+
+
+
