@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : gsm.c                                                 **
 ** version  : 1                                                            **
-** date     : 2023-04-26                                                       **
+** date     : 2023-04-28                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   gsm.c
-* @date   2023-04-26
+* @date   2023-04-28
 * @brief  A description of the kernel...
 *
 */
@@ -87,6 +87,8 @@ extern kcom_kernel_t gsm_kernel = {
     .kmem   = cgra_kmem_bitstream,
     .imem   = cgra_imem_bitstream,
     .col_n  = CGRA_COLS,
+    .in_n   = 2,
+    .out_n  = 1,
     .input  = cgra_input,
     .output = cgra_output,
     .config = config,
@@ -108,9 +110,9 @@ void config()
 		i_x_soft[i] = kcom_getRand() % (32767 - -32768 + 1) + -32768;
 		i_x_cgra[i] = i_x_soft[i];
 	}
-	cgra_input[0][1] = i_x_cgra;
-	cgra_input[1][1] = 32767;
-	cgra_input[2][0] = -32768;
+	cgra_input[1][0] = i_x_cgra;
+	cgra_input[3][0] = 32767;
+	cgra_input[3][1] = -32768;
 
 }
 

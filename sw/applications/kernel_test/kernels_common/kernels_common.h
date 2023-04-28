@@ -65,7 +65,7 @@
 
 #define REPEAT_FIRST_INPUT      1
 
-#define WATCHDOG_CYCLES         100000
+#define WATCHDOG_CYCLES         0  // 100000
 
 #define ENABLE_PIN_TOGGLE       1
 #define ANALYZE_EVERYTHING      1
@@ -143,6 +143,8 @@ typedef struct
     kcom_io_t   input;
     kcom_io_t   output;
     uint8_t     col_n;
+    uint8_t     in_n;
+    uint8_t     out_n;
     void        ( *config ) (void);
     void        ( *func )   (void);
     uint32_t    ( *check )  (void);

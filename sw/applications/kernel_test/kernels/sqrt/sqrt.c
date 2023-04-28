@@ -109,31 +109,40 @@ void config()
 	i_in_ptr_soft = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
 	i_in_ptr_cgra = i_in_ptr_soft;
 	
-    cgra_input[ columns[0] ][ rows[0] ] = 1;
-	cgra_input[ columns[1] ][ rows[1] ] = 16384;
-	cgra_input[ columns[2] ][ rows[2] ] = i_in_ptr_cgra;
+    cgra_input[1][0] = 1;
+    cgra_input[1][1] = 16384;
+    cgra_input[3][0] = i_in_ptr_soft;
+
+    PRINTDBG("cgra_input[3][0] =  %d\n", i_in_ptr_soft );
+
+    /*
+        cgra_input[ columns[0] ][ rows[0] ] = 1;
+        cgra_input[ columns[1] ][ rows[1] ] = 16384;
+        cgra_input[ columns[2] ][ rows[2] ] = i_in_ptr_cgra;
+        
+        PRINTDBG("cgra_input[%02d][%02d] =  1\n",       columns[0], rows[0]);
+        PRINTDBG("cgra_input[%02d][%02d] =  16384\n",   columns[1], rows[1]);
+        PRINTDBG("cgra_input[%02d][%02d] =  %d\n",      columns[2], rows[2], i_in_ptr_cgra );
     
-    PRINTDBG("cgra_input[%02d][%02d] =  1\n",       columns[0], rows[0]);
-    PRINTDBG("cgra_input[%02d][%02d] =  16384\n",   columns[1], rows[1]);
-    PRINTDBG("cgra_input[%02d][%02d] =  %d\n",      columns[2], rows[2], i_in_ptr_cgra );
-    
-    if( (rows[0] = (rows[0] + 1) % 2) == 0 ){
-        if( (columns[0] = (columns[0]+1) % 4) == 0 ){
-            if( (rows[1] = (rows[1] + 1) % 2) == 0){
-                if( (columns[1] = (columns[1]+1) % 4) == 0 ){
-                    if( (rows[2] = (rows[2] + 1) % 2) == 0 ){
-                        (columns[2] = (columns[2]+1) % 4);
+        if( (rows[0] = (rows[0] + 1) % 2) == 0 ){
+            if( (columns[0] = (columns[0]+1) % 4) == 0 ){
+                if( (rows[1] = (rows[1] + 1) % 2) == 0){
+                    if( (columns[1] = (columns[1]+1) % 4) == 0 ){
+                        if( (rows[2] = (rows[2] + 1) % 2) == 0 ){
+                            (columns[2] = (columns[2]+1) % 4);
+                        }
                     }
                 }
             }
         }
-    }
+    */  
     
 }
 
 void software(void) 
 {
     o_ret_soft = sqrt( i_in_ptr_soft );
+    PRINTDBG("Software: %d\n", o_ret_soft);
 }
 
 uint32_t check(void) 
@@ -141,7 +150,6 @@ uint32_t check(void)
     uint32_t errors = 0;
     
 	o_ret_cgra = cgra_output[0][0];
-
 
 #if PRINT_CGRA_RESULTS
     PRINTF("------------------------------\n");
@@ -154,11 +162,6 @@ uint32_t check(void)
         PRINTF("\n");
     }
 #endif //PRINT_CGRA_RESULTS
-
-
-#if PRINT_RESULTS
-        PRINTF("\n\n");
-#endif
 
     for( int i = 0; i < 1; i++ )
     {

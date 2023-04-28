@@ -45,7 +45,6 @@
 // For interrupt handling
 #include "csr.h"
 #include "handler.h"
-#include "core_v_mini_mcu.h"
 #include "rv_plic.h"
 #include "rv_plic_regs.h"
 
@@ -109,7 +108,7 @@ static dif_plic_params_t    rv_plic_params;
 static dif_plic_t           rv_plic;
 static dif_plic_result_t    plic_res;
 static dif_plic_irq_id_t    intr_num;
-volatile bool                 cgra_intr_flag;
+volatile bool               cgra_intr_flag;
 static cgra_t               cgra;
 static uint8_t              cgra_slot;
 // To stop the counter inside the interupt handler
@@ -442,8 +441,8 @@ void kcom_load( kcom_kernel_t *ker )
     cgra_perf_cnt_enable(&cgra, 1);
     // Set CGRA kernel L/S pointers
     for(int8_t col_idx = 0 ; col_idx < ker->col_n ; col_idx++){
-        cgra_set_read_ptr ( &cgra, cgra_slot, &((ker->input[col_idx])),  col_idx );
-        cgra_set_write_ptr( &cgra, cgra_slot, &((ker->output[col_idx])),  col_idx );
+        cgra_set_read_ptr ( &cgra, cgra_slot, (uint32_t)&((ker->input[0]))  + (col_idx * ker->in_n  * 4 ),  col_idx );
+        cgra_set_write_ptr( &cgra, cgra_slot, (uint32_t)&((ker->output[0])) + (col_idx * ker->out_n * 4 ),  col_idx );
     }
 }
 
