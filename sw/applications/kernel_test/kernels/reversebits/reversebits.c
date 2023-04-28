@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : reversebits.c                                                 **
 ** version  : 1                                                            **
-** date     : 2023-04-24                                                       **
+** date     : 2023-04-28                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   reversebits.c
-* @date   2023-04-24
+* @date   2023-04-28
 * @brief  A description of the kernel...
 *
 */
@@ -89,6 +89,8 @@ extern kcom_kernel_t reve_kernel = {
     .kmem   = cgra_kmem_bitstream,
     .imem   = cgra_imem_bitstream,
     .col_n  = CGRA_COLS,
+    .in_n   = 2,
+    .out_n  = 1,
     .input  = cgra_input,
     .output = cgra_output,
     .config = config,

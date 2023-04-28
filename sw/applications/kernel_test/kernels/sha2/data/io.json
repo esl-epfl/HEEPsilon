@@ -1,5 +1,5 @@
 {
-    "function_name": "sha1",
+    "function_name": "sha2",
     "inputs": [
         {"type":"int32_t" , "num":20 , "name":"W"}
     ],
@@ -19,18 +19,18 @@
         
     ] ,
     "write_col0" : [
-        {"name":"A", "id":2},
-        {"name":"B", "id":1}
+        
     ] ,
     "write_col1" : [
-        {"name":"C", "id":0},
-        {"name":"D", "id":1},
-        {"name":"E", "id":2}
+        {"name":"B", "id":1},
+        {"name":"A", "id":0}
     ] ,
     "write_col2" : [
         
     ] ,
     "write_col3" : [
-        
-    ] 
+        {"name":"C", "id":2},
+        {"name":"D", "id":3},
+        {"name":"E", "id":4}
+    ]
 }

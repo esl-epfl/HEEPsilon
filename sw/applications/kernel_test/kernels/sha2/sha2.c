@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : sha2.c                                                 **
 ** version  : 1                                                            **
-** date     : 2023-04-24                                                       **
+** date     : 2023-04-28                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   sha2.c
-* @date   2023-04-24
+* @date   2023-04-28
 * @brief  A description of the kernel...
 *
 */
@@ -87,6 +87,8 @@ extern kcom_kernel_t sha2_kernel = {
     .kmem   = cgra_kmem_bitstream,
     .imem   = cgra_imem_bitstream,
     .col_n  = CGRA_COLS,
+    .in_n   = 1,
+    .out_n  = 3,
     .input  = cgra_input,
     .output = cgra_output,
     .config = config,
@@ -122,11 +124,11 @@ uint32_t check(void)
 {
     uint32_t errors = 0;
     
-	o_ret_cgra[0] = cgra_output[0][2];
-	o_ret_cgra[1] = cgra_output[0][1];
-	o_ret_cgra[2] = cgra_output[1][0];
-	o_ret_cgra[3] = cgra_output[1][1];
-	o_ret_cgra[4] = cgra_output[1][2];
+	o_ret_cgra[1] = cgra_output[1][0];
+	o_ret_cgra[0] = cgra_output[1][1];
+	o_ret_cgra[2] = cgra_output[3][0];
+	o_ret_cgra[3] = cgra_output[3][1];
+	o_ret_cgra[4] = cgra_output[3][2];
 
 
 #if PRINT_CGRA_RESULTS

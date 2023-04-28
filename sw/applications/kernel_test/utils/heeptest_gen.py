@@ -232,18 +232,14 @@ for in_var, in_soft, in_cgra in zip( io_data["inputs"], in_vars_soft, in_vars_cg
 # The input variables are copied into the CGRA input array.
 input_max = [0,0,0,0]
 for col_num in range(cols_n):
-    var_num = 0
+    input_max[col_num] = 0
     for in_var in io_data[f"read_col{col_num}"]:
         var_name = in_var['name'] 
         # If the input is one of the input variables, then rename it to match its new name format
         if var_name in in_vars_name:
             var_name = in_vars_cgra[ in_vars_name.index(in_var['name']) ]
-        try: 
-            var_num = in_var['id']
-        except: pass
-        config_str          += f"\tcgra_input[{col_num}][{var_num}] = {var_name};\n"
-        var_num             += 1
-        input_max[col_num]  = var_num
+        config_str          += f"\tcgra_input[{col_num}][{input_max[col_num]}] = {var_name};\n"
+        input_max[col_num]  += 1
 
 input_max.append(1) # At least one object we will have
 in_vars_depth = max(input_max)
@@ -278,16 +274,17 @@ check_load_str = ""
 val_idx = 0
 outputs = 0
 for col_idx in range(cols_n):
+    val_idx = 0
     for value in io_data[f"write_col{col_idx}"] :
         outputs += 1
-        # If one of the elements of the CGRA outputs its value to an output
+        # If one of the elements of the CGRA outputs its value to an output -------------------------------------------- correct this
         # variable, that value is directly copied to it.
         # Otherwise, the output variable is an array and each element (id) 
         # gets the value of a column-value pair.
         if value.get("name") == out_var_name:
             check_load_str  +=  f"\t{out_var_cgra_str} = cgra_output[{col_idx}][{val_idx}];\n"
         else:
-            check_load_str  +=  f"\t{out_var_cgra_str}[{val_idx}] = cgra_output[{col_idx}][{value['id']}];\n"
+            check_load_str  +=  f"\t{out_var_cgra_str}[{value['id']}] = cgra_output[{col_idx}][{val_idx}];\n"
             val_idx         += 1
 
 if outputs == 0: # The input is the output!

@@ -7,17 +7,17 @@
         {"type":"int32_t" , "num":80 , "name":"W"}
     ],
     "read_col0" : [
-        {"name":"W"},
         {"name":"W"}
     ] ,
     "read_col1" : [
-        {"name":"W"},
         {"name":"W"}
     ] ,
     "read_col2" : [
         {"name":"W"}
     ] ,
     "read_col3" : [
+        {"name":"W"},
+        {"name":"W"}
     ] ,
     "write_col0" : [
         

@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : sha.c                                                 **
 ** version  : 1                                                            **
-** date     : 2023-04-24                                                       **
+** date     : 2023-04-28                                                       **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   sha.c
-* @date   2023-04-24
+* @date   2023-04-28
 * @brief  A description of the kernel...
 *
 */
@@ -87,6 +87,8 @@ extern kcom_kernel_t sha_kernel = {
     .kmem   = cgra_kmem_bitstream,
     .imem   = cgra_imem_bitstream,
     .col_n  = CGRA_COLS,
+    .in_n   = 2,
+    .out_n  = 1,
     .input  = cgra_input,
     .output = cgra_output,
     .config = config,
@@ -106,23 +108,19 @@ void config()
 	for(int i = 0; i < 80; i++ )
 	{
 		i_W_soft[i] = kcom_getRand() % (UINT_MAX - 1 - 0 + 1) + 0;
-        i_W_cgra[i] = i_W_soft[i];
+		i_W_cgra[i] = i_W_soft[i];
 	}
-    
-    cgra_input[0][0] = i_W_cgra;
-    cgra_input[1][0] = i_W_cgra;
-    cgra_input[2][0] = i_W_cgra; 
-	cgra_input[0][1] = i_W_cgra;
-	cgra_input[1][1] = i_W_cgra;
-    PRINTDBG("&in[0][0]=%d\t", &cgra_input[0][0]);
-    PRINTDBG("&in[0][1]=%d\t", &cgra_input[0][1]);
-    PRINTDBG("&in[0][2]=%d\t", &cgra_input[0][2]);
-    PRINTDBG("&in[1][0]=%d\n", &cgra_input[1][0]);
+	cgra_input[0][0] = i_W_cgra;
+	cgra_input[1][0] = i_W_cgra;
+	cgra_input[2][0] = i_W_cgra;
+	cgra_input[3][0] = i_W_cgra;
+	cgra_input[3][1] = i_W_cgra;
+
 }
 
 void software(void) 
 {
-    o_W_soft = sha( i_W_soft );
+    o_W_soft = sha_transform( i_W_soft );
 }
 
 uint32_t check(void) 
