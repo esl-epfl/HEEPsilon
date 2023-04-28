@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : sqrt.h                                                   **
 ** version  : 1                                                            **
-** date     : 2023-04-24                                                    **
+** date     : 2023-04-28                                                    **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   sqrt.h
-* @date   2023-04-24
+* @date   2023-04-28
 * @brief  A description of the kernel...
 *
 */

@@ -257,6 +257,13 @@ output_max.append(1) # At least one object we will have
 out_vars_depth = max(output_max)
 
 '''``````````````````````````````````````````````````````````````````````````
+SOFTWARE EXECUTION
+
+``````````````````````````````````````````````````````````````````````````'''
+
+function_str = io_data["function_name"]
+
+'''``````````````````````````````````````````````````````````````````````````
 RESULT CROSS-CHECK
 
 In order to determine the effectiveness of the computation, the results 
@@ -338,7 +345,7 @@ final_output = template.substitute(\
                                     kmem                = mem_str[kmem_bit_name],\
                                     config              = config_str            ,\
                                     out_var_soft        = out_var_soft_str      ,\
-                                    function            = filename              ,\
+                                    function            = function_str          ,\
                                     check_load          = check_load_str        ,\
                                     cgra_res_elem       = cgra_res_elem_str     ,\
                                     soft_res_elem       = soft_res_elem_str     ,\
