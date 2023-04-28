@@ -64,8 +64,8 @@ static uint32_t    check   (void);
 /**                                                                        **/
 /****************************************************************************/
 
-static uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = { ${imem} };
-static uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = { ${kmem} };
+const uint32_t  cgra_imem_${shortname}[CGRA_IMEM_SIZE] = { ${imem} };
+static uint32_t cgra_kmem_${shortname}[CGRA_KMEM_SIZE] = { ${kmem} };
 
 static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
 static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));
@@ -80,8 +80,8 @@ ${out_vars}
 /****************************************************************************/
 
 extern kcom_kernel_t ${shortname}_kernel = {
-    .kmem   = cgra_kmem_bitstream,
-    .imem   = cgra_imem_bitstream,
+    .kmem   = cgra_kmem_${shortname},
+    .imem   = cgra_imem_${shortname},
     .col_n  = CGRA_COLS,
     .in_n   = ${in_vars_depth},
     .out_n  = ${out_vars_depth},
