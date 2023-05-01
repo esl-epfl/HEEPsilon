@@ -34,16 +34,16 @@ int strsearch(int patlen, int skip2, uint32_t *pattern){
     uint32_t *pat = (uint32_t *)pattern;
     int i = 0;
 
-    printf("patlen:%d \t char:%d (%d) \t pat:%08x \t lowvec: %08x\n",patlen, pat[patlen - 1], lowerc(pat[patlen - 1]), pat, lowervec);
+    //printf("patlen:%d \t char:%d (%d) \t pat:%08x \t lowvec: %08x\n",patlen, pat[patlen - 1], lowerc(pat[patlen - 1]), pat, lowervec);
     for (i = 0; i < patlen - 1; ++i)
       {
             if ( lowerc(pat[i]) == lowerc(pat[patlen - 1]) ){
                   skip2 = patlen - i - 1;
-                  printf("! ");
+                  // printf("! ");
             }
-            printf("%d|%d\t",i, lowerc(pat[i]));
+            // printf("%d|%d\t",i, lowerc(pat[i]));
       }
-      printf("\n");
+      // printf("\n");
       return skip2;
 }
 

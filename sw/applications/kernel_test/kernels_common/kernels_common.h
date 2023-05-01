@@ -51,8 +51,8 @@
 /****************************************************************************/
 
 /* Operation Configurations */
-#define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     1
+#define ENABLE_PRINTF           0
+#define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      0  
@@ -60,15 +60,15 @@
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           1
-#define PRINT_CGRA_RESULTS      1
+#define PRINT_RESULTS           0
+#define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
 
 #define WATCHDOG_CYCLES         100000
 
 #define ENABLE_PIN_TOGGLE       1
-#define ANALYZE_EVERYTHING      1
+#define ANALYZE_EVERYTHING      0
 #define CTRL_VCD_W_PIN          0
 
 
