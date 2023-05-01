@@ -189,7 +189,7 @@ for i in range(1,len(sys.argv)):
     else:
         KER_ARG.append(sys.argv[i])
         KER_SPLIT = sys.argv[i].split('/')
-        ker_id = KER_SPLIT[-2]
+        ker_id = KER_SPLIT[-3] #...../kernel_name/data/file
         while (ker_id in KER_NAME) :
             ker_id += "I"
         KER_NAME.append(ker_id) 

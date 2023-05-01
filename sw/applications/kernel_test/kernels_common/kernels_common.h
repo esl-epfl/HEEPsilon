@@ -65,7 +65,7 @@
 
 #define REPEAT_FIRST_INPUT      1
 
-#define WATCHDOG_CYCLES         00000
+#define WATCHDOG_CYCLES         100000
 
 #define ENABLE_PIN_TOGGLE       1
 #define ANALYZE_EVERYTHING      1
