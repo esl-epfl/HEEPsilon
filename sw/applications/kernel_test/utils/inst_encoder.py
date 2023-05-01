@@ -250,7 +250,7 @@ ker_start_add  = 0
 for ker_in in KER_ARG:
     if (ker_in.find('.py') == -1) :
         FILE_NAME = ker_in
-        exec(open("utilities/bitstream_gen.py").read())
+        exec(open("bitstream_gen.py").read())
     else :
         exec(open(ker_in).read())
 
