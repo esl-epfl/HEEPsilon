@@ -436,9 +436,6 @@ void kcom_load( kcom_kernel_t *ker )
 {
     cgra_cmem_init(ker->imem, ker->kmem );
 
-    PRINTDBG("imem:\t%d\t%d\t%d\n",ker->imem, &(ker->imem[1]), &(ker->imem[2]));
-    PRINTDBG("kmem:\t%d\t%d\t%d\n",ker->kmem, &(ker->kmem[1]), &(ker->kmem[2]));
-
     cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
     // Select request slot of CGRA
     cgra_slot = cgra_get_slot(&cgra);
