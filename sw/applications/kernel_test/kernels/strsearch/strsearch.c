@@ -120,17 +120,12 @@ extern kcom_kernel_t strs_kernel = {
 
 void config()
 {
-	//i_patlen_soft = kcom_getRand() % (15 - 1 + 1) + 3;
-	
-    i_patlen_soft = 15;
-    
+	i_patlen_soft = kcom_getRand() % (DEBUG_STR_LEN - 1 + 1) + 1;
     i_patlen_cgra = i_patlen_soft;
     PRINTDBG("patlen_cgra = %d (%08x)\n", i_patlen_cgra,i_patlen_cgra);
 
-	//i_skip2_soft = kcom_getRand() % (15 - 1 + 1) + 3;
-    i_skip2_soft = 20;
+	i_skip2_soft = kcom_getRand() % (DEBUG_STR_LEN - 1 + 1) + 1;
 	i_skip2_cgra = i_skip2_soft;
-	// for(int i = 0; i < 20; i++ )
 
     for(int i = 0; i < DEBUG_STR_LEN; i++ )
 	{   
@@ -149,12 +144,6 @@ void config()
             PRINTDBG("%03d\t",i_pattern_cgra[i]);
         }
 	}
-
-    i_pattern_soft[ i_patlen_soft - 1 ] = 123;
-    i_pattern_cgra[ i_patlen_soft - 1 ] = i_pattern_soft[ i_patlen_soft - 1 ];    
-
-    i_pattern_soft[ 8 ] = 123;
-    i_pattern_cgra[ 8 ] = i_pattern_soft[ 8 ];
 
     PRINTDBG("\n");
 
