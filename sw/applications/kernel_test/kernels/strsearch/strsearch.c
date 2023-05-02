@@ -135,7 +135,7 @@ void config()
 
     for(int i = 0; i < DEBUG_STR_LEN; i++ )
 	{
-		i_pattern_soft[i] = kcom_getRand() % (255 - 0 + 1) + 0;
+		i_pattern_soft[i] = kcom_getRand() % (100 - 0 + 1) + 32;
 		i_pattern_cgra[i] = i_pattern_soft[i];
         if( i == i_patlen_cgra - 1 ){
             PRINTDBG("[%03d]\t",i_pattern_cgra[i]);
