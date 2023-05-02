@@ -120,11 +120,15 @@ extern kcom_kernel_t strs_kernel = {
 
 void config()
 {
-	i_patlen_soft = kcom_getRand() % (5 - 1 + 1) + 1;
-	i_patlen_cgra = i_patlen_soft;
+	//i_patlen_soft = kcom_getRand() % (15 - 1 + 1) + 3;
+	
+    i_patlen_soft = 15;
+    
+    i_patlen_cgra = i_patlen_soft;
     PRINTDBG("patlen_cgra = %d (%08x)\n", i_patlen_cgra,i_patlen_cgra);
 
-	i_skip2_soft = kcom_getRand() % (5 - 1 + 1) + 1;
+	//i_skip2_soft = kcom_getRand() % (15 - 1 + 1) + 3;
+    i_skip2_soft = 20;
 	i_skip2_cgra = i_skip2_soft;
 	// for(int i = 0; i < 20; i++ )
 
@@ -145,6 +149,13 @@ void config()
             PRINTDBG("%03d\t",i_pattern_cgra[i]);
         }
 	}
+
+    i_pattern_soft[ i_patlen_soft - 1 ] = 123;
+    i_pattern_cgra[ i_patlen_soft - 1 ] = i_pattern_soft[ i_patlen_soft - 1 ];    
+
+    i_pattern_soft[ 8 ] = 123;
+    i_pattern_cgra[ 8 ] = i_pattern_soft[ 8 ];
+
     PRINTDBG("\n");
 
 	cgra_input[1][0] = (uint32_t)i_patlen_cgra;
@@ -154,7 +165,7 @@ void config()
 	cgra_input[2][1] = (uint32_t)lowerc(i_pattern_cgra[i_patlen_cgra - 1]);
 
 	cgra_input[3][0] = (uint32_t)i_pattern_cgra;
-	cgra_input[3][1] = (uint32_t)(i_patlen_cgra -1);
+	cgra_input[3][1] = (uint32_t)(i_patlen_cgra -2);
     
     PRINTDBG("[1][0] = %08x\n", i_patlen_cgra);
     PRINTDBG("[1][1] = %08x\n", i_skip2_cgra);
@@ -164,7 +175,7 @@ void config()
     //PRINTDBG("[2][1] = %08x\n", lowerc(i_pattern_cgra[i_patlen_cgra - 1]));
 
     PRINTDBG("[3][0] = %08x\n", i_pattern_cgra);
-    PRINTDBG("[3][1] = %08x\n", i_patlen_cgra -1);
+    PRINTDBG("[3][1] = %08x\n", i_patlen_cgra -2);
 
     //for(uint32_t i = 0; i < 1000000; i++){ asm("nop");}
 
