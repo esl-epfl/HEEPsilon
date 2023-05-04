@@ -34,6 +34,7 @@
 /**                                                                        **/
 /****************************************************************************/
 #include <stdint.h>
+#include <string.h>
 
 #include "strsearch.h"
 #include "data/function.h"
@@ -120,28 +121,41 @@ extern kcom_kernel_t strs_kernel = {
 
 void config()
 {
-	i_patlen_soft = kcom_getRand() % (DEBUG_STR_LEN - 1 + 1) + 1;
+    static uint32_t test_idx = 0;
+
+    static uint32_t test_patterns[ITERATIONS_PER_KERNEL][DEBUG_STR_LEN] = {
+        { 197, 55, 06, 155, 142, 132, 68, 248, 147, 143, 130, 248, 230, 109, 01, 86, 15, 233, 251, 71, 57, 68, 51, 38, 217, 119, 23, 89, 126, 77, 44, 108, 12, 183, 29, 71, 30, 240, 147, 78, 167, 11, 156, 71, 64, 186, 188, 234, 55, 248},
+        { 80 , 60, 51, 77,  87, 46, 56, 70,  116,  82,  127, 42, 95, 59, 39, 33, 40, 94,  102,  125,  100, 76, 88,  113, 68,  107, 77, 38, 51, 60,  121, 98, 42,  127, 95, 49, 92,  112,  117, 42, 32, 41, 44, 83,  108, 83, 46, 83, 82, 68, 0},
+        { 52,  80,  92,  86,  50,  81, 54,  111,  118,  87, 47,  68, 90, 65, 85,  105,  122, 50, 98, 82, 75, 42,  125, 66, 53, 69, 72,  129,  125, 86,  101,  111,  106,  103,  109, 45,  126,  105, 52,  114, 91, 49,  116, 39, 51, 84, 86, 83, 80, 93},
+        { 52,  80,  92,  86,  50,  81, 54,  111,  118,  87, 47,  68, 90, 65, 85,  105,  122, 50, 98, 82, 75, 42,  125, 66, 53, 69, 72,  129,  125, 86,  101,  111,  106,  103,  109, 45,  126,  80, 52,  114, 91, 49,  116, 39, 51, 84, 86, 83, 80, 93},
+        { 6 ,82 ,13 ,11 ,82 , 9, 14 , 5, 82, 9}
+    }; 
+
+    static uint32_t test_patlens[ITERATIONS_PER_KERNEL] = { 30, 49, 49, 49, 9 };
+
+	// i_patlen_soft = kcom_getRand() % (DEBUG_STR_LEN - 1 + 1) + 1;
+    i_patlen_soft = test_patlens[test_idx];
     i_patlen_cgra = i_patlen_soft;
     PRINTDBG("patlen_cgra = %d (%08x)\n", i_patlen_cgra,i_patlen_cgra);
 
-	i_skip2_soft = kcom_getRand() % (DEBUG_STR_LEN - 1 + 1) + 1;
+	i_skip2_soft = 123;
 	i_skip2_cgra = i_skip2_soft;
 
     for(int i = 0; i < DEBUG_STR_LEN; i++ )
 	{   
-        PRINTDBG("%02d\t", i);
+        PRINTDBG(" %03d \t", i);
     }
     PRINTDBG("\n");
 
     for(int i = 0; i < DEBUG_STR_LEN; i++ )
 	{
-		i_pattern_soft[i] = kcom_getRand() % (255 - 0 + 1) + 0;
+		i_pattern_soft[i] = test_patterns[test_idx][i];
 		i_pattern_cgra[i] = i_pattern_soft[i];
         if( i == i_patlen_cgra - 1 ){
             PRINTDBG("[%03d]\t",i_pattern_cgra[i]);
         }
         else{
-            PRINTDBG("%03d\t",i_pattern_cgra[i]);
+            PRINTDBG(" %03d \t",i_pattern_cgra[i]);
         }
 	}
 
@@ -155,18 +169,9 @@ void config()
 
 	cgra_input[3][0] = (uint32_t)i_pattern_cgra;
 	cgra_input[3][1] = (uint32_t)(i_patlen_cgra -2);
-    
-    PRINTDBG("[1][0] = %08x\n", i_patlen_cgra);
-    PRINTDBG("[1][1] = %08x\n", i_skip2_cgra);
-    PRINTDBG("[2][0] = %08x\n", lowervec);
-    PRINTDBG("[2][1] = %08x\n", lowerc(i_pattern_cgra[i_patlen_cgra - 1]));
-    //PRINTDBG("lowervec[pat[4]]= %08x\n", lowerc(i_pattern_cgra[i_patlen_cgra - 1]));
-    //PRINTDBG("[2][1] = %08x\n", lowerc(i_pattern_cgra[i_patlen_cgra - 1]));
 
-    PRINTDBG("[3][0] = %08x\n", i_pattern_cgra);
-    PRINTDBG("[3][1] = %08x\n", i_patlen_cgra -2);
 
-    //for(uint32_t i = 0; i < 1000000; i++){ asm("nop");}
+    test_idx++;
 
 }
 

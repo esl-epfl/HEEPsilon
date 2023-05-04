@@ -52,7 +52,7 @@
 
 /* Operation Configurations */
 #define ENABLE_PRINTF           1
-#define ENABLE_DEBUG_PRINTF     1
+#define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
@@ -60,8 +60,8 @@
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           1
-#define PRINT_CGRA_RESULTS      1
+#define PRINT_RESULTS           0
+#define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
 
@@ -85,7 +85,7 @@
 #endif //CTRL_VCD_W_PIN
 
 
-#define ITERATIONS_PER_KERNEL   10
+#define ITERATIONS_PER_KERNEL   5
 #define PERF_PLOT_SCALE_DOWN    5 
 
 
