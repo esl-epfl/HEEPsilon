@@ -207,7 +207,7 @@ uint32_t check(void)
     for( int i = 0; i < 1; i++ )
     {
 #if PRINT_RESULTS
-        PRINTF("%08x\t%08x\t%s\n",
+        PRINTF("%d\t%d\t%s\n",
         o_return_cgra,
         o_return_soft,
         (o_return_cgra != o_return_soft) ? "Wrong!\n\n" : "\n\n"
