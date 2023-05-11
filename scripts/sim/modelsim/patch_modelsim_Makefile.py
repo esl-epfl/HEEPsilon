@@ -81,18 +81,7 @@ with open("edalize_build_rtl.tcl","r") as f:
 # Fix the ocurrences of hw/hw/ inside the edalize_build_rtl.tcl file
 data = data.replace("/hw/hw/","/hw/")
 
-# --------------------------------------
-# Things I have tried and do not help:
-
-# Remove the -sv argument from the vlog call https://www.edaboard.com/threads/how-to-compile-and-simulate-dpi-c-file-with-questasim.295751/post-1265085
-#data = data.replace("-sv","") 
- 
-# Add the -dpiheader uartdpi.h in the vlog command calling uartdpi.sv\
-#searchString = "-work work ../../../hw/vendor/esl_epfl_x_heep/hw/vendor/lowrisc_opentitan/hw/dv/dpi/uartdpi/uartdpi.sv"
-#data = data.replace(searchString, " -dpiheader uartdpi.h " + searchString ) 
-
-# --------------------------------------
-
+data = data.replace("work ../../../tb","work ../../../hw/tb")
 
 instance = "tb_top/testharness_i/cgra_x_heep_top_i/cgra_top_wrapper_i"
 
