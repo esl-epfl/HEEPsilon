@@ -1,10 +1,10 @@
 {
-    "function_name": "sqrt",
+    "function_name": "isqrt32",
     "inputs": [
-        {"type":"uint32_t", "num":1 , "name":"in_ptr"}
+        {"type":"uint32_t", "num":1 , "name":"in_ptr", "max":2147483647}
     ],
     "outputs": [
-        {"type":"uint32_t", "num":1 , "name":"ret"}
+        {"type":"uint32_t", "num":1 , "name":"return"}
     ],
     "read_col0" : [
         
@@ -20,7 +20,7 @@
         {"name":"in_ptr"}
     ] ,
     "write_col0" : [
-        {"name":"ret"}
+        {"name":"return"}
     ] ,
     "write_col1" : [
         

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-uint16_t sqrt(uint32_t in_ptr) 
+uint16_t isqrt32(uint32_t in_ptr) 
 {
 	uint16_t mask = 1<<14;
 	uint16_t result = 0;

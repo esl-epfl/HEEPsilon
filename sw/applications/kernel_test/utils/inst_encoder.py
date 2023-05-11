@@ -189,7 +189,7 @@ for i in range(1,len(sys.argv)):
     else:
         KER_ARG.append(sys.argv[i])
         KER_SPLIT = sys.argv[i].split('/')
-        ker_id = KER_SPLIT[-2]
+        ker_id = KER_SPLIT[-3] #...../kernel_name/data/file
         while (ker_id in KER_NAME) :
             ker_id += "I"
         KER_NAME.append(ker_id) 
@@ -250,7 +250,7 @@ ker_start_add  = 0
 for ker_in in KER_ARG:
     if (ker_in.find('.py') == -1) :
         FILE_NAME = ker_in
-        exec(open("utilities/bitstream_gen.py").read())
+        exec(open("bitstream_gen.py").read())
     else :
         exec(open(ker_in).read())
 

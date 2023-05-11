@@ -7,16 +7,15 @@
         {"type":"int32_t", "num":1 , "name":"ret"}
     ],
     "read_col0" : [
-        {"name":"x", "id":1}
     ] ,
     "read_col1" : [
-        {"name":"32767", "id" : 1}
+        {"name":"x"}
     ] ,
     "read_col2" : [
-        {"name":"-32768", "id" : 0}
-        
     ] ,
     "read_col3" : [
+        {"name":"32767"},
+        {"name":"-32768"}
     ] ,
     "write_col0" : [
         

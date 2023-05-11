@@ -24,6 +24,8 @@ extern kcom_kernel_t bitc_kernel = {
     .kmem   = cgra_kmem_bitstream,
     .imem   = cgra_imem_bitstream,
     .col_n  = CGRA_COLS,
+    .in_n   = IN_VARS,
+    .out_n  = OUT_VARS,
     .input  = cgra_input,
     .output = cgra_output,
     .config = config,
@@ -48,9 +50,6 @@ static uint32_t check(void)
 {
     uint32_t errors = 0;
     cgra_res = cgra_output[0][0];
-    //PRINTF("In : %04x > %d %d %d %d \n",cgra_output[0], cgra_output[0][0], cgra_output[0][1], cgra_output[0][2], cgra_output[3][3]);
-    //PRINTF("3 IS %04x\n", cgra_output[3]);
-    //PRINTF("Res: %d vs %d \n",sw_res, cgra_res);   
     if (cgra_res != sw_res) {
         errors++;
     }

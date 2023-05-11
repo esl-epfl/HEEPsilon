@@ -1,5 +1,5 @@
 {
-    "function_name": "ReverseBits",
+    "function_name": "reversebits",
     "inputs": [
         {"type":"uint32_t" , "num":1 , "name":"index"},
         {"type":"uint32_t" , "num":1 , "name":"NumBits" , "max":31}
