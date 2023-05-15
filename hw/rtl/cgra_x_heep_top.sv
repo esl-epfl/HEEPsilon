@@ -16,7 +16,7 @@ module cgra_x_heep_top #(
     inout logic jtag_tck_i,
     inout logic jtag_tms_i,
     inout logic jtag_trst_ni,
-    inout logic jtag_tdi_i,
+    inout logic  jtag_tdi_i,
     inout logic jtag_tdo_o,
 
     inout logic [31:0] gpio_io,
