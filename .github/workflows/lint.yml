@@ -30,7 +30,7 @@ jobs:
         find . \
             -name '*.vendor.hjson' \
             | xargs -n1 util/vendor.py --verbose \
-            && util/git-diff.py --error-msg "::error ::Found differences, please re-vendor."
+            && hw/vendor/esl_epfl_x_heep/util/git-diff.py --error-msg "::error ::Found differences, please re-vendor."
   ##################
   # MCU Generator  #
   ##################
@@ -57,4 +57,4 @@ jobs:
     - name: Run Gen
       run: |
         make mcu-gen
-        util/git-diff.py --error-msg "::error ::Found differences in SystemVerilog files generated with default configuration."
+        hw/vendor/esl_epfl_x_heep/util/git-diff.py --error-msg "::error ::Found differences in SystemVerilog files generated with default configuration."
