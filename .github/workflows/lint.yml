@@ -24,7 +24,7 @@ jobs:
       with:
         python-version: 3.9
     - name: Install requirements
-      run: pip install -r python-requirements.txt
+      run: pip install -r hw/vendor/esl_epfl_x_heep/python-requirements.txt
     - name: Re-vendor and diff
       run: |
         find . \
@@ -44,7 +44,7 @@ jobs:
       with:
         python-version: 3.9
     - name: Install requirements
-      run: pip install -r python-requirements.txt
+      run: pip install -r hw/vendor/esl_epfl_x_heep/python-requirements.txt
     - name: Install Verible
       run: |
         set -e
