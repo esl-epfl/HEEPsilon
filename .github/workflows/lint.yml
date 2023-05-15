@@ -28,6 +28,7 @@ jobs:
     - name: Re-vendor and diff
       run: |
         find . \
+            -maxdepth 3 \
             -name '*.vendor.hjson' \
             | xargs -n1 util/vendor.py --verbose \
             && hw/vendor/esl_epfl_x_heep/util/git-diff.py --error-msg "::error ::Found differences, please re-vendor."
