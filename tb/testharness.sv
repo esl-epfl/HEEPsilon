@@ -66,22 +66,22 @@ module testharness #(
       .boot_select_i,
       .execute_from_flash_i,
 
-      .jtag_tck_i(sim_jtag_tck),
-      .jtag_tms_i(sim_jtag_tms),
+      .jtag_tck_i  (sim_jtag_tck),
+      .jtag_tms_i  (sim_jtag_tms),
       .jtag_trst_ni(sim_jtag_trstn),
-      .jtag_tdi_i(sim_jtag_tdi),
-      .jtag_tdo_o(sim_jtag_tdo),
+      .jtag_tdi_i  (sim_jtag_tdi),
+      .jtag_tdo_o  (sim_jtag_tdo),
 
       .gpio_io(gpio),
 
       .uart_rx_i(uart_rx),
       .uart_tx_o(uart_tx),
 
-      .spi_flash_sd_io(spi_flash_sd_io),
+      .spi_flash_sd_io (spi_flash_sd_io),
       .spi_flash_csb_io(spi_flash_csb),
       .spi_flash_sck_io(spi_flash_sck),
 
-      .spi_sd_io(spi_sd_io),
+      .spi_sd_io (spi_sd_io),
       .spi_csb_io(spi_csb),
       .spi_sck_io(spi_sck),
 
