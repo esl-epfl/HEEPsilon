@@ -214,9 +214,6 @@ module cgra
     end : rvalid_mask_gen
   endgenerate
 
-
-
-
   // Register between RCs
   generate // generate is used to create separated statement blocks
     for (j=0; j<N_COL; j++) begin : reg_gen
@@ -226,74 +223,41 @@ module cgra
           for (int k=0; k<N_ROW; k++) begin
             rcs_res_reg[k][j]  <= '0;
             rcs_flag_reg[k][j] <= '0;
-			rcs_res_reg_temp[k][j]  <= '0;
-			rcs_flag_reg_temp[k][j] <= '0;
+			      rcs_res_reg_temp[k][j]  <= '0;
+			      rcs_flag_reg_temp[k][j] <= '0;
           end
         end else begin
           for (int k=0; k<N_ROW; k++) begin
             
-
-			if( rcs_pc_e_i[j] == 1'b0 ) begin // PC enable is low
-				if( rvalid_demux[j][k] == 1'b1 ) begin // If the data is ready, copy it to a temproary buffer
-					// C, D
-					rcs_res_reg_temp[k][j]  <= data_rdata_i[j];
-              		rcs_flag_reg_temp[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
-				end
-			end else begin // PC enable is high!
-					// E, F
-				if( data_req_s[k][j] == 1'b0 ) begin // Normal instructino
-					if (rcs_nop_s[k][j] == 1'b0) begin
-						rcs_res_reg[k][j]  <= rcs_res[k][j];
-		            	rcs_flag_reg[k][j] <= rcs_flag[k][j];
-					end else begin
-						rcs_res_reg[k][j]  <= rcs_res_reg[k][j];
-		            	rcs_flag_reg[k][j] <= rcs_flag_reg[k][j];
-					end
-				end else begin  // Read data instruction
-					if( rcs_nop_s[k][j] == 1'b0  ) begin 
-						if ( rvalid_demux[j][k] == 1'b1) begin // If the data is ready, copy it straight away. 
-							rcs_res_reg[k][j]  <= data_rdata_i[j];
-				        	rcs_flag_reg[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
-						end else begin  // If the data is not ready, it was ready before, so copy the temp buffer. 
-							rcs_res_reg[k][j]  <= rcs_res_reg_temp[k][j];
-				        	rcs_flag_reg[k][j] <= rcs_flag_reg_temp[k][j];
-						end
-					end else begin // This should never happen. 
-						rcs_res_reg[k][j]  <= rcs_res_reg[k][j];
-			        	rcs_flag_reg[k][j] <= rcs_flag_reg[k][j];
-					end
-				end
-			end
-
-/*
-// If execution is resumed and this RC was not requesting data, update its register
-            if (rcs_pc_e_i[j] == 1'b1 && data_req_s[k][j] == 1'b0) begin
-              // Update output registers only if rc is active (i.e., not executing a nop)
-              if (rcs_nop_s[k][j] == 1'b0) begin
-                rcs_res_reg[k][j]  <= rcs_res[k][j];
-                rcs_flag_reg[k][j] <= rcs_flag[k][j];
+            if( rcs_pc_e_i[j] == 1'b0 ) begin // PC enable is low
+              if( rvalid_demux[j][k] == 1'b1 ) begin // If the data is ready, copy it to a temproary buffer
+                rcs_res_reg_temp[k][j]  <= data_rdata_i[j];
+                rcs_flag_reg_temp[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
               end
-            // If data is requested, update its register as soon as data is valid (otherwise only last data read is passed)
-            end else if (rvalid_demux[j][k] == 1'b1) begin
-              // Bypass the RC otherwise rdata goes through the ALU
-              rcs_res_reg[k][j]  <= data_rdata_i[j];
-              rcs_flag_reg[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
+            end else begin // PC enable is high
+              if( data_req_s[k][j] == 1'b0 ) begin 
+                if (rcs_nop_s[k][j] == 1'b0) begin
+                  rcs_res_reg[k][j]  <= rcs_res[k][j];
+                  rcs_flag_reg[k][j] <= rcs_flag[k][j];
+                end 
+              end else begin  // Read data instruction
+                if( rcs_nop_s[k][j] == 1'b0  ) begin 
+                  if ( rvalid_demux[j][k] == 1'b1) begin // If the data is ready, copy it straight away. 
+                    rcs_res_reg[k][j]  <= data_rdata_i[j];
+                    rcs_flag_reg[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
+                  end else begin  // If the data is not ready, it was ready before, so copy the temp buffer. 
+                    // This is necessary as some special cases require it. 
+                    rcs_res_reg[k][j]  <= rcs_res_reg_temp[k][j];
+                    rcs_flag_reg[k][j] <= rcs_flag_reg_temp[k][j];
+                  end
+                end 
+              end
             end
-*/
-
-
-
-
           end
         end
       end
     end
   endgenerate
-
-
-
-
-
 
   generate // generate is used to create separated statement blocks
     for (j=0; j<N_COL; j++) begin : data_req_gen
