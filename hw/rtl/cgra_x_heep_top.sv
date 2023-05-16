@@ -3,21 +3,21 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_x_heep_top #(
-    parameter PULP_XPULP    = 0,
-    parameter FPU           = 0,
-    parameter PULP_ZFINX    = 0
+    parameter PULP_XPULP = 0,
+    parameter FPU        = 0,
+    parameter PULP_ZFINX = 0
 ) (
-    inout logic         clk_i,
-    inout logic         rst_ni,
+    inout logic clk_i,
+    inout logic rst_ni,
 
-    inout logic         boot_select_i,
-    inout logic         execute_from_flash_i,
+    inout logic boot_select_i,
+    inout logic execute_from_flash_i,
 
-    inout  logic        jtag_tck_i,
-    inout  logic        jtag_tms_i,
-    inout  logic        jtag_trst_ni,
-    inout  logic        jtag_tdi_i,
-    inout  logic        jtag_tdo_o,
+    inout logic jtag_tck_i,
+    inout logic jtag_tms_i,
+    inout logic jtag_trst_ni,
+    inout logic jtag_tdi_i,
+    inout logic jtag_tdo_o,
 
     inout               uart_rx_i,
     inout               uart_tx_o,

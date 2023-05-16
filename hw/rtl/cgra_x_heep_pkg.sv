@@ -19,7 +19,7 @@ package cgra_x_heep_pkg;
       EXT_XBAR_NSLAVE
   ) : 32'd1;
 
-    //slave mmap and idx
+  //slave mmap and idx
   localparam logic [31:0] CGRA_START_ADDRESS = core_v_mini_mcu_pkg::EXT_SLAVE_START_ADDRESS + 32'h000000;
   localparam logic [31:0] CGRA_SIZE = 32'h100000;
   localparam logic [31:0] CGRA_END_ADDRESS = CGRA_START_ADDRESS + CGRA_SIZE;
@@ -49,4 +49,4 @@ package cgra_x_heep_pkg;
       EXT_SYSTEM_NPERIPHERALS
   ) : 32'd1;
 
-endpackage // cgra_x_heep_pkg
+endpackage  // cgra_x_heep_pkg
