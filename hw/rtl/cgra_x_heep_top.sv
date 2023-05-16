@@ -19,36 +19,36 @@ module cgra_x_heep_top #(
     inout logic jtag_tdi_i,
     inout logic jtag_tdo_o,
 
-    inout               uart_rx_i,
-    inout               uart_tx_o,
+    inout uart_rx_i,
+    inout uart_tx_o,
 
-    inout  logic [22:0] gpio_io,
+    inout logic [22:0] gpio_io,
 
     output logic [31:0] exit_value_o,
     inout  logic        exit_valid_o,
 
-    inout  logic [ 3:0] spi_flash_sd_io,
-    inout  logic        spi_flash_csb_o,
-    inout  logic        spi_flash_sck_o,
+    inout logic [3:0] spi_flash_sd_io,
+    inout logic       spi_flash_csb_o,
+    inout logic       spi_flash_sck_o,
 
-    inout  logic [ 3:0] spi_sd_io,
-    inout  logic        spi_csb_o,
-    inout  logic        spi_sck_o,
+    inout logic [3:0] spi_sd_io,
+    inout logic       spi_csb_o,
+    inout logic       spi_sck_o,
 
-    inout logic         spi2_sd_0_io,
-    inout logic         spi2_sd_1_io,
-    inout logic         spi2_sd_2_io,
-    inout logic         spi2_sd_3_io,
-    inout logic [1:0]   spi2_csb_io,
-    inout logic         spi2_sck_o,
+    inout logic       spi2_sd_0_io,
+    inout logic       spi2_sd_1_io,
+    inout logic       spi2_sd_2_io,
+    inout logic       spi2_sd_3_io,
+    inout logic [1:0] spi2_csb_io,
+    inout logic       spi2_sck_o,
 
     output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_o,
     input  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack_i,
     output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso_o,
 
 
-    inout logic         i2c_scl_io,
-    inout logic         i2c_sda_io
+    inout logic i2c_scl_io,
+    inout logic i2c_sda_io
 );
 
   import obi_pkg::*;
@@ -125,16 +125,16 @@ module cgra_x_heep_top #(
       .exit_valid_o,
       .uart_rx_i,
       .uart_tx_o,
-      .gpio_0_io(gpio_io[0]),
-      .gpio_1_io(gpio_io[1]),
-      .gpio_2_io(gpio_io[2]),
-      .gpio_3_io(gpio_io[3]),
-      .gpio_4_io(gpio_io[4]),
-      .gpio_5_io(gpio_io[5]),
-      .gpio_6_io(gpio_io[6]),
-      .gpio_7_io(gpio_io[7]),
-      .gpio_8_io(gpio_io[8]),
-      .gpio_9_io(gpio_io[9]),
+      .gpio_0_io (gpio_io[0]),
+      .gpio_1_io (gpio_io[1]),
+      .gpio_2_io (gpio_io[2]),
+      .gpio_3_io (gpio_io[3]),
+      .gpio_4_io (gpio_io[4]),
+      .gpio_5_io (gpio_io[5]),
+      .gpio_6_io (gpio_io[6]),
+      .gpio_7_io (gpio_io[7]),
+      .gpio_8_io (gpio_io[8]),
+      .gpio_9_io (gpio_io[9]),
       .gpio_10_io(gpio_io[10]),
       .gpio_11_io(gpio_io[11]),
       .gpio_12_io(gpio_io[12]),
@@ -151,12 +151,12 @@ module cgra_x_heep_top #(
 
       .spi2_cs_0_io(spi2_csb_io[0]),
       .spi2_cs_1_io(spi2_csb_io[1]),
-      .spi2_sck_io(spi2_sck_o),
+      .spi2_sck_io (spi2_sck_o),
       .spi2_sd_0_io(spi2_sd_0_io),
       .spi2_sd_1_io(spi2_sd_1_io),
       .spi2_sd_2_io(spi2_sd_2_io),
       .spi2_sd_3_io(spi2_sd_3_io),
-            
+
       .i2c_sda_io(i2c_sda_io),
       .i2c_scl_io(i2c_scl_io),
 
