@@ -24,7 +24,7 @@ Minimal configuration of a cgra-x-heep
 
 # Prerequisite
 
-The simulation enrironment is based on the one from [X-HEEP](https://github.com/esl-epfl/x-heep).
+The simulation environment is based on the one from [X-HEEP](https://github.com/esl-epfl/x-heep).
 
 Follow the prequisite steps on the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep#prerequisite).
 
