@@ -26,7 +26,7 @@ Minimal configuration of a cgra-x-heep
 
 The simulation enrironment is based on the x-heep one.
 
-Follow the prequisite steps on the [x-heep repository](https://github.com/esl-epfl/x-heep#prerequisite).
+Follow the prequisite steps on the [x-heep repository](https://github.com/esl-epfl/cgra_x_heep/blob/main/hw/vendor/esl_epfl_x_heep/README.md#prerequisite).
 
 Consider that both the `environment.yml` and `python-requirements.txt` are now located in:
 ```bash
