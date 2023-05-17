@@ -5,7 +5,8 @@
 module cgra_x_heep_top #(
     parameter PULP_XPULP = 0,
     parameter FPU        = 0,
-    parameter PULP_ZFINX = 0
+    parameter PULP_ZFINX = 0,
+    parameter EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS
 ) (
     inout logic clk_i,
     inout logic rst_ni,
@@ -42,9 +43,9 @@ module cgra_x_heep_top #(
     inout logic [1:0] spi2_csb_io,
     inout logic       spi2_sck_o,
 
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_o,
-    input  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack_i,
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso_o,
+    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_o,
+    input  logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_ack_i,
+    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_o,
 
 
     inout logic i2c_scl_io,
@@ -56,8 +57,8 @@ module cgra_x_heep_top #(
   import cgra_x_heep_pkg::*;
 
   // External xbar master/slave and peripheral ports
-  obi_req_t [cgra_x_heep_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_req;
-  obi_resp_t [cgra_x_heep_pkg::EXT_XBAR_NMASTER-1:0] ext_xbar_master_resp;
+  obi_req_t   [EXT_DOMAINS_RND-1:0] ext_xbar_master_req;
+  obi_resp_t  [EXT_DOMAINS_RND-1:0] ext_xbar_master_resp;
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
@@ -67,13 +68,16 @@ module cgra_x_heep_top #(
   logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_intr_vector;
 
   // External subsystems
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_rst_n;
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_ram_banks_set_retentive;
+  logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_n;
+  logic [EXT_DOMAINS_RND-1:0] external_ram_banks_set_retentive;
 
   logic cgra_int;
   logic cgra_enable;
   logic cgra_logic_rst_n;
   logic cgra_ram_banks_set_retentive;
+
+  logic [EXT_DOMAINS_RND-2:0] _unused_dummy_a;
+  logic [EXT_DOMAINS_RND-2:0] _unused_dummy_b;
 
   always_comb begin
     // All interrupt lines set to zero by default
@@ -88,6 +92,8 @@ module cgra_x_heep_top #(
   assign cgra_enable = 1'b1;
   assign cgra_logic_rst_n = external_subsystem_rst_n[0];
   assign cgra_ram_banks_set_retentive = external_ram_banks_set_retentive[0];
+  assign _unused_dummy_a = external_subsystem_rst_n[3:1];
+  assign _unused_dummy_b = external_ram_banks_set_retentive[3:1];
 
   cgra_top_wrapper cgra_top_wrapper_i (
       .clk_i,
@@ -111,7 +117,7 @@ module cgra_x_heep_top #(
       .PULP_XPULP(PULP_XPULP),
       .FPU(FPU),
       .PULP_ZFINX(PULP_ZFINX),
-      .EXT_XBAR_NMASTER(cgra_x_heep_pkg::EXT_XBAR_NMASTER)
+      .EXT_XBAR_NMASTER(EXT_DOMAINS_RND)
   ) x_heep_system_i (
       .clk_i,
       .rst_ni,
@@ -146,8 +152,8 @@ module cgra_x_heep_top #(
       .gpio_18_io(gpio_io[18]),
       .gpio_19_io(gpio_io[19]),
       .gpio_20_io(gpio_io[20]),
-      .gpio_21_io(gpio_io[21]),
-      .gpio_22_io(gpio_io[22]),
+      .pdm2pcm_pdm_io(gpio_io[21]),
+      .pdm2pcm_clk_io(gpio_io[22]),
 
       .spi2_cs_0_io(spi2_csb_io[0]),
       .spi2_cs_1_io(spi2_csb_io[1]),

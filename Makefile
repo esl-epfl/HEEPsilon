@@ -21,10 +21,11 @@ include $(HEEP_DIR)Makefile.venv
 
 # Generates mcu files. First the mcu-gen from X-HEEP is called. The - at the begining of the call is to allow the following commands be 
 # executed even if the mcu-gen return with an error.
+# This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP. 
 mcu-gen:
 	-$(MAKE) -f $(XHEEP_MAKE) $(MAKECMDGOALS) 
 	cd hw/vendor/esl_epfl_x_heep &&\
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl # This is needs to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.  
+	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl  
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
 ## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
