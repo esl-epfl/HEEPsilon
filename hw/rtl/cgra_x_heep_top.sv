@@ -76,8 +76,8 @@ module cgra_x_heep_top #(
   logic cgra_logic_rst_n;
   logic cgra_ram_banks_set_retentive;
 
-  logic [EXT_DOMAINS_RND-2:0] _unused_dummy_a;
-  logic [EXT_DOMAINS_RND-2:0] _unused_dummy_b;
+  logic [EXT_DOMAINS_RND-2:0] _unused_external_subsystem_rst_n;
+  logic [EXT_DOMAINS_RND-2:0] _unused_external_ram_banks_set_retentive;
 
   always_comb begin
     // All interrupt lines set to zero by default
@@ -92,8 +92,8 @@ module cgra_x_heep_top #(
   assign cgra_enable = 1'b1;
   assign cgra_logic_rst_n = external_subsystem_rst_n[0];
   assign cgra_ram_banks_set_retentive = external_ram_banks_set_retentive[0];
-  assign _unused_dummy_a = external_subsystem_rst_n[3:1];
-  assign _unused_dummy_b = external_ram_banks_set_retentive[3:1];
+  assign _unused_external_subsystem_rst_n = external_subsystem_rst_n[3:1];
+  assign _unused_external_ram_banks_set_retentive = external_ram_banks_set_retentive[3:1];
 
   cgra_top_wrapper cgra_top_wrapper_i (
       .clk_i,
