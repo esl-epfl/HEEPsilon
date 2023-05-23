@@ -71,8 +71,8 @@
 /**                                                                        **/
 /****************************************************************************/
 
-inline __attribute__((always_inline)) void pinHigh();
-inline __attribute__((always_inline)) void pinLow();
+inline __attribute__((always_inline)) void pinHigh( uint8_t pin );
+inline __attribute__((always_inline)) void pinLow(  uint8_t pin );
 
 uint64_t    getTime_cy();
 void        timeStart(    kcom_time_diff_t    *perf );
@@ -193,10 +193,18 @@ void kcom_subtractDead( kcom_time_t *time, kcom_time_t dead )
 #endif //ENABLE_TIME_MEASURE
 }
 
+void kcom_newVCDfile()
+{
+#if ENABLE_PIN_TOGGLE
+    pinHigh( PIN_TO_NEW_VCD );
+    pinLow(  PIN_TO_NEW_VCD );
+#endif
+}
+
 void kcom_perfRecordStart( kcom_time_diff_t *perf )
 {
 #if ENABLE_PIN_TOGGLE
-    pinHigh();
+    pinHigh( PIN_TO_CTRL_VCD );
 #endif //ENABLE_PIN_TOGGLE
 
 #if ENABLE_TIME_MEASURE
@@ -207,7 +215,7 @@ void kcom_perfRecordStart( kcom_time_diff_t *perf )
 void kcom_perfRecordStop( kcom_time_diff_t *perf )
 {
 #if ENABLE_PIN_TOGGLE
-    pinLow();
+    pinLow( PIN_TO_CTRL_VCD );
 #endif //ENABLE_PIN_TOGGLE
 
 #if ENABLE_TIME_MEASURE
@@ -476,17 +484,17 @@ __attribute__((optimize("O0"))) void kcom_waitingForIntr()
 /**                                                                        **/
 /****************************************************************************/
 
-inline __attribute__((always_inline)) void pinHigh()
+inline __attribute__((always_inline)) void pinHigh( uint8_t pin )
 {
 #if ENABLE_PIN_TOGGLE
-    gpio_write(&gpio, PIN_TO_TOGGLE, true );
+    gpio_write(&gpio, pin, true );
 #endif
 }
 
-inline __attribute__((always_inline)) void pinLow()
+inline __attribute__((always_inline)) void pinLow( uint8_t pin )
 {
 #if ENABLE_PIN_TOGGLE
-    gpio_write(&gpio, PIN_TO_TOGGLE, false );
+    gpio_write(&gpio, pin, false );
 #endif
 }
 
@@ -500,21 +508,15 @@ void pinInit()
     pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
     gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
     
-    gpio_res = gpio_init(gpio_params, &gpio);
-    if (gpio_res != kGpioOk) {
-        printf("Failed\n;");
-        return -1;
-    }
+    gpio_init(gpio_params, &gpio);
 
-    gpio_res = gpio_output_set_enabled(&gpio, PIN_TO_TOGGLE, true);
-    if (gpio_res != kGpioOk) {
-        printf("Failed\n;");
-        return -1;
-    }
+    gpio_write(&gpio, PIN_TO_NEW_VCD, false);
+    gpio_write(&gpio, PIN_TO_CTRL_VCD, false);
+
+    gpio_output_set_enabled(&gpio, PIN_TO_NEW_VCD, true);
+    gpio_output_set_enabled(&gpio, PIN_TO_CTRL_VCD, true);
 
     pad_control_set_mux(&pad_control, (ptrdiff_t)(PAD_CONTROL_PAD_MUX_I2C_SDA_REG_OFFSET), 1);
-
-    gpio_write(&gpio, PIN_TO_TOGGLE, false);
 #endif
 }
 

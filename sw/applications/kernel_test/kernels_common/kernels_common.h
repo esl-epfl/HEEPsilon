@@ -84,6 +84,8 @@
 #define PIN_TO_TOGGLE           30
 #endif //CTRL_VCD_W_PIN
 
+#define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
+#define PIN_TO_NEW_VCD          21
 
 #define ITERATIONS_PER_KERNEL   3
 #define PERF_PLOT_SCALE_DOWN    5 
@@ -221,6 +223,7 @@ void kcom_resetRand();
 
 void kcom_subtractDead( kcom_time_t         *time, kcom_time_t  dead );
 
+void kcom_newVCDfile();
 void kcom_perfRecordStart(  kcom_time_diff_t *perf );
 void kcom_perfRecordStop(   kcom_time_diff_t *perf );
 void kcom_perfRecordIntrSet( kcom_time_diff_t *perf );
