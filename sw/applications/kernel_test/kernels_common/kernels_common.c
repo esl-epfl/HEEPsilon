@@ -243,6 +243,7 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
     (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio; 
 
 #ifdef PRINT_ITERATION_VALUES
+    PRINTF("\n-----------------\n");
     PRINTF("i%d\tSW:%d\tCG:%d\n",it_idx, (run[ it_idx ]).sw, (run[ it_idx ]).cgra );
 #endif //PRINT_ITERATION_VALUES
 #endif //ENABLE_TIME_MEASURE

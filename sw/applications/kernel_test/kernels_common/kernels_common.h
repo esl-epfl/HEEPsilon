@@ -54,7 +54,7 @@
 #define ENABLE_PRINTF           1
 #define ENABLE_DEBUG_PRINTF     0
 
-#define PRINT_ITERATION_VALUES  1
+#define PRINT_ITERATION_VALUES  0
 #define PRINT_KERNEL_STATS      1  
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
