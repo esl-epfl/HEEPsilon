@@ -54,7 +54,7 @@
 #define ENABLE_PRINTF           1
 #define ENABLE_DEBUG_PRINTF     0
 
-#define PRINT_ITERATION_VALUES  0
+#define PRINT_ITERATION_VALUES  1
 #define PRINT_KERNEL_STATS      1  
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
@@ -99,7 +99,10 @@
 #define RANDOM_SEED                     12346
 #define PIN_TO_CTRL_VCD                 0   // In sync w/ hardware, do not change
 
-#define CGRA_ACCESS_FLAT_COST_CYCLES    55  // Measured in Questasim, do not change
+#define CGRA_ACCESS_FLAT_COST_CYCLES    121  // Measured in Questasim, do not change
+// 22+31 = 53
+
+
 
 /* Macros */
 
