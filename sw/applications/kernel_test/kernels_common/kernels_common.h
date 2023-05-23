@@ -87,7 +87,7 @@
 #define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
 #define PIN_TO_NEW_VCD          21
 
-#define ITERATIONS_PER_KERNEL   3
+#define ITERATIONS_PER_KERNEL   10
 #define PERF_PLOT_SCALE_DOWN    5 
 
 
@@ -101,8 +101,7 @@
 #define RANDOM_SEED                     12346
 #define PIN_TO_CTRL_VCD                 0   // In sync w/ hardware, do not change
 
-#define CGRA_ACCESS_FLAT_COST_CYCLES    121  // Measured in Questasim, do not change
-// 22+31 = 53
+#define CGRA_ACCESS_FLAT_COST_CYCLES    90  // Measured in Questasim, do not change
 
 
 

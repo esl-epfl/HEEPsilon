@@ -75,13 +75,15 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = { 
+        // Variable execution time
+        &reve_kernel,
         &strs_kernel, 
         &bitc_kernel,
+        // Constant execution time
+        &gsm_kernel,
         &sha2_kernel, 
         &sqrt_kernel, 
-        &gsm_kernel,
         &sha_kernel,
-        &reve_kernel,
         // Add all other kernels here
     };
 
