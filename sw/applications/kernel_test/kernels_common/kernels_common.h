@@ -51,16 +51,16 @@
 /****************************************************************************/
 
 /* Operation Configurations */
-#define ENABLE_PRINTF           0
+#define ENABLE_PRINTF           1
 #define ENABLE_DEBUG_PRINTF     0
 
-#define PRINT_ITERATION_VALUES  0
+#define PRINT_ITERATION_VALUES  1
 #define PRINT_KERNEL_STATS      1  
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           1
+#define PRINT_RESULTS           0
 #define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
@@ -68,7 +68,7 @@
 #define WATCHDOG_CYCLES         100000
 
 #define ENABLE_PIN_TOGGLE       1
-#define ANALYZE_EVERYTHING      0
+#define ANALYZE_EVERYTHING      1
 #define CTRL_VCD_W_PIN          0
 
 
@@ -84,8 +84,10 @@
 #define PIN_TO_TOGGLE           30
 #endif //CTRL_VCD_W_PIN
 
+#define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
+#define PIN_TO_NEW_VCD          21
 
-#define ITERATIONS_PER_KERNEL   5
+#define ITERATIONS_PER_KERNEL   3
 #define PERF_PLOT_SCALE_DOWN    5 
 
 
@@ -99,7 +101,10 @@
 #define RANDOM_SEED                     12346
 #define PIN_TO_CTRL_VCD                 0   // In sync w/ hardware, do not change
 
-#define CGRA_ACCESS_FLAT_COST_CYCLES    55  // Measured in Questasim, do not change
+#define CGRA_ACCESS_FLAT_COST_CYCLES    121  // Measured in Questasim, do not change
+// 22+31 = 53
+
+
 
 /* Macros */
 
@@ -218,6 +223,7 @@ void kcom_resetRand();
 
 void kcom_subtractDead( kcom_time_t         *time, kcom_time_t  dead );
 
+void kcom_newVCDfile();
 void kcom_perfRecordStart(  kcom_time_diff_t *perf );
 void kcom_perfRecordStop(   kcom_time_diff_t *perf );
 void kcom_perfRecordIntrSet( kcom_time_diff_t *perf );

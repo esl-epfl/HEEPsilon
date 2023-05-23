@@ -71,10 +71,10 @@
 /**                                                                        **/
 /****************************************************************************/
 
-inline __attribute__((always_inline)) void pinHigh();
-inline __attribute__((always_inline)) void pinLow();
+inline __attribute__((always_inline)) void pinHigh( uint8_t pin );
+inline __attribute__((always_inline)) void pinLow(  uint8_t pin );
 
-uint64_t    getTime();
+uint64_t    getTime_cy();
 void        timeStart(    kcom_time_diff_t    *perf );
 void        timeStop(     kcom_time_diff_t    *perf );
 
@@ -193,10 +193,18 @@ void kcom_subtractDead( kcom_time_t *time, kcom_time_t dead )
 #endif //ENABLE_TIME_MEASURE
 }
 
+void kcom_newVCDfile()
+{
+#if ENABLE_PIN_TOGGLE
+    pinHigh( PIN_TO_NEW_VCD );
+    pinLow(  PIN_TO_NEW_VCD );
+#endif
+}
+
 void kcom_perfRecordStart( kcom_time_diff_t *perf )
 {
 #if ENABLE_PIN_TOGGLE
-    pinHigh();
+    pinHigh( PIN_TO_CTRL_VCD );
 #endif //ENABLE_PIN_TOGGLE
 
 #if ENABLE_TIME_MEASURE
@@ -207,7 +215,7 @@ void kcom_perfRecordStart( kcom_time_diff_t *perf )
 void kcom_perfRecordStop( kcom_time_diff_t *perf )
 {
 #if ENABLE_PIN_TOGGLE
-    pinLow();
+    pinLow( PIN_TO_CTRL_VCD );
 #endif //ENABLE_PIN_TOGGLE
 
 #if ENABLE_TIME_MEASURE
@@ -233,6 +241,10 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
     (run[ it_idx ]).repo        = perf->cols_max.cyc_act + perf->cols_max.cyc_stl;
     (run[ it_idx ]).repo_conf   = 0;   
     (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio; 
+
+#ifdef PRINT_ITERATION_VALUES
+    PRINTF("i%d\tSW:%d\tCG:%d\n",it_idx, (run[ it_idx ]).sw, (run[ it_idx ]).cgra );
+#endif //PRINT_ITERATION_VALUES
 #endif //ENABLE_TIME_MEASURE
 }
 
@@ -245,7 +257,6 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
 
     for( uint32_t i = 0; i < it_n; i++ )
     {
-        run[i].cgra         = run[i].cgra - run[0].conf;
         run[i].conf         = run[0].conf;
         run[i].repo_conf    = run[0].repo_conf; 
     }
@@ -284,7 +295,7 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
     {
         /* Get the population average. */
         ((kcom_param_t*)avg)[p_idx] = 0;
-        for( uint32_t it_idx = 0; it_idx < iterations; it_idx++ )
+        for( uint32_t it_idx = 1; it_idx < iterations+1; it_idx++ )
         {
             /* Get the sum of values. */
             ((kcom_param_t*)avg)[p_idx] += ((kcom_param_t*)(&(run[it_idx])))[p_idx];
@@ -294,7 +305,7 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
     
         /* Get the deviation (sigma). */
         ((kcom_param_t*)stdev)[p_idx] = 0; 
-        for( uint32_t it_idx = 0; it_idx < iterations; it_idx++ )
+        for( uint32_t it_idx = 1; it_idx < iterations+1; it_idx++ )
         {
              /* Get diff with avg. */
             int32_t diff = (int32_t)(((int32_t)((kcom_param_t*)&(run[it_idx]))[p_idx]) -  (int32_t)(((kcom_param_t*)avg)[p_idx]));
@@ -473,17 +484,17 @@ __attribute__((optimize("O0"))) void kcom_waitingForIntr()
 /**                                                                        **/
 /****************************************************************************/
 
-inline __attribute__((always_inline)) void pinHigh()
+inline __attribute__((always_inline)) void pinHigh( uint8_t pin )
 {
 #if ENABLE_PIN_TOGGLE
-    gpio_write(&gpio, PIN_TO_TOGGLE, true );
+    gpio_write(&gpio, pin, true );
 #endif
 }
 
-inline __attribute__((always_inline)) void pinLow()
+inline __attribute__((always_inline)) void pinLow( uint8_t pin )
 {
 #if ENABLE_PIN_TOGGLE
-    gpio_write(&gpio, PIN_TO_TOGGLE, false );
+    gpio_write(&gpio, pin, false );
 #endif
 }
 
@@ -497,21 +508,15 @@ void pinInit()
     pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
     gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
     
-    gpio_res = gpio_init(gpio_params, &gpio);
-    if (gpio_res != kGpioOk) {
-        printf("Failed\n;");
-        return -1;
-    }
+    gpio_init(gpio_params, &gpio);
 
-    gpio_res = gpio_output_set_enabled(&gpio, PIN_TO_TOGGLE, true);
-    if (gpio_res != kGpioOk) {
-        printf("Failed\n;");
-        return -1;
-    }
+    gpio_write(&gpio, PIN_TO_NEW_VCD, false);
+    gpio_write(&gpio, PIN_TO_CTRL_VCD, false);
+
+    gpio_output_set_enabled(&gpio, PIN_TO_NEW_VCD, true);
+    gpio_output_set_enabled(&gpio, PIN_TO_CTRL_VCD, true);
 
     pad_control_set_mux(&pad_control, (ptrdiff_t)(PAD_CONTROL_PAD_MUX_I2C_SDA_REG_OFFSET), 1);
-
-    gpio_write(&gpio, PIN_TO_TOGGLE, false);
 #endif
 }
 
@@ -527,7 +532,8 @@ void timerInit()
 
     rv_timer_tick_params_t tick_params;
 
-    rv_timer_approximate_tick_params( freq_hz, (uint64_t) (TICK_FREQ_HZ), &tick_params );
+    // The same frequency is provaided to get one tick per cycle. 
+    rv_timer_approximate_tick_params( freq_hz, freq_hz, &tick_params ); 
     rv_timer_set_tick_params(&timer, HART_ID, tick_params); 
 
     // Juan: see if i cannot remove this!
@@ -538,7 +544,7 @@ void timerInit()
     
 }
 
-uint64_t getTime( )
+uint64_t getTime_cy( )
 {
     static uint64_t out;
     rv_timer_counter_read( &timer, HART_ID, &out );
@@ -548,14 +554,14 @@ uint64_t getTime( )
 void timeStart( kcom_time_diff_t *perf )
 {
 #if ENABLE_TIME_MEASURE
-    perf->start_cy = getTime();
+    perf->start_cy = getTime_cy();
 #endif //ENABLE_TIME_MEASURE
 }
 
 void timeStop( kcom_time_diff_t *perf )
 {
 #if ENABLE_TIME_MEASURE
-    perf->end_cy = getTime();
+    perf->end_cy = getTime_cy();
     perf->spent_cy = perf->end_cy - perf->start_cy;
 #endif //ENABLE_TIME_MEASURE
 }
