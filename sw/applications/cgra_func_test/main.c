@@ -47,7 +47,7 @@ dif_plic_irq_id_t intr_num;
 void handler_irq_external(void) {
     // Claim/clear interrupt
     plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
-    if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
+    if (plic_res == kPlicOk && intr_num == CGRA_INTR) {
         cgra_intr_flag = 1;
     }
 }
@@ -62,20 +62,20 @@ int main(void) {
   rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
   plic_res = dif_plic_init(rv_plic_params, &rv_plic);
 
-  if (plic_res != kDifPlicOk) {
+  if (plic_res != kPlicOk) {
     printf("PLIC init failed\n;");
     return EXIT_FAILURE;
   }
 
   // Set CGRA priority to 1 (target threshold is by default 0) to trigger an interrupt to the target (the processor)
   plic_res = dif_plic_irq_set_priority(&rv_plic, CGRA_INTR, 1);
-  if (plic_res != kDifPlicOk) {
+  if (plic_res != kPlicOk) {
     printf("Set CGRA interrupt priority to 1 failed\n;");
     return EXIT_FAILURE;
   }
 
   plic_res = dif_plic_irq_set_enabled(&rv_plic, CGRA_INTR, 0, kDifPlicToggleEnabled);
-  if (plic_res != kDifPlicOk) {
+  if (plic_res != kPlicOk) {
     printf("Enable CGRA interrupt failed\n;");
     return EXIT_FAILURE;
   }

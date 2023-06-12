@@ -30,17 +30,12 @@ volatile int32_t cgra_res[OUTPUT_LENGTH] = {0};
 int32_t exp_res[OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
-dif_plic_params_t rv_plic_params;
-dif_plic_t rv_plic;
-dif_plic_result_t plic_res;
-dif_plic_irq_id_t intr_num;
-
-void handler_irq_external(void) {
+void handler_irq_ext(plic_irq_id_t id) {
     // Claim/clear interrupt
-    plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
-    if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
-      cgra_intr_flag = 1;
-    }
+    // plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num); // @ToDo try to claim from inside
+  if( id == CGRA_INTR) {
+    cgra_intr_flag = 1;
+  }
 }
 
 int main(void) {
@@ -52,26 +47,9 @@ int main(void) {
   //PRINTF("\rdone\n");
 
   // Init the PLIC
-  rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
-  plic_res = dif_plic_init(rv_plic_params, &rv_plic);
-
-  if (plic_res != kDifPlicOk) {
-    printf("PLIC init failed\n;");
-    return EXIT_FAILURE;
-  }
-
-  // Set CGRA priority to 1 (target threshold is by default 0) to trigger an interrupt to the target (the processor)
-  plic_res = dif_plic_irq_set_priority(&rv_plic, CGRA_INTR, 1);
-  if (plic_res != kDifPlicOk) {
-    printf("Set CGRA interrupt priority to 1 failed\n;");
-    return EXIT_FAILURE;
-  }
-
-  plic_res = dif_plic_irq_set_enabled(&rv_plic, CGRA_INTR, 0, kDifPlicToggleEnabled);
-  if (plic_res != kDifPlicOk) {
-    printf("Enable CGRA interrupt failed\n;");
-    return EXIT_FAILURE;
-  }
+  plic_Init();
+  plic_irq_set_priority(CGRA_INTR, 1);
+  plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
 
   // Enable interrupt on processor side
   // Enable global interrupt for machine-level interrupts
@@ -140,12 +118,6 @@ int main(void) {
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
-  // Complete the interrupt
-  plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
-  if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
-    printf("CGRA interrupt complete failed\n");
-    return EXIT_FAILURE;
-  }
 
   // Check the cgra values are correct
   errors=0;
@@ -211,12 +183,6 @@ int main(void) {
   cgra_intr_flag=0;
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
-  }
-  // Complete the interrupt
-  plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
-  if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
-    printf("CGRA interrupt complete failed\n");
-    return EXIT_FAILURE;
   }
 
   // Check the cgra values are correct
