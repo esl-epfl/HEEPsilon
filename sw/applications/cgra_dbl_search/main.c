@@ -31,8 +31,6 @@ int32_t exp_res[OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
 void handler_irq_ext(plic_irq_id_t id) {
-    // Claim/clear interrupt
-    // plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num); // @ToDo try to claim from inside
   if( id == CGRA_INTR) {
     cgra_intr_flag = 1;
   }
