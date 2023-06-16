@@ -6,9 +6,9 @@ module xilinx_cgra_x_heep_wrapper
   import obi_pkg::*;
   import reg_pkg::*;
 #(
-    parameter PULP_XPULP    = 0,
+    parameter COREV_PULP    = 0,
     parameter FPU           = 0,
-    parameter PULP_ZFINX    = 0,
+    parameter ZFINX    = 0,
     parameter CLK_LED_COUNT_LENGTH = 27
 ) (
     inout logic         clk_i,
@@ -90,9 +90,9 @@ module xilinx_cgra_x_heep_wrapper
   );
 
   cgra_x_heep_top #(
-        .PULP_XPULP (0),
+        .COREV_PULP (0),
         .FPU        (0),
-        .PULP_ZFINX (0)
+        .ZFINX (0)
       ) cgra_x_heep_top_i (
         .clk_i(clk_gen),
         .rst_ni(rst_n),

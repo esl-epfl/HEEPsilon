@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_x_heep_top #(
-    parameter PULP_XPULP = 0,
-    parameter FPU        = 0,
-    parameter PULP_ZFINX = 0,
+    parameter COREV_PULP  = 0,
+    parameter FPU         = 0,
+    parameter ZFINX       = 0,
     parameter EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS
 ) (
     inout logic clk_i,
@@ -114,9 +114,9 @@ module cgra_x_heep_top #(
   if_xif #() ext_if ();
 
   x_heep_system #(
-      .PULP_XPULP(PULP_XPULP),
+      .COREV_PULP(COREV_PULP),
       .FPU(FPU),
-      .PULP_ZFINX(PULP_ZFINX),
+      .ZFINX(ZFINX),
       .EXT_XBAR_NMASTER(EXT_DOMAINS_RND)
   ) x_heep_system_i (
       .clk_i,

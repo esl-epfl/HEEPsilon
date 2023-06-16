@@ -39,7 +39,6 @@ void handler_irq_ext(plic_irq_id_t id) {
 int main(void) {
 
   //PRINTF("Init CGRA context memory...\n");
-  printf("Hello!\n");
   cgra_cmem_init(cgra_imem_bistream, cgra_kem_bitstream);
   //printf("Bye!\n");
   //PRINTF("\rdone\n");

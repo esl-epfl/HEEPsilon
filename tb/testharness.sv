@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module testharness #(
-    parameter PULP_XPULP    = 0,
+    parameter COREV_PULP    = 0,
     parameter FPU           = 0,
-    parameter PULP_ZFINX    = 0,
+    parameter ZFINX    = 0,
     parameter JTAG_DPI      = 0,
     parameter CLK_FREQUENCY = 'd100_000  //KHz
 ) (
@@ -56,9 +56,9 @@ module testharness #(
   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso;
 
   cgra_x_heep_top #(
-      .PULP_XPULP(PULP_XPULP),
+      .COREV_PULP(COREV_PULP),
       .FPU(FPU),
-      .PULP_ZFINX(PULP_ZFINX)
+      .ZFINX(ZFINX)
   ) cgra_x_heep_top_i (
       .clk_i,
       .rst_ni,

@@ -1727,7 +1727,7 @@ module cv32e40p_id_stage
   endgenerate
 
   generate
-    if (!COREV_PULP) begin : gen_no_pulp_xpulp_assertions
+    if (!COREV_PULP) begin : gen_no_COREV_PULP_assertions
 
       // Check that PULP extension opcodes are decoded as illegal when PULP extension is not enabled
       property p_illegal_1;

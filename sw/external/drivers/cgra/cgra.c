@@ -14,7 +14,7 @@ void cgra_cmem_init(uint32_t cgra_imem_bistream[], uint32_t cgra_kem_bitstream[]
 {
   int32_t *cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS);
 
-  printf("Loading Instruction memory in %08x\n", cgra_cmem_ptr);
+  printf("Loading IM@%08x\n", cgra_cmem_ptr);
   for (int i=0; i<CGRA_IMEM_SIZE; i++) {
     printf("value was: %u",*cgra_cmem_ptr);
     printf("I[%u]=%08x\n",i, cgra_imem_bistream[i]);
