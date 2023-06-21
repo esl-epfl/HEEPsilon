@@ -121,10 +121,7 @@ module xilinx_cgra_x_heep_wrapper
         .spi2_csb_io,
         .spi2_sck_o,
         .i2c_scl_io,
-        .i2c_sda_io,
-        .external_subsystem_powergate_switch_o(),
-        .external_subsystem_powergate_switch_ack_i(),
-        .external_subsystem_powergate_iso_o()
+        .i2c_sda_io
   );
 
   assign exit_value_o = exit_value[0];

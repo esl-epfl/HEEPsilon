@@ -5,9 +5,7 @@
 module cgra_x_heep_top #(
     parameter COREV_PULP  = 0,
     parameter FPU         = 0,
-    parameter ZFINX       = 0,
-    parameter EXT_XBAR_NMASTER_RND = cgra_x_heep_pkg::EXT_XBAR_NMASTER == 0 ? 1 : cgra_x_heep_pkg::EXT_XBAR_NMASTER,
-    parameter EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS
+    parameter ZFINX       = 0
 ) (
     inout logic clk_i,
     inout logic rst_ni,
@@ -44,11 +42,6 @@ module cgra_x_heep_top #(
     inout logic [1:0] spi2_csb_io,
     inout logic       spi2_sck_o,
 
-    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_o,
-    input  logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_ack_i,
-    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_o,
-
-
     inout logic i2c_scl_io,
     inout logic i2c_sda_io
 );
@@ -58,8 +51,8 @@ module cgra_x_heep_top #(
   import cgra_x_heep_pkg::*;
 
   // External xbar master/slave and peripheral ports
-  obi_req_t   [EXT_XBAR_NMASTER_RND-1:0] ext_xbar_master_req;
-  obi_resp_t  [EXT_XBAR_NMASTER_RND-1:0] ext_xbar_master_resp;
+  obi_req_t   [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_req;
+  obi_resp_t  [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_resp;
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
@@ -68,25 +61,22 @@ module cgra_x_heep_top #(
   // External interrupts
   logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_intr_vector;
 
-  // External subsystems
-  logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_n;
-  logic [EXT_DOMAINS_RND-1:0] external_ram_banks_set_retentive;
-
   logic cgra_int;
   logic cgra_enable;
   logic cgra_logic_rst_n;
   logic cgra_ram_banks_set_retentive;
 
-  if ( EXT_DOMAINS_RND > 1 ) begin
-    logic [EXT_DOMAINS_RND-1:1] _unused_external_subsystem_rst_n;
-    logic [EXT_DOMAINS_RND-1:1] _unused_external_ram_banks_set_retentive;
-    assign _unused_external_subsystem_rst_n         = external_subsystem_rst_n        [EXT_DOMAINS_RND-1:1];
-    assign _unused_external_ram_banks_set_retentive = external_ram_banks_set_retentive[EXT_DOMAINS_RND-1:1];
-  end
+  // External subsystems
+  logic external_subsystem_rst_n;
+  logic external_ram_banks_set_retentive;
+  logic external_subsystem_powergate_switch;
+  logic external_subsystem_powergate_switch_ack;
+  logic external_subsystem_powergate_iso;
+
   // CGRA logic clock gating unit enable (always-on in this case)
   assign cgra_enable                              = 1'b1;
-  assign cgra_logic_rst_n                         = external_subsystem_rst_n        [0];
-  assign cgra_ram_banks_set_retentive             = external_ram_banks_set_retentive[0];
+  assign cgra_logic_rst_n                         = external_subsystem_rst_n;
+  assign cgra_ram_banks_set_retentive             = external_ram_banks_set_retentive;
   
   always_comb begin
     // All interrupt lines set to zero by default
@@ -119,7 +109,7 @@ module cgra_x_heep_top #(
       .COREV_PULP(COREV_PULP),
       .FPU(FPU),
       .ZFINX(ZFINX),
-      .EXT_XBAR_NMASTER(EXT_XBAR_NMASTER_RND)
+      .EXT_XBAR_NMASTER(CGRA_XBAR_NMASTER)
   ) x_heep_system_i (
       .clk_i,
       .rst_ni,
@@ -198,9 +188,9 @@ module cgra_x_heep_top #(
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
 
-      .external_subsystem_powergate_switch_o(external_subsystem_powergate_switch_o),
-      .external_subsystem_powergate_switch_ack_i(external_subsystem_powergate_switch_ack_i),
-      .external_subsystem_powergate_iso_o(external_subsystem_powergate_iso_o),
+      .external_subsystem_powergate_switch_o(external_subsystem_powergate_switch),
+      .external_subsystem_powergate_switch_ack_i(external_subsystem_powergate_switch_ack),
+      .external_subsystem_powergate_iso_o(external_subsystem_powergate_iso),
 
       .external_subsystem_rst_no(external_subsystem_rst_n),
       .external_ram_banks_set_retentive_o(external_ram_banks_set_retentive)

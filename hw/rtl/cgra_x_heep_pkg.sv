@@ -8,12 +8,12 @@ package cgra_x_heep_pkg;
   import core_v_mini_mcu_pkg::*;
 
   // One master port per CGRA column
-  localparam EXT_XBAR_NMASTER = 4;
+  localparam CGRA_XBAR_NMASTER = 4;
   // One slave port to the CGRA context memory
   localparam EXT_XBAR_NSLAVE = 1;
 
-  localparam int unsigned LOG_EXT_XBAR_NMASTER = EXT_XBAR_NMASTER > 1 ? $clog2(
-      EXT_XBAR_NMASTER
+  localparam int unsigned LOG_EXT_XBAR_NMASTER = CGRA_XBAR_NMASTER > 1 ? $clog2(
+      CGRA_XBAR_NMASTER
   ) : 32'd1;
   localparam int unsigned LOG_EXT_XBAR_NSLAVE = EXT_XBAR_NSLAVE > 1 ? $clog2(
       EXT_XBAR_NSLAVE

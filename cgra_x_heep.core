@@ -36,6 +36,7 @@ filesets:
   files_verilator_waiver:
     files:
     - tb/tb.vlt
+    - hw/rtl/cgra_top.vlt
     file_type: vlt
 
   systemverilog_only_simjtag:
@@ -135,19 +136,11 @@ parameters:
     datatype: int
     paramtype: vlogparam
     default: 0
-  USE_EXTERNAL_DEVICE_EXAMPLE:
-    datatype: bool
-    paramtype: vlogdefine
-    default: false
   USE_UPF:
     datatype: bool
     paramtype: vlogdefine
     default: false
   SYNTHESIS:
-    datatype: bool
-    paramtype: vlogdefine
-    default: false
-  FPGA_NETLIST:
     datatype: bool
     paramtype: vlogdefine
     default: false
