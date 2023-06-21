@@ -1150,7 +1150,7 @@ module cv32e40p_core
   endgenerate
 
   generate
-    if (!COREV_PULP) begin : gen_no_COREV_PULP_assertions
+    if (!COREV_PULP) begin : gen_no_pulp_xpulp_assertions
 
       // Illegal, ECALL, EBRK checks excluded for PULP due to other definition for for Hardware Loop
 

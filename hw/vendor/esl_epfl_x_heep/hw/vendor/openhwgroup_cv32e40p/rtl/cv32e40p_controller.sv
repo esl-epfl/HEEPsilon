@@ -1538,7 +1538,7 @@ endgenerate
   a_pulp_cluster_excluded_states : assert property(p_pulp_cluster_excluded_states);
 
   generate
-  if (COREV_PULP) begin : gen_COREV_PULP_assertions
+  if (COREV_PULP) begin : gen_pulp_xpulp_assertions
 
     // HWLoop 0 and 1 having target address constraints
     property p_hwlp_same_target_address;
@@ -1547,7 +1547,7 @@ endgenerate
 
     a_hwlp_same_target_address : assert property(p_hwlp_same_target_address) else $warning("%t, HWLoops target address do not respect constraints", $time);
 
-  end else begin : gen_no_COREV_PULP_assertions
+  end else begin : gen_no_pulp_xpulp_assertions
 
     property p_no_hwlp;
        @(posedge clk) (1'b1) |-> ((pc_mux_o != PC_HWLOOP) && (ctrl_fsm_cs != DECODE_HWLOOP) &&
