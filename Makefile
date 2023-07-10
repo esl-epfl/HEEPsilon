@@ -9,7 +9,7 @@
 
 TARGET 		?= sim
 FPGA_BOARD 	?= pynq-z2
-
+PORT		?= /dev/ttyUSB2
 
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
@@ -73,7 +73,7 @@ run-fpga-com:
 	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
 	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
 	sudo $(MAKE) flash-prog ;\
-	sudo picocom -b 115200 -r -l --imap lfcrlf /dev/ttyUSB2
+	sudo picocom -b 115200 -r -l --imap lfcrlf $(PORT)
 
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
