@@ -12,7 +12,7 @@
 #include "cgra_bitstream.h"
 #include "fxp.h"
 
-// #define DEBUG
+#define DEBUG
 
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
