@@ -17,14 +17,14 @@ EXTERNAL_DOMAINS = 1
 
 export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
 include $(HEEP_DIR)Makefile.venv
-	
 
-# Generates mcu files. First the mcu-gen from X-HEEP is called. 
-# This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP. 
+
+# Generates mcu files. First the mcu-gen from X-HEEP is called.
+# This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.
 mcu-gen:
 	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} $(MAKECMDGOALS)
 	cd hw/vendor/esl_epfl_x_heep &&\
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl  
+	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
 ## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
@@ -54,14 +54,22 @@ vcs-sim:
 ## Generates the build output for a given application
 ## Uses verilator to simulate the HW model and run the FW
 ## UART Dumping in uart0.log to show recollected results
-run-verilator: 
+run-verilator:
 	$(MAKE) app PROJECT=$(PROJECT)
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/build/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
 
+# Builds the program and uses flash-load to run on the FPGA
 run-fpga:
+	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
+	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
+	sudo $(MAKE) flash-prog ;\
+
+# Builds the program and uses flash-load to run on the FPGA.
+# Additionally opens picocom (if available) to see the output.
+run-fpga-com:
 	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
 	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
 	sudo $(MAKE) flash-prog ;\
