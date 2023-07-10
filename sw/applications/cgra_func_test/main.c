@@ -12,7 +12,7 @@
 #include "cgra_bitstream.h"
 #include "fxp.h"
 
-#define DEBUG
+// #define DEBUG
 
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
@@ -31,15 +31,15 @@ int32_t cgra_res[CGRA_N_COLS][CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
 
 int32_t stimuli[CGRA_N_ROWS][INPUT_LENGTH] = {
   144, 4, 5, -23463,
-  -12, 16, 5, 0, 
-  1033, 8, 5, 0, 
-  -199, 128, 5, 1, 
+  -12, 16, 5, 0,
+  1033, 8, 5, 0,
+  -199, 128, 5, 1,
 };
 
 int32_t exp_rc_c0[CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
-void handler_irq_ext(plic_irq_id_t id) {
+void handler_irq_ext(uint32_t id) {
   if( id == CGRA_INTR) {
     cgra_intr_flag = 1;
   }
@@ -171,7 +171,7 @@ int main(void) {
   column_idx = 3;
   cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[3][cgra_slot], column_idx);
   cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res[3][cgra_slot], column_idx);
-  
+
   // Launch CGRA kernel
   cgra_set_kernel(&cgra, cgra_slot, CGRA_FUNC_TEST);
 
