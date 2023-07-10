@@ -12,7 +12,7 @@
 #include "cgra_bitstream.h"
 #include "stimuli.h"
 
-#define DEBUG
+// #define DEBUG
 
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
@@ -30,7 +30,7 @@ volatile int32_t cgra_res[OUTPUT_LENGTH] = {0};
 int32_t exp_res[OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
-void handler_irq_ext(plic_irq_id_t id) {
+void handler_irq_ext(uint32_t id) {
   if( id == CGRA_INTR) {
     cgra_intr_flag = 1;
   }
@@ -40,7 +40,7 @@ int main(void) {
 
   //PRINTF("Init CGRA context memory...\n");
   cgra_cmem_init(cgra_imem_bistream, cgra_kem_bitstream);
-  //printf("Bye!\n");
+  //PRINTF("Bye!\n");
   //PRINTF("\rdone\n");
 
   // Init the PLIC
@@ -100,7 +100,7 @@ int main(void) {
   // input size
   cgra_input[cgra_slot][1] = INPUT_LENGTH-1;
 
-  printf("Run double minimum search on CGRA...\n");
+  PRINTF("Run double minimum search on CGRA...\n");
   cgra_perf_cnt_enable(&cgra, 1);
   column_idx;
   // Set CGRA kernel pointers
@@ -120,16 +120,16 @@ int main(void) {
   errors=0;
   for (int i=0; i<OUTPUT_LENGTH; i++) {
     if (cgra_res[i] != exp_res[i]) {
-      printf("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
-      printf("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
       errors++;
     }
   }
 
-  printf("CGRA double minimum check finished with %d errors\n", errors);
+  PRINTF("CGRA double minimum check finished with %d errors\n", errors);
 
   // Performance counter display
-  printf("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
+  PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  _____   ____  _    _ ____  _      ______   __  __          __   __   _____ ______          _____   _____ _    _  //
@@ -139,7 +139,7 @@ int main(void) {
   // | |__| | |__| | |__| | |_) | |____| |____  | |  | |/ ____ \  / . \   ____) | |____ / ____ \| | \ \| |____| |  | | //
   // |_____/ \____/ \____/|____/|______|______| |_|  |_/_/    \_\/_/ \_\ |_____/|______/_/    \_\_|  \_\\_____|_|  |_| //
   //                                                                                                                   //
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                                                                                             
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   exp_res[0] = stimuli[0];
   exp_res[1] = INT32_MIN;
@@ -167,7 +167,7 @@ int main(void) {
   // input size
   cgra_input[cgra_slot][1] = INPUT_LENGTH-1;
 
-  printf("Run double maximum search on CGRA...\n");
+  PRINTF("Run double maximum search on CGRA...\n");
   cgra_perf_cnt_enable(&cgra, 1);
   // Set CGRA kernel pointers
   column_idx = 0;
@@ -186,16 +186,16 @@ int main(void) {
   errors=0;
   for (int i=0; i<OUTPUT_LENGTH; i++) {
     if (cgra_res[i] != exp_res[i]) {
-      printf("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
-      printf("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
       errors++;
     }
   }
 
-  printf("CGRA double maximum check finished with %d errors\n", errors);
+  PRINTF("CGRA double maximum check finished with %d errors\n", errors);
 
   // Performance counter display
-  printf("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
+  PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
   column_idx = 0;
   PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
@@ -209,5 +209,5 @@ int main(void) {
   PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
 
-  return EXIT_SUCCESS;
+  return errors ? EXIT_FAILURE : EXIT_SUCCESS;
 }
