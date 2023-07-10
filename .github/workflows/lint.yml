@@ -44,6 +44,7 @@ jobs:
     - name: Install requirements
       run: |
         make venv
+        . ./.venv/bin/activate
         echo "PATH=`pwd`/.venv/bin:$PATH" >> $GITHUB_ENV
         pip install -r hw/vendor/esl_epfl_x_heep/python-requirements.txt
     - name: Install Verible
@@ -57,5 +58,6 @@ jobs:
         echo "PATH=$PATH:/tools/verible/bin" >> $GITHUB_ENV
     - name: Run Gen
       run: |
+        . ./.venv/bin/activate
         make mcu-gen
         hw/vendor/esl_epfl_x_heep/util/git-diff.py --error-msg "::error ::Found differences in SystemVerilog files generated with default configuration."
