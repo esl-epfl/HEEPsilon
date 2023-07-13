@@ -6,8 +6,7 @@ module tb_top #(
     parameter COREV_PULP                  = 0,
     parameter FPU                         = 0,
     parameter ZFINX                       = 0,
-    parameter JTAG_DPI                    = 0,
-    parameter USE_EXTERNAL_DEVICE_EXAMPLE = 1
+    parameter JTAG_DPI                    = 0
 );
 
   // comment to record execution trace
@@ -194,7 +193,6 @@ module tb_top #(
       .FPU                        (FPU),
       .ZFINX                      (ZFINX),
       .JTAG_DPI                   (JTAG_DPI),
-      .USE_EXTERNAL_DEVICE_EXAMPLE(USE_EXTERNAL_DEVICE_EXAMPLE),
       .CLK_FREQUENCY              (CLK_FREQUENCY_KHz)
   ) testharness_i (
       .clk_i               (clk_w),
