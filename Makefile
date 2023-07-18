@@ -77,3 +77,14 @@ run-fpga-com:
 
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
+
+# Add a dependency on the existing app target of XHEEP to create a link to the build folder
+app: link_build
+
+clean-app: link_rm
+
+link_build:
+	ln -sf ../hw/vendor/esl_epfl_x_heep/sw/build sw/build
+
+link_rm:
+	rm sw/build
