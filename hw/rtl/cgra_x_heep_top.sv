@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module cgra_x_heep_top #(
-    parameter COREV_PULP  = 0,
-    parameter FPU         = 0,
-    parameter ZFINX       = 0
+    parameter COREV_PULP = 0,
+    parameter FPU        = 0,
+    parameter ZFINX      = 0
 ) (
     inout logic clk_i,
     inout logic rst_ni,
@@ -51,8 +51,8 @@ module cgra_x_heep_top #(
   import cgra_x_heep_pkg::*;
 
   // External xbar master/slave and peripheral ports
-  obi_req_t   [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_req;
-  obi_resp_t  [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_resp;
+  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_req;
+  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_resp;
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
@@ -74,9 +74,9 @@ module cgra_x_heep_top #(
   logic external_subsystem_powergate_iso;
 
   // CGRA logic clock gating unit enable (always-on in this case)
-  assign cgra_enable                              = 1'b1;
-  assign cgra_logic_rst_n                         = external_subsystem_rst_n;
-  assign cgra_ram_banks_set_retentive             = external_ram_banks_set_retentive;
+  assign cgra_enable                  = 1'b1;
+  assign cgra_logic_rst_n             = external_subsystem_rst_n;
+  assign cgra_ram_banks_set_retentive = external_ram_banks_set_retentive;
 
   always_comb begin
     // All interrupt lines set to zero by default
@@ -123,29 +123,29 @@ module cgra_x_heep_top #(
       .exit_valid_o,
       .uart_rx_i,
       .uart_tx_o,
-      .gpio_0_io (    gpio_io[0]),
-      .gpio_1_io (    gpio_io[1]),
-      .gpio_2_io (    gpio_io[2]),
-      .gpio_3_io (    gpio_io[3]),
-      .gpio_4_io (    gpio_io[4]),
-      .gpio_5_io (    gpio_io[5]),
-      .gpio_6_io (    gpio_io[6]),
-      .gpio_7_io (    gpio_io[7]),
-      .gpio_8_io (    gpio_io[8]),
-      .gpio_9_io (    gpio_io[9]),
-      .gpio_10_io(    gpio_io[10]),
-      .gpio_11_io(    gpio_io[11]),
-      .gpio_12_io(    gpio_io[12]),
-      .gpio_13_io(    gpio_io[13]),
-      .gpio_14_io(    gpio_io[14]),
-      .gpio_15_io(    gpio_io[15]),
-      .gpio_16_io(    gpio_io[16]),
-      .gpio_17_io(    gpio_io[17]),
+      .gpio_0_io     (gpio_io[0]),
+      .gpio_1_io     (gpio_io[1]),
+      .gpio_2_io     (gpio_io[2]),
+      .gpio_3_io     (gpio_io[3]),
+      .gpio_4_io     (gpio_io[4]),
+      .gpio_5_io     (gpio_io[5]),
+      .gpio_6_io     (gpio_io[6]),
+      .gpio_7_io     (gpio_io[7]),
+      .gpio_8_io     (gpio_io[8]),
+      .gpio_9_io     (gpio_io[9]),
+      .gpio_10_io    (gpio_io[10]),
+      .gpio_11_io    (gpio_io[11]),
+      .gpio_12_io    (gpio_io[12]),
+      .gpio_13_io    (gpio_io[13]),
+      .gpio_14_io    (gpio_io[14]),
+      .gpio_15_io    (gpio_io[15]),
+      .gpio_16_io    (gpio_io[16]),
+      .gpio_17_io    (gpio_io[17]),
       .pdm2pcm_pdm_io(gpio_io[18]),
       .pdm2pcm_clk_io(gpio_io[19]),
-      .i2s_sck_io(    gpio_io[20]),
-      .i2s_ws_io(     gpio_io[21]),
-      .i2s_sd_io(     gpio_io[22]),
+      .i2s_sck_io    (gpio_io[20]),
+      .i2s_ws_io     (gpio_io[21]),
+      .i2s_sd_io     (gpio_io[22]),
 
       .spi2_cs_0_io(spi2_csb_io[0]),
       .spi2_cs_1_io(spi2_csb_io[1]),

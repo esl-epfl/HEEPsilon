@@ -5,7 +5,7 @@
 module testharness #(
     parameter COREV_PULP    = 0,
     parameter FPU           = 0,
-    parameter ZFINX    = 0,
+    parameter ZFINX         = 0,
     parameter JTAG_DPI      = 0,
     parameter CLK_FREQUENCY = 'd100_000  //KHz
 ) (

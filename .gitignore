@@ -10,3 +10,6 @@ build
 *.elf
 *.dis
 *.dump
+
+# ignore automatically generated files
+tb/tb_util.svh
