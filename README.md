@@ -9,10 +9,9 @@
     │   └── synthesis
     ├── sw
     │   ├── applications
-    │   ├── device
-    │   ├── x_heep_applications (hw/vendor/esl_epfl_x_heep/sw/applications)
-    │   ├── x_heep_device (hw/vendor/esl_epfl_x_heep/sw/device)
-    │   └── x_heep_linker (hw/vendor/esl_epfl_x_heep/sw/linker)
+    │   ├── external
+    │   ├── device (hw/vendor/esl_epfl_x_heep/sw/device)
+    │   └── linker (hw/vendor/esl_epfl_x_heep/sw/linker)
     ├── tb
     ├── util
     └── README.md
@@ -26,7 +25,7 @@ Minimal configuration of a cgra-x-heep
 
 The simulation environment is based on the one from [X-HEEP](https://github.com/esl-epfl/x-heep).
 
-Follow the prequisite steps on the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep#prerequisite).
+Follow the prerequisite steps on the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep#prerequisite).
 
 Consider that both the `environment.yml` and `python-requirements.txt` are now located in:
 ```bash
@@ -42,7 +41,7 @@ pip3 install --user -r hw/vendor/esl_epfl_x_heep/python-requirements.txt
 # Adding external IPs
 
 This repository relies on [vendor](https://docs.opentitan.org/doc/ug/vendor_hw/) to add new IPs.
-In the ./util folder, the vendor.py scripts implements what is describeb above.
+In the ./util folder, the vendor.py scripts implements what is described above.
 
 # Compiling with Makefile
 
@@ -69,7 +68,7 @@ each 32KB, for a total memory of 512KB.
 ## Compiling Software
 
 ```
-make app-helloworld
+make app PROJECT=hello_world
 ```
 
 This will create the executable file to be loaded in your target system.
@@ -95,19 +94,19 @@ cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator
 and type to run your compiled software:
 
 ```
-./Vtestharness +firmware=../../../sw/x_applications/hello_world/hello_world.hex
+./Vtestharness +firmware=../../../sw/build/main.hex
 ```
 
 or to execute all these three steps type:
 
 ```
-make run-helloworld-verilator
+make run-verilator
 ```
 
 or to run the CGRA functional test
 
 ```
-make run-cgra-test-verilator
+make run-verilator PROJECT=cgra_func_test
 ```
 
 
@@ -128,7 +127,7 @@ cd ./build/eslepfl_systems_cgra-x-heep_0/sim-vcs
 and type to run your compiled software:
 
 ```
-./eslepfl_systems_cgra-x-heep_0 +firmware=../../../sw/x_applications/hello_world/hello_world.hex
+./eslepfl_systems_cgra-x-heep_0 +firmware=../../../sw/build/main.hex
 ```
 
 ### Compiling for Questasim
@@ -148,19 +147,19 @@ cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim/
 and type to run your compiled software:
 
 ```
-make run PLUSARGS="c firmware=../../../sw/x_applications/hello_world/hello_world.hex"
+make run PLUSARGS="c firmware=../../../sw/build/main.hex"
 ```
 
 or to execute all these three steps type:
 
 ```
-make run-helloworld-verilator
+make run-questasim
 ```
 
 or to run the CGRA functional test
 
 ```
-make run-cgra-test-verilator
+make run-questasim PROJECT=cgra_func_test
 ```
 
 You can also use vopt for HDL optimized compilation:
@@ -172,12 +171,12 @@ make questasim-sim-opt
 then go to
 
 ```
-cd ./build/eslepfl_systems_cgra-x-heep_0/sim_opt-modelsim/
+cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim/
 ```
 and
 
 ```
-make run RUN_OPT=1 PLUSARGS="c firmware=../../../sw/x_applications/hello_world/hello_world.hex"
+make run RUN_OPT=1 PLUSARGS="c firmware=../../../sw/build/main.hex"
 ```
 
 Questasim version must be >= Questasim 2020.4
@@ -218,7 +217,7 @@ For example, to see the "hello world!" output of the Verilator simulation:
 
 ```
 cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator
-./Vtestharness +firmware=../../../sw/x_applications/hello_world/hello_world.hex
+./Vtestharness +firmware=../../../sw/build/main.hex
 cat uart0.log
 ```
 ## Debug
