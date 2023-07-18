@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module testharness #(
-    parameter COREV_PULP    = 0,
-    parameter FPU           = 0,
-    parameter ZFINX         = 0,
-    parameter JTAG_DPI      = 0,
-    parameter CLK_FREQUENCY = 'd100_000  //KHz
+    parameter COREV_PULP                  = 0,
+    parameter FPU                         = 0,
+    parameter ZFINX                       = 0,
+    parameter JTAG_DPI                    = 0,
+    parameter USE_EXTERNAL_DEVICE_EXAMPLE = 1,
+    parameter CLK_FREQUENCY               = 'd100_000  //KHz
 ) (
     inout logic clk_i,
     inout logic rst_ni,
