@@ -45,7 +45,7 @@ In the ./util folder, the vendor.py scripts implements what is described above.
 
 # Compiling with Makefile
 
-You can compile the example applications and the platform using the Makefile. Type 'make help' for more information.
+You can compile the example applications and the platform using the Makefile.
 
 ## Generate core-v-mini-mcu package
 
