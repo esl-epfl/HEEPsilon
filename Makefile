@@ -56,12 +56,23 @@ vcs-sim:
 ## Generates the build output for a given application
 ## Uses verilator to simulate the HW model and run the FW
 ## UART Dumping in uart0.log to show recollected results
-run-verilator:
+run-verilator: verilator-sim
 	$(MAKE) app PROJECT=$(PROJECT)
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/build/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
+
+## Generates the build output for a given application
+## Uses questasim to simulate the HW model and run the FW
+## UART Dumping in uart0.log to show recollected results
+run-questasim: questasim-sim
+	$(MAKE) app PROJECT=$(PROJECT)
+	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
+	make run PLUSARGS="c firmware=../../../sw/build/main.hex"; \
+	cat uart0.log; \
+	cd ../../..;
+
 
 # Builds the program and uses flash-load to run on the FPGA
 run-fpga:
@@ -90,3 +101,6 @@ link_build:
 
 link_rm:
 	rm sw/build
+
+clean:
+	rm -rf build buildsim.log
