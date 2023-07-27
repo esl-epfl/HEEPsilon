@@ -40,23 +40,23 @@ verible:
 	util/format-verible;
 
 # Simulation
-verilator-sim: mcu-gen
+verilator-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
-questasim-sim: mcu-gen
+questasim-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=modelsim $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
 questasim-sim-opt: questasim-sim
 	$(MAKE) -C build/eslepfl_systems_cgra-x-heep_0/sim-modelsim opt
 
-vcs-sim: mcu-gen
+vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
 
 ## Generates the build output for a given application
 ## Uses verilator to simulate the HW model and run the FW
 ## UART Dumping in uart0.log to show recollected results
-run-verilator: verilator-sim
+run-verilator:
 	$(MAKE) app PROJECT=$(PROJECT)
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
 	./Vtestharness +firmware=../../../sw/build/main.hex; \

@@ -97,7 +97,7 @@ and type to run your compiled software:
 ./Vtestharness +firmware=../../../sw/build/main.hex
 ```
 
-or to execute all these three steps type:
+or execute:
 
 ```
 make run-verilator
@@ -150,13 +150,7 @@ and type to run your compiled software:
 make run PLUSARGS="c firmware=../../../sw/build/main.hex"
 ```
 
-or to execute all these three steps type:
-
-```
-make questasim-sim
-```
-
-and
+or execute:
 
 ```
 make run-questasim
