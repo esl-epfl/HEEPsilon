@@ -153,6 +153,12 @@ make run PLUSARGS="c firmware=../../../sw/build/main.hex"
 or to execute all these three steps type:
 
 ```
+make questasim-sim
+```
+
+and
+
+```
 make run-questasim
 ```
 

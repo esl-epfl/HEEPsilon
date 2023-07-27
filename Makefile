@@ -49,7 +49,7 @@ questasim-sim: mcu-gen
 questasim-sim-opt: questasim-sim
 	$(MAKE) -C build/eslepfl_systems_cgra-x-heep_0/sim-modelsim opt
 
-vcs-sim:
+vcs-sim: mcu-gen
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
 
@@ -66,7 +66,7 @@ run-verilator: verilator-sim
 ## Generates the build output for a given application
 ## Uses questasim to simulate the HW model and run the FW
 ## UART Dumping in uart0.log to show recollected results
-run-questasim: questasim-sim
+run-questasim:
 	$(MAKE) app PROJECT=$(PROJECT)
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
 	make run PLUSARGS="c firmware=../../../sw/build/main.hex"; \
