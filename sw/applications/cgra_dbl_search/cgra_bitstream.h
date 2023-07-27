@@ -11,7 +11,7 @@
 // #define MAX_PEAK_KER_ID     3 // DEPRECATED
 // #define MIN_MAX_CIRC_KER_ID 4 // DEPRECATED
 
-uint32_t cgra_kem_bitstream[CGRA_KMEM_SIZE] = {
+uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {
   0x0,
   0x100d,
   0x11cd,
@@ -31,7 +31,7 @@ uint32_t cgra_kem_bitstream[CGRA_KMEM_SIZE] = {
 };
 
 
-uint32_t cgra_imem_bistream[CGRA_IMEM_SIZE] = {
+uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x0,
   0x0,
