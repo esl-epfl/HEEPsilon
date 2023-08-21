@@ -45,7 +45,7 @@ Then it loads the `boot_address` from a memory-mapped register that is set to
 0x180 at reset time, which is also the boot address specified in the entry point of the 
 linked scripts.
 If you want to simulate the actual JTAG procedure without pre-loading instead, 
-compile the RTL with the `use_jtag_dpi` flag and follow the `Debug.md` guide.
+compile the RTL with the `FUSESOC_PARAM="--JTAG_DPI=1"` flag and follow the `Debug.md` guide.
 
 ### SPI Flash Execution Boot Procedure
 
@@ -72,10 +72,6 @@ To use this mode, when targetting ASICs or FPGA bitstreams,
 make sure you have the `boot_sel_i` input (e.g., a switch) set to 1, 
 and the `execute_from_flash_i` set to 1 too.
 
-To simulate this procedure, you must compile the RTL 
-with the `use_external_device_example` flag to 
-tell fusesoc to compile the FLASH model.
-
 Note that the FLASH model is not compatible with **verilator**, 
 thus the simulation must be carried out with either **modelsim** or **vcs**.
 
@@ -88,17 +84,16 @@ and the hello_world example.
 To use the link_flash_exec.ld linker script, do:
 
 ```
-cd sw
-make applications/hello_world/hello_world.flash_memio.hex
+make app LINKER=flash_exec
 or
-make applications/gpio_pmw/gpio_pmw.flash_memio.hex
+make app PROJECT=gpio_pmw LINKER=flash_exec
 ```
 Then, when launching the simulation, pass the argument `boot_sel=1` 
 to set the `boot_sel_i` input to `1` and `execute_from_flash=1` to set the 
 `execute_from_flash_i` input to `1`.
 
 ```
-make run PLUSARGS="c firmware=../../../sw/applications/hello_world/hello_world.flash_memio.hex boot_sel=1 execute_from_flash=1"
+make run PLUSARGS="c firmware=../../../sw/build/main.hex boot_sel=1 execute_from_flash=1"
 ```
 
 If you are using FPGAs or ASIC, make sure to program the FLASH first.
@@ -123,17 +118,16 @@ and the hello_world example.
 To use the link_flash_load.ld linker script, do:
 
 ```
-cd sw
-make applications/hello_world/hello_world.flash_boot.hex
+make app LINKER=flash_load
 or
-make applications/gpio_pmw/gpio_pmw.flash_boot.hex
+make app PROJECT=gpio_pmw LINKER=flash_load
 ```
 Then, when launching the simulation, pass the argument `boot_sel=1` 
 to set the `boot_sel_i` input to `1` and `execute_from_flash=0` to set the 
 `execute_from_flash_i` input to `0`.
 
 ```
-make run PLUSARGS="c firmware=../../../sw/applications/hello_world/hello_world.flash_boot.hex boot_sel=1 execute_from_flash=0"
+make run PLUSARGS="c firmware=../../../sw/build/main.hex boot_sel=1 execute_from_flash=0"
 ```
 
 If you are using FPGAs or ASIC, make sure to program the FLASH first.

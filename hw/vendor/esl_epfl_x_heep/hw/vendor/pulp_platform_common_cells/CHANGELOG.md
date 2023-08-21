@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.29.0 - 2023-04-14
+### Added
+- Add `shift_reg_gated`: Shift register with ICG for arbitrary types.
+
+### Changed
+- CI: Run testbenches in `test/` on internal gitlab mirror.
+- `fifo_tb`: Add test for DEPTH not power of two.
+
+### Fixed
+- `clk_int_div`: Allow configuration while clock is disabled.
+- `mem_to_banks`: Cut possible timing loop for HideStrb feature.
+- Improved tool compatibility (Verilator, Questasim, Synopsys).
+
+## 1.28.0 - 2022-12-15
+### Added
+- Add `clk_mux_glitch_free`: A glitch-free clock multiplexer.
+
+## 1.27.1 - 2022-12-06
+### Fixed
+- `fall_through_register`: Remove superfluous `$size()` call for tool compatibility
+
+## 1.27.0 - 2022-12-01
+### Added
+- Add `mem_to_banks`: split memory access over multiple parallel banks. Moved from the `AXI4+ATOP`
+  [`axi_to_mem`](https://github.com/pulp-platform/axi/blob/2f395b176bee1c769c80f060a4345fda965bb04b/src/axi_to_mem.sv#L563) module.
+- Add `read`: dummy module that prevents a signal from being removed during synthesis
+
+### Changed
+- `stream_fifo_optimal_wrap`: Remove asserts
+- `fall_through_register`: Update fifo to `fifo_v3`
+
+### Fixed
+- FuseSoC: Add `assertions.svh`
+
 ## 1.26.0 - 2022-08-26
 ### Added
 - Add `stream_throttle`: restricts the number of outstanding transfers in a stream.

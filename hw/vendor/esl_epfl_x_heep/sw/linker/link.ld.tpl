@@ -22,6 +22,9 @@ MEMORY
      sections to ram. */
   ram0 (rwxai) : ORIGIN = 0x${linker_onchip_code_start_address}, LENGTH = 0x${linker_onchip_code_size_address}
   ram1 (rwxai) : ORIGIN = 0x${linker_onchip_data_start_address}, LENGTH = 0x${linker_onchip_data_size_address}
+% if ram_numbanks_cont > 1 and ram_numbanks_il > 0:
+  ram_il (rwxai) : ORIGIN = 0x${linker_onchip_il_start_address}, LENGTH = 0x${linker_onchip_il_size_address}
+% endif  
 }
 
 /*
@@ -35,14 +38,12 @@ SECTIONS
   PROVIDE(__boot_address = 0x180);
 
   /* stack and heap related settings */
-  __stack_size = DEFINED(__stack_size) ? __stack_size : 0x1000;
+  __stack_size = DEFINED(__stack_size) ? __stack_size : 0x800;
   PROVIDE(__stack_size = __stack_size);
-  __heap_size = DEFINED(__heap_size) ? __heap_size : 0x1000;
-
+  __heap_size = DEFINED(__heap_size) ? __heap_size : 0x800;
 
   /* Read-only sections, merged into text segment: */
   PROVIDE (__executable_start = SEGMENT_START("text-segment", 0x10000)); . = SEGMENT_START("text-segment", 0x10000) + SIZEOF_HEADERS;
-
 
   /* We don't do any dynamic linking so we remove everything related to it */
 /*
@@ -96,13 +97,11 @@ SECTIONS
     KEEP (*(.text.start))
   } >ram0
 
-
   /* More dynamic linking sections */
 /*
   .plt            : { *(.plt) }
   .iplt           : { *(.iplt) }
 */
-
 
   /* the bulk of the program: main, libc, functions etc. */
   .text           :
@@ -116,7 +115,7 @@ SECTIONS
     *(.gnu.warning)
   } >ram0
 
-  .power_manager : ALIGN(4)
+  .power_manager : ALIGN(4096)
   {
      PROVIDE(__power_manager_start = .);
      . += 256;
@@ -132,7 +131,6 @@ SECTIONS
   PROVIDE (_etext = .);
   PROVIDE (etext = .);
 
-
   /* read-only sections */
   .rodata         :
   {
@@ -143,11 +141,9 @@ SECTIONS
     *(.rodata1)
   } >ram1
 
-
   /* second level sbss and sdata, I don't think we need this */
   /* .sdata2         : {*(.sdata2 .sdata2.* .gnu.linkonce.s2.*)} */
   /* .sbss2          : { *(.sbss2 .sbss2.* .gnu.linkonce.sb2.*) } */
-
 
   /* gcc language agnostic exception related sections (try-catch-finally) */
   .eh_frame_hdr :
@@ -175,7 +171,6 @@ SECTIONS
      the same address within the page on the next page up.  */
   . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE));
 
-
   /* Exception handling  */
   .eh_frame       : ONLY_IF_RW
   {
@@ -194,7 +189,6 @@ SECTIONS
     *(.exception_ranges .exception_ranges*)
   } >ram0
 
-
   /* Thread Local Storage sections  */
   .tdata    :
   {
@@ -205,7 +199,6 @@ SECTIONS
   {
     *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon)
   } >ram1
-
 
   /* initialization and termination routines */
   .preinit_array     :
@@ -263,7 +256,6 @@ SECTIONS
   /* .dynamic        : { *(.dynamic) } */
   . = DATA_SEGMENT_RELRO_END (0, .);
 
-
   /* data sections for initalized data */
   .data           :
   {
@@ -290,7 +282,6 @@ SECTIONS
   } >ram1
   _edata = .; PROVIDE (edata = .);
   . = .;
-
 
   /* zero initialized sections */
   __bss_start = .;
@@ -325,7 +316,6 @@ SECTIONS
   _end = .; PROVIDE (end = .);
   . = DATA_SEGMENT_END (.);
 
-
   /* heap: we should consider putting this to the bottom of the address space */
   .heap          :
   {
@@ -333,7 +323,6 @@ SECTIONS
    . = __heap_size;
    PROVIDE(__heap_end = .);
   } >ram1
-
 
   /* stack: we should consider putting this further to the top of the address
     space */
@@ -343,8 +332,14 @@ SECTIONS
    . = __stack_size;
    PROVIDE(_sp = .);
    PROVIDE(__stack_end = .);
+   PROVIDE(__freertos_irq_stack_top = .);
   } >ram1
 
+% if ram_numbanks_cont > 1 and ram_numbanks_il > 0:
+  .data_interleaved :
+  {
+  } >ram_il
+% endif
 
   /* Stabs debugging sections.  */
   .stab          0 : { *(.stab) }

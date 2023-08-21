@@ -6,15 +6,22 @@ module x_heep_system
   import obi_pkg::*;
   import reg_pkg::*;
 #(
-    parameter PULP_XPULP = 0,
+    parameter COREV_PULP = 0,
     parameter FPU = 0,
-    parameter PULP_ZFINX = 0,
-    parameter EXT_XBAR_NMASTER = 0
-) (
-    input logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] intr_vector_ext_i,
+    parameter ZFINX = 0,
+    parameter EXT_XBAR_NMASTER = 0,
+    parameter X_EXT = 0,  // eXtension interface in cv32e40x
+    //do not touch these parameters
+    parameter EXT_XBAR_NMASTER_RND = EXT_XBAR_NMASTER == 0 ? 1 : EXT_XBAR_NMASTER,
+    parameter EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS,
+    parameter NEXT_INT_RND = core_v_mini_mcu_pkg::NEXT_INT == 0 ? 1 : core_v_mini_mcu_pkg::NEXT_INT
 
-    input  obi_req_t  [EXT_XBAR_NMASTER-1:0] ext_xbar_master_req_i,
-    output obi_resp_t [EXT_XBAR_NMASTER-1:0] ext_xbar_master_resp_o,
+) (
+    input logic [NEXT_INT_RND-1:0] intr_vector_ext_i,
+
+    input  obi_req_t  [EXT_XBAR_NMASTER_RND-1:0] ext_xbar_master_req_i,
+    output obi_resp_t [EXT_XBAR_NMASTER_RND-1:0] ext_xbar_master_resp_o,
+
 
     output obi_req_t  ext_xbar_slave_req_o,
     input  obi_resp_t ext_xbar_slave_resp_i,
@@ -22,13 +29,21 @@ module x_heep_system
     output reg_req_t ext_peripheral_slave_req_o,
     input  reg_rsp_t ext_peripheral_slave_resp_i,
 
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_o,
-    input  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack_i,
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso_o,
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_rst_no,
-    output logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_ram_banks_set_retentive_o,
+    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_o,
+    input  logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_ack_i,
+    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_o,
+    output logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_no,
+    output logic [EXT_DOMAINS_RND-1:0] external_ram_banks_set_retentive_o,
 
     output logic [31:0] exit_value_o,
+
+    // eXtension interface
+    if_xif.cpu_compressed xif_compressed_if,
+    if_xif.cpu_issue      xif_issue_if,
+    if_xif.cpu_commit     xif_commit_if,
+    if_xif.cpu_mem        xif_mem_if,
+    if_xif.cpu_mem_result xif_mem_result_if,
+    if_xif.cpu_result     xif_result_if,
 
 % for pad in total_pad_list:
 ${pad.x_heep_system_interface}
@@ -65,10 +80,11 @@ ${pad.internal_signals}
 % endfor
 
   core_v_mini_mcu #(
-    .PULP_XPULP(PULP_XPULP),
+    .COREV_PULP(COREV_PULP),
     .FPU(FPU),
-    .PULP_ZFINX(PULP_ZFINX),
-    .EXT_XBAR_NMASTER(EXT_XBAR_NMASTER)
+    .ZFINX(ZFINX),
+    .EXT_XBAR_NMASTER(EXT_XBAR_NMASTER),
+    .X_EXT(X_EXT)
   ) core_v_mini_mcu_i (
 
     .rst_ni(rst_ngen),
@@ -76,6 +92,12 @@ ${pad.internal_signals}
 ${pad.core_v_mini_mcu_bonding}
 % endfor
     .intr_vector_ext_i,
+    .xif_compressed_if,
+    .xif_issue_if,
+    .xif_commit_if,
+    .xif_mem_if,
+    .xif_mem_result_if,
+    .xif_result_if,
     .pad_req_o(pad_req),
     .pad_resp_i(pad_resp),
     .ext_xbar_master_req_i,

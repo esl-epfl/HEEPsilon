@@ -3,12 +3,14 @@
 # OpenHW Group CORE-V CV32E40P RISC-V IP
 
 CV32E40P is a small and efficient, 32-bit, in-order RISC-V core with a 4-stage pipeline that implements
-the RV32IM\[F\]C instruction set architecture, and the Xpulp custom extensions for achieving
+the RV32IM\[F|Zfinx\]C instruction set architecture, and the PULP custom extensions for achieving
 higher code density, performance, and energy efficiency \[[1](https://doi.org/10.1109/TVLSI.2017.2654506)\], \[[2](https://doi.org/10.1109/PATMOS.2017.8106976)\].
 It started its life as a fork of the OR10N CPU core that is based on the OpenRISC ISA.
 Then, under the name of RI5CY, it became a RISC-V core (2016), and it has been maintained
 by the [PULP platform](https://www.pulp-platform.org/) team until February 2020,
 when it has been contributed to [OpenHW Group](https://www.openhwgroup.org/).
+
+<p align="center"><img src="docs/images/CV32E40P_Block_Diagram.svg" width="750"></p>
 
 ## Documentation
 
@@ -31,7 +33,7 @@ The Makefiles supported in the **core-v-verif** project automatically clone the 
 A changelog is generated automatically in the documentation from the individual pull requests.
 In order to enable automatic changelog generation within the CV32E40P documentation, the committer is required to label each pull request
 that touches any file in 'rtl' (or any of its subdirectories) with *Component:RTL* and label each pull request that touches any file in
-'docs' (or any of its subdirectories) with *Component:Doc*. Pull requests taht are not labeled or labeled with *ignore-for-release* are
+'docs' (or any of its subdirectories) with *Component:Doc*. Pull requests that are not labeled or labeled with *ignore-for-release* are
 ignored for the changelog generation.
 
 Only the person who actually performs the merge can add these labels (you need committer rights). The changelog flow only works if at most
@@ -65,6 +67,7 @@ To get started, please check out the ["Good First Issue"
  list](https://github.com/openhwgroup/cv32e40p/issues?q=is%3Aissue+is%3Aopen+-label%3Astatus%3Aresolved+label%3A%22good+first+issue%22).
 
 The RTL code has been formatted with ["Verible"](https://github.com/google/verible) v0.0-1149-g7eae750.
+Run `./util/format-verible` to format all the files.
 
 ## Issues and Troubleshooting
 

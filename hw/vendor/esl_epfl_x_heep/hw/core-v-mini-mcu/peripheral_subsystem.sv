@@ -6,18 +6,22 @@ module peripheral_subsystem
   import obi_pkg::*;
   import reg_pkg::*;
 #(
-    parameter NEXT_INT = 0
+    //do not touch these parameters
+    parameter NEXT_INT_RND = core_v_mini_mcu_pkg::NEXT_INT == 0 ? 1 : core_v_mini_mcu_pkg::NEXT_INT
 ) (
     input logic clk_i,
     input logic rst_ni,
+
+    // Clock-gating signal
+    input logic clk_gate_en_i,
 
     input  obi_req_t  slave_req_i,
     output obi_resp_t slave_resp_o,
 
     //PLIC
-    input  logic [NEXT_INT-1:0] intr_vector_ext_i,
-    output logic                irq_plic_o,
-    output logic                msip_o,
+    input  logic [NEXT_INT_RND-1:0] intr_vector_ext_i,
+    output logic                    irq_plic_o,
+    output logic                    msip_o,
 
     //UART PLIC interrupts
     input logic uart_intr_tx_watermark_i,
@@ -28,6 +32,9 @@ module peripheral_subsystem
     input logic uart_intr_rx_break_err_i,
     input logic uart_intr_rx_timeout_i,
     input logic uart_intr_rx_parity_err_i,
+
+    // DMA window PLIC interrupt
+    input logic dma_window_intr_i,
 
     //GPIO
     input  logic [31:8] cio_gpio_i,
@@ -42,9 +49,35 @@ module peripheral_subsystem
     output logic cio_sda_o,
     output logic cio_sda_en_o,
 
+    // SPI Host
+    output logic                               spi2_sck_o,
+    output logic                               spi2_sck_en_o,
+    output logic [spi_host_reg_pkg::NumCS-1:0] spi2_csb_o,
+    output logic [spi_host_reg_pkg::NumCS-1:0] spi2_csb_en_o,
+    output logic [                        3:0] spi2_sd_o,
+    output logic [                        3:0] spi2_sd_en_o,
+    input  logic [                        3:0] spi2_sd_i,
+
     //RV TIMER
     output logic rv_timer_2_intr_o,
-    output logic rv_timer_3_intr_o
+    output logic rv_timer_3_intr_o,
+
+    //I2s
+    output logic i2s_sck_o,
+    output logic i2s_sck_oe_o,
+    input  logic i2s_sck_i,
+    output logic i2s_ws_o,
+    output logic i2s_ws_oe_o,
+    input  logic i2s_ws_i,
+    output logic i2s_sd_o,
+    output logic i2s_sd_oe_o,
+    input  logic i2s_sd_i,
+    output logic i2s_rx_valid_o,
+
+    // PDM2PCM Interface
+    output logic pdm2pcm_clk_o,
+    output logic pdm2pcm_clk_en_o,
+    input  logic pdm2pcm_pdm_i
 );
 
   import core_v_mini_mcu_pkg::*;
@@ -59,9 +92,6 @@ module peripheral_subsystem
 
   tlul_pkg::tl_h2d_t plic_tl_h2d;
   tlul_pkg::tl_d2h_t plic_tl_d2h;
-
-  tlul_pkg::tl_h2d_t gpio_tl_h2d;
-  tlul_pkg::tl_d2h_t gpio_tl_d2h;
 
   tlul_pkg::tl_h2d_t i2c_tl_h2d;
   tlul_pkg::tl_d2h_t i2c_tl_d2h;
@@ -95,6 +125,8 @@ module peripheral_subsystem
   logic i2c_intr_acq_overflow;
   logic i2c_intr_ack_stop;
   logic i2c_intr_host_timeout;
+  logic spi2_intr_event;
+  logic i2s_intr_event;
 
   // this avoids lint errors
   assign unused_irq_id = irq_id;
@@ -126,6 +158,9 @@ module peripheral_subsystem
   assign intr_vector[46] = i2c_intr_acq_overflow;
   assign intr_vector[47] = i2c_intr_ack_stop;
   assign intr_vector[48] = i2c_intr_host_timeout;
+  assign intr_vector[49] = spi2_intr_event;
+  assign intr_vector[50] = i2s_intr_event;
+  assign intr_vector[51] = dma_window_intr_i;
 
   // External interrupts assignement
   for (genvar i = 0; i < NEXT_INT; i++) begin
@@ -135,12 +170,21 @@ module peripheral_subsystem
   //Address Decoder
   logic [PERIPHERALS_PORT_SEL_WIDTH-1:0] peripheral_select;
 
+  // Clock-gating
+  logic clk_cg;
+  tc_clk_gating clk_gating_cell (
+      .clk_i,
+      .en_i(~clk_gate_en_i),
+      .test_en_i(1'b0),
+      .clk_o(clk_cg)
+  );
+
   periph_to_reg #(
       .req_t(reg_pkg::reg_req_t),
       .rsp_t(reg_pkg::reg_rsp_t),
       .IW(1)
   ) periph_to_reg_i (
-      .clk_i,
+      .clk_i(clk_cg),
       .rst_ni,
       .req_i(slave_req_i.req),
       .add_i(slave_req_i.addr),
@@ -177,7 +221,7 @@ module peripheral_subsystem
       .req_t  (reg_pkg::reg_req_t),
       .rsp_t  (reg_pkg::reg_rsp_t)
   ) reg_demux_i (
-      .clk_i,
+      .clk_i(clk_cg),
       .rst_ni,
       .in_select_i(peripheral_select),
       .in_req_i(peripheral_req),
@@ -199,12 +243,12 @@ module peripheral_subsystem
   ) reg_to_tlul_plic_i (
       .tl_o(plic_tl_h2d),
       .tl_i(plic_tl_d2h),
-      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::PLIC_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::PLIC_IDX])
+      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::RV_PLIC_IDX]),
+      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::RV_PLIC_IDX])
   );
 
   rv_plic rv_plic_i (
-      .clk_i,
+      .clk_i(clk_cg),
       .rst_ni,
       .tl_i(plic_tl_h2d),
       .tl_o(plic_tl_d2h),
@@ -214,32 +258,21 @@ module peripheral_subsystem
       .msip_o(msip_o)
   );
 
-  reg_to_tlul #(
-      .req_t(reg_pkg::reg_req_t),
-      .rsp_t(reg_pkg::reg_rsp_t),
-      .tl_h2d_t(tlul_pkg::tl_h2d_t),
-      .tl_d2h_t(tlul_pkg::tl_d2h_t),
-      .tl_a_user_t(tlul_pkg::tl_a_user_t),
-      .tl_a_op_e(tlul_pkg::tl_a_op_e),
-      .TL_A_USER_DEFAULT(tlul_pkg::TL_A_USER_DEFAULT),
-      .PutFullData(tlul_pkg::PutFullData),
-      .Get(tlul_pkg::Get)
-  ) reg_to_tlul_gpio_i (
-      .tl_o(gpio_tl_h2d),
-      .tl_i(gpio_tl_d2h),
-      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::GPIO_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::GPIO_IDX])
-  );
 
-  gpio gpio_i (
-      .clk_i,
+  gpio #(
+      .reg_req_t(reg_pkg::reg_req_t),
+      .reg_rsp_t(reg_pkg::reg_rsp_t)
+  ) gpio_i (
+      .clk_i(clk_cg),
       .rst_ni,
-      .tl_i(gpio_tl_h2d),
-      .tl_o(gpio_tl_d2h),
-      .cio_gpio_i({cio_gpio_i, 8'b0}),
-      .cio_gpio_o({cio_gpio_o, cio_gpio_unused}),
-      .cio_gpio_en_o({cio_gpio_en_o, cio_gpio_en_unused}),
-      .intr_gpio_o({gpio_intr, gpio_int_unused})
+      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::GPIO_IDX]),
+      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::GPIO_IDX]),
+      .gpio_in({cio_gpio_i, 8'b0}),
+      .gpio_out({cio_gpio_o, cio_gpio_unused}),
+      .gpio_tx_en_o({cio_gpio_en_o, cio_gpio_en_unused}),
+      .gpio_in_sync_o(),
+      .pin_level_interrupts_o({gpio_intr, gpio_int_unused}),
+      .global_interrupt_o()
   );
 
   reg_to_tlul #(
@@ -260,7 +293,7 @@ module peripheral_subsystem
   );
 
   i2c i2c_i (
-      .clk_i,
+      .clk_i(clk_cg),
       .rst_ni,
       .tl_i(i2c_tl_h2d),
       .tl_o(i2c_tl_d2h),
@@ -306,12 +339,64 @@ module peripheral_subsystem
   );
 
   rv_timer rv_timer_2_3_i (
-      .clk_i,
+      .clk_i(clk_cg),
       .rst_ni,
       .tl_i(rv_timer_tl_h2d),
       .tl_o(rv_timer_tl_d2h),
       .intr_timer_expired_0_0_o(rv_timer_2_intr_o),
       .intr_timer_expired_1_0_o(rv_timer_3_intr_o)
+  );
+
+  spi_host #(
+      .reg_req_t(reg_pkg::reg_req_t),
+      .reg_rsp_t(reg_pkg::reg_rsp_t)
+  ) spi2_host (
+      .clk_i(clk_cg),
+      .rst_ni,
+      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::SPI2_IDX]),
+      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::SPI2_IDX]),
+      .alert_rx_i(),
+      .alert_tx_o(),
+      .passthrough_i(spi_device_pkg::PASSTHROUGH_REQ_DEFAULT),
+      .passthrough_o(),
+      .cio_sck_o(spi2_sck_o),
+      .cio_sck_en_o(spi2_sck_en_o),
+      .cio_csb_o(spi2_csb_o),
+      .cio_csb_en_o(spi2_csb_en_o),
+      .cio_sd_o(spi2_sd_o),
+      .cio_sd_en_o(spi2_sd_en_o),
+      .cio_sd_i(spi2_sd_i),
+      .rx_valid_o(),
+      .tx_ready_o(),
+      .intr_error_o(),
+      .intr_spi_event_o(spi2_intr_event)
+  );
+
+  assign peripheral_slv_rsp[core_v_mini_mcu_pkg::PDM2PCM_IDX] = '0;
+  assign pdm2pcm_clk_o = '0;
+
+  assign pdm2pcm_clk_en_o = 1;
+
+  i2s #(
+      .reg_req_t(reg_pkg::reg_req_t),
+      .reg_rsp_t(reg_pkg::reg_rsp_t)
+  ) i2s_i (
+      .clk_i,
+      .rst_ni,
+      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::I2S_IDX]),
+      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::I2S_IDX]),
+
+      .i2s_sck_o(i2s_sck_o),
+      .i2s_sck_oe_o(i2s_sck_oe_o),
+      .i2s_sck_i(i2s_sck_i),
+      .i2s_ws_o(i2s_ws_o),
+      .i2s_ws_oe_o(i2s_ws_oe_o),
+      .i2s_ws_i(i2s_ws_i),
+      .i2s_sd_o(i2s_sd_o),
+      .i2s_sd_oe_o(i2s_sd_oe_o),
+      .i2s_sd_i(i2s_sd_i),
+      .intr_i2s_event_o(i2s_intr_event),
+      .i2s_rx_valid_o(i2s_rx_valid_o)
   );
 
 endmodule : peripheral_subsystem

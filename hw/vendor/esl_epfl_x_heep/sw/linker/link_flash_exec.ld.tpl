@@ -24,10 +24,9 @@ SECTIONS {
     /* interrupt vectors */
     .vectors (ORIGIN(FLASH)):
     {
-      PROVIDE(_vector_start = .);
+      PROVIDE(__vector_start = .);
       KEEP(*(.vectors));
     } >FLASH
-
 
     /* crt0 init code */
     .init (__boot_address):
@@ -36,7 +35,6 @@ SECTIONS {
 	KEEP (*(.text.start))
     } >FLASH
 
-    
     /* The program code and other data goes into FLASH */
     .text :
     {
@@ -51,13 +49,11 @@ SECTIONS {
         _etext = .;        /* define a global symbol at end of code */
     } >FLASH
 
-   
-
     /* This is the initialized data section
     The program executes knowing that the data is in the RAM
     but the loader puts the initial values in the FLASH (inidata).
     It is one task of the startup to copy the initial values from FLASH to RAM. */
-    .data : 
+    .data :
     {
         . = ALIGN(4);
         _sidata = LOADADDR(.data);
@@ -74,11 +70,17 @@ SECTIONS {
         _edata = .;        /* define a global symbol at data end; used by startup code in order to initialise the .data section in RAM */
     } >RAM AT >FLASH
 
+    .power_manager : ALIGN(4096)
+    {
+       PROVIDE(__power_manager_start = .);
+       . += 256;
+    } >RAM
+
     /* Uninitialized data section */
     .bss :
     {
         . = ALIGN(4);
-        _sbss = .;         /* define a global symbol at bss start; used by startup code */
+        __bss_start = .;         /* define a global symbol at bss start; used by startup code */
         *(.bss)
         *(.bss*)
         *(.sbss)
@@ -86,14 +88,8 @@ SECTIONS {
         *(COMMON)
 
         . = ALIGN(4);
-        _ebss = .;         /* define a global symbol at bss end; used by startup code */
+        __bss_end = .;         /* define a global symbol at bss end; used by startup code */
         __BSS_END__ = .;
-    } >RAM
-
-    .power_manager : ALIGN(4)
-    {
-       PROVIDE(__power_manager_start = .);
-       . += 256;
     } >RAM
 
     /* The compiler uses this to access data in the .sdata, .data, .sbss and .bss
@@ -117,5 +113,6 @@ SECTIONS {
    . = __stack_size;
    PROVIDE(_sp = .);
    PROVIDE(__stack_end = .);
+   PROVIDE(__freertos_irq_stack_top = .);
   } >RAM
 }

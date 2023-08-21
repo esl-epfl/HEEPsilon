@@ -2,131 +2,246 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
+MAKE                       = make
 
-# Makefile to generates core-v-mini-mcu files and build the design with fusesoc
+# Get the absolute path
+mkfile_path := $(shell dirname "$(realpath $(firstword $(MAKEFILE_LIST)))")
 
-.PHONY: clean help
+# Include the self-documenting tool
+FILE=$(mkfile_path)/Makefile
+include $(mkfile_path)/util/generate-makefile-help
 
-TARGET ?= sim
+# Setup to autogenerate python virtual environment
+VENVDIR?=$(WORKDIR)/.venv
+REQUIREMENTS_TXT?=$(wildcard python-requirements.txt)
+include Makefile.venv
 
-# Generates mcu files
-mcu-gen:
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/include --cpu $(CPU) --bus $(BUS) --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/core-v-mini-mcu/include/core_v_mini_mcu_pkg.sv.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/ --memorybanks $(MEMORY_BANKS) --tpl-sv hw/core-v-mini-mcu/system_bus.sv.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv tb/tb_util.svh.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/ --tpl-sv hw/system/pad_ring.sv.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/ --tpl-sv hw/core-v-mini-mcu/core_v_mini_mcu.sv.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/ --tpl-sv hw/system/x_heep_system.sv.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/device/lib/runtime --cpu $(CPU) --memorybanks $(MEMORY_BANKS) --header-c sw/device/lib/runtime/core_v_mini_mcu.h.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link.ld.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir . --memorybanks $(MEMORY_BANKS) --pkg-sv ./core-v-mini-mcu.upf.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/ip/power_manager/rtl --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/ip/power_manager/data/power_manager.sv.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/ip/power_manager/data --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/ip/power_manager/data/power_manager.hjson.tpl
-	bash -c "cd hw/ip/power_manager; source power_manager_gen.sh; cd ../../../"
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/device/lib/drivers/power_manager --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv sw/device/lib/drivers/power_manager/data/power_manager.h.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/pad_control/data --pkg-sv hw/system/pad_control/data/pad_control.hjson.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/pad_control/rtl --pkg-sv hw/system/pad_control/rtl/pad_control.sv.tpl
-	bash -c "cd hw/system/pad_control; source pad_control_gen.sh; cd ../../../"
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_exec.ld.tpl
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_load.ld.tpl
+# FUSESOC and Python values (default)
+ifndef CONDA_DEFAULT_ENV
+$(info USING VENV)
+FUSESOC = $(PWD)/$(VENV)/fusesoc
+PYTHON  = $(PWD)/$(VENV)/python
+else
+$(info USING MINICONDA $(CONDA_DEFAULT_ENV))
+FUSESOC := $(shell which fusesoc)
+PYTHON  := $(shell which python)
+endif
+
+# Project options are based on the app to be build (default - hello_world)
+PROJECT  ?= hello_world
+
+# Linker options are 'on_chip' (default),'flash_load','flash_exec','freertos'
+LINKER   ?= on_chip
+
+# Target options are 'sim' (default) and 'pynq-z2'
+TARGET   	?= sim
+MCU_CFG  	?= mcu_cfg.hjson
+PAD_CFG  	?= pad_cfg.hjson
+EXT_PAD_CFG ?=
+
+# Compiler options are 'gcc' (default) and 'clang'
+COMPILER ?= gcc
+
+# Compiler prefix options are 'riscv32-unknown-' (default)
+COMPILER_PREFIX ?= riscv32-unknown-
+
+# Arch options are any RISC-V ISA string supported by the CPU. Default 'rv32imc'
+ARCH     ?= rv32imc
+
+# Path relative from the location of sw/Makefile from which to fetch source files. The directory of that file is the default value.
+SOURCE 	 ?= "."
+
+## @section Conda
+conda: environment.yml
+	conda env create -f environment.yml
+
+environment.yml: python-requirements.txt
+	util/python-requirements2conda.sh
+
+## @section Linux-Emulation
+
+## Generates FEMU
+linux-femu-gen: mcu-gen
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir linux_femu/rtl/ --tpl-sv linux_femu/rtl/linux_femu.sv.tpl
 	$(MAKE) verible
 
-# Display mcu_gen.py help
-mcu-gen-help:
-	python util/mcu_gen.py -h
+## @section Installation
 
-# Runs verible formating
+## Generates mcu files core-v-mini-mcu files and build the design with fusesoc
+## @param CPU=[cv32e20(default),cv32e40p,cv32e40x]
+## @param BUS=[onetoM(default),NtoM]
+## @param MEMORY_BANKS=[2(default) to (16 - MEMORY_BANKS_IL)]
+## @param MEMORY_BANKS_IL=[0(default),2,4,8]
+mcu-gen:
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/core-v-mini-mcu/include --cpu $(CPU) --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --external_domains $(EXTERNAL_DOMAINS) --external_pads $(EXT_PAD_CFG) --pkg-sv hw/core-v-mini-mcu/include/core_v_mini_mcu_pkg.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/core-v-mini-mcu/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/core-v-mini-mcu/system_bus.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/core-v-mini-mcu/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/core-v-mini-mcu/system_xbar.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/core-v-mini-mcu/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/core-v-mini-mcu/memory_subsystem.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/core-v-mini-mcu/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/core-v-mini-mcu/peripheral_subsystem.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir tb/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv tb/tb_util.svh.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/system/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/system/pad_ring.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/core-v-mini-mcu/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/core-v-mini-mcu/core_v_mini_mcu.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/system/ --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv hw/system/x_heep_system.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir sw/device/lib/runtime --cpu $(CPU) --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --header-c sw/device/lib/runtime/core_v_mini_mcu.h.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir sw/linker --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --linker_script sw/linker/link.ld.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir . --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --pkg-sv ./core-v-mini-mcu.upf.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/ip/power_manager/rtl --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/ip/power_manager/data/power_manager.sv.tpl
+	$(PYTHON) util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg $(PAD_CFG) --outdir hw/ip/power_manager/data --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/ip/power_manager/data/power_manager.hjson.tpl
+	bash -c "cd hw/ip/power_manager; source power_manager_gen.sh; cd ../../../"
+	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg $(PAD_CFG) --outdir sw/device/lib/drivers/power_manager --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv sw/device/lib/drivers/power_manager/data/power_manager.h.tpl
+	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg $(PAD_CFG) --outdir hw/system/pad_control/data --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --external_pads $(EXT_PAD_CFG) --pkg-sv hw/system/pad_control/data/pad_control.hjson.tpl
+	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg $(PAD_CFG) --outdir hw/system/pad_control/rtl --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --external_pads $(EXT_PAD_CFG) --pkg-sv hw/system/pad_control/rtl/pad_control.sv.tpl
+	bash -c "cd hw/system/pad_control; source pad_control_gen.sh; cd ../../../"
+	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg $(PAD_CFG) --outdir sw/linker --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --linker_script sw/linker/link_flash_exec.ld.tpl
+	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg $(PAD_CFG) --outdir sw/linker --bus $(BUS) --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --linker_script sw/linker/link_flash_load.ld.tpl
+	$(PYTHON) ./util/structs_periph_gen.py
+	$(MAKE) verible
+
+## Display mcu_gen.py help
+mcu-gen-help:
+	$(PYTHON) util/mcu_gen.py -h
+
+## Runs verible formating
 verible:
 	util/format-verible;
 
-app-helloworld:
-	$(MAKE) -C sw applications/hello_world/hello_world.hex  TARGET=$(TARGET)
+## @section APP FW Build
 
-app-matadd:
-	$(MAKE) -C sw applications/matadd/matadd.hex TARGET=$(TARGET)
+## Generates the build folder in sw using CMake to build (compile and linking)
+## @param PROJECT=<folder_name_of_the_project_to_be_built>
+## @param TARGET=sim(default),pynq-z2
+## @param LINKER=on_chip(default),flash_load,flash_exec
+## @param COMPILER=gcc(default), clang
+## @param COMPILER_PREFIX=riscv32-unknown-(default)
+## @param ARCH=rv32imc(default), <any RISC-V ISA string supported by the CPU>
+app: clean-app
+	$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH) SOURCE=$(SOURCE)
 
-app-ext-periph:
-	$(MAKE) -C sw applications/example_external_peripheral/example_external_peripheral.hex TARGET=$(TARGET)
+## Just list the different application names available
+app-list:
+	@echo "Note: Applications outside the X-HEEP sw/applications directory will not be listed."
+	tree sw/applications/
 
-app-gpio-cnt:
-	$(MAKE) -C sw applications/example_gpio_cnt/example_gpio_cnt.hex TARGET=$(TARGET)
+## Compile all the apps present in the repo
+app-compile-all:
+	bash util/compile_all_apps.sh;
 
-app-dma:
-	$(MAKE) -C sw applications/dma_example/dma_example.hex TARGET=$(TARGET)
+## @section Simulation
 
-app-spi-host:
-	$(MAKE) -C sw applications/spi_host_example/spi_host_example.hex TARGET=$(TARGET)
-
-app-spi-host-dma:
-	$(MAKE) -C sw applications/spi_host_dma_example/spi_host_dma_example.hex TARGET=$(TARGET)
-
-app-spi-flash-write:
-	$(MAKE) -C sw applications/spi_flash_write/spi_flash_write.hex TARGET=$(TARGET)
-
-# Tools specific fusesoc call
-
-# Simulation
+## Verilator simulation
 verilator-sim:
-	fusesoc --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --setup --build openhwgroup.org:systems:core-v-mini-mcu 2>&1 | tee buildsim.log
+	$(FUSESOC) --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --build openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildsim.log
 
+## Questasim simulation
 questasim-sim:
-	fusesoc --cores-root . run --no-export --target=sim --tool=modelsim $(FUSESOC_FLAGS) --setup --build openhwgroup.org:systems:core-v-mini-mcu 2>&1 | tee buildsim.log
+	$(FUSESOC) --cores-root . run --no-export --target=sim --tool=modelsim $(FUSESOC_FLAGS) --build openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildsim.log
 
+## Questasim simulation with HDL optimized compilation
 questasim-sim-opt: questasim-sim
 	$(MAKE) -C build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-modelsim opt
 
+## Questasim simulation with HDL optimized compilation and UPF power domain description
+## @param FUSESOC_PARAM="--USE_UPF"
 questasim-sim-opt-upf: questasim-sim
 	$(MAKE) -C build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-modelsim opt-upf
 
+## Verilator simulation
+## @param CPU=cv32e20(default),cv32e40p,cv32e40x
+## @param BUS=onetoM(default),NtoM
 vcs-sim:
-	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build openhwgroup.org:systems:core-v-mini-mcu 2>&1 | tee buildsim.log
+	$(FUSESOC) --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --build openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildsim.log
 
-run-helloworld: mcu-gen verilator-sim app-helloworld
+## VCS-AMS simulation:
+vcs-ams-sim:
+	$(FUSESOC) --cores-root . run --no-export --target=sim --flag "ams_sim" --tool=vcs $(FUSESOC_FLAGS) --build openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildsim.log
+
+## Generates the build output for helloworld application
+## Uses verilator to simulate the HW model and run the FW
+## UART Dumping in uart0.log to show recollected results
+run-helloworld: mcu-gen verilator-sim
+	$(MAKE) -C sw PROJECT=hello_world TARGET=$(TARGET) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH);
 	cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/applications/hello_world/hello_world.hex; \
+	./Vtestharness +firmware=../../../sw/build/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
 
-# Emulation
+## Generates the build output for freertos blinky application
+## Uses verilator to simulate the HW model and run the FW
+## UART Dumping in uart0.log to show recollected results
+run-blinkyfreertos: mcu-gen verilator-sim
+	$(MAKE) -C sw PROJECT=blinky_freertos TARGET=$(TARGET) LINKER=$(LINKER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) ARCH=$(ARCH);
+	cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-verilator; \
+	./Vtestharness +firmware=../../../sw/build/main.hex; \
+	cat uart0.log; \
+	cd ../../..;
+
+## Uses verilator to simulate the HW model and run the FW
+## UART Dumping in uart0.log to show recollected results
+run-app-sim:
+	cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-verilator; \
+	./Vtestharness +firmware=../../../sw/build/main.hex; \
+	cat uart0.log; \
+	cd ../../..;
+
+## @section Vivado
+
+## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
+## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
+## @param FUSESOC_FLAGS=--flag=<flagname>
 vivado-fpga:
-	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --setup --build openhwgroup.org:systems:core-v-mini-mcu 2>&1 | tee buildvivado.log
+	$(FUSESOC) --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --build openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildvivado.log
 
 vivado-fpga-nobuild:
-	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --setup openhwgroup.org:systems:core-v-mini-mcu 2>&1 | tee buildvivado.log
+	$(FUSESOC) --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --setup openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildvivado.log
 
-# ASIC
+## @section ASIC
+## Note that for this step you need to provide technology-dependent files (e.g., libs, constraints)
 asic:
-	fusesoc --cores-root . run --no-export --target=asic_synthesis --setup --build openhwgroup.org:systems:core-v-mini-mcu 2>&1 | tee buildsim.log
+	$(FUSESOC) --cores-root . run --no-export --target=asic_synthesis --setup openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee builddesigncompiler.log
 
-help:
-	@echo "SIMULATION BUILD TARGETS"
-	@echo "Build for simulation :"
-	@echo "\tmake [verilator,questasim,vcs]-sim"
-	@echo "\tex: make verilator-sim"
-	@echo "Change cpu and/or bus:"
-	@echo "\tmake <toolname>-sim CPU=[cv32e20(default),cv32e40p] BUS=[onetoM(default),NtoM]"
-	@echo "\tex: make verilator-sim CPU=cv32e40p BUS=NtoM)"
-	@echo "Add fusesoc flags:"
-	@echo "\tmake <toolname>-sim FUSESOC_FLAGS=\"--flag=<flagname0> --flag=<flagname1>\""
-	@echo "\tex: make verilator-sim FUSESOC_FLAGS=\"--flag=use_external_device_example --flag=use_jtag_dpi\""
-	@echo ""
-	@echo "FPGA EMULATION BUILD TARGET"
-	@echo "Build with vivado"
-	@echo "\tmake vivado-fpga[-nobuild] FPGA_BOARD=[nexys-a7-100t,pynq-z2] FUSESOC_FLAGS=--flag=<flagname>"
-	@echo "\tex: make vivado-fpga FPGA_BOARD=nexys-a7-100t FUSESOC_FLAGS=--flag=use_bscane_xilinx"
-	@echo ""
-	@echo "ASIC IMPLEMENTATION"
-	@echo "You need to provide technology-dependent files (e.g., libs, constraints)"
-	@echo "\tmake asic"
-	@echo "SOFTWARE BUILD TARGETS"
-	@echo "Build example applications:"
-	@echo "\tmake app-[helloworld,matadd,ext-periph,gpio-cnt]"
-	@echo "\tex: make app-helloworld"
+openroad-sky130:
+	git checkout hw/vendor/pulp_platform_common_cells/*
+	sed -i 's/(\*[^\n]*\*)//g' hw/vendor/pulp_platform_common_cells/src/*.sv
+	$(FUSESOC) --verbose --cores-root . run --target=asic_yosys_synthesis --flag=use_sky130 openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildopenroad.log
+	git checkout hw/vendor/pulp_platform_common_cells/*
 
-clean: clean-app clean-sim
 
+## @section Program, Execute, and Debug w/ EPFL_Programmer
+
+## Read the id from the EPFL_Programmer flash
+flash-readid:
+	cd sw/vendor/yosyshq_icestorm/iceprog; \
+	./iceprog -d i:0x0403:0x6011 -I B -t;
+
+## Loads the obtained binary to the EPFL_Programmer flash
+flash-prog:
+	cd sw/vendor/yosyshq_icestorm/iceprog; \
+	./iceprog -d i:0x0403:0x6011 -I B $(mkfile_path)/sw/build/main.hex;
+
+## Run openOCD w/ EPFL_Programmer
+openOCD_epflp:
+	xterm -e openocd -f ./tb/core-v-mini-mcu-pynq-z2-esl-programmer.cfg;
+
+## Start GDB
+gdb_connect:
+	$(MAKE) -C sw gdb_connect
+
+## @section Cleaning commands
+
+## Clean the CMake build folder
+app-clean:
+	$(MAKE) -C sw/build clean
+
+## Removes the CMake build folder
+app-restore:
+	rm -rf sw/build
+
+## Removes the HW build folder
 clean-sim:
 	@rm -rf build
 
-clean-app:
-	$(MAKE) -C sw clean
+## Does the same as app-restore
+clean-app: app-restore
+
+## Removes the CMake build folder and the HW build folder
+clean-all: app-restore clean-sim

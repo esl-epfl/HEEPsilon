@@ -13,7 +13,7 @@ cd sw/vendor/yosyshq_icestorm/iceprog
 make
 ```
 
-Plug a micro-USB into the `EPFL programmer`, and connect the EPFL programmer to the Pynq-z2 FPGA PMODs.
+Plug a micro-USB into the [EPFL programmer](https://github.com/esl-epfl/x-heep-programmer-pmod), and connect the EPFL programmer to the Pynq-z2 FPGA PMODs.
 
 We use the the `FT4232H` which has Vendor ID `0x0403` and Product ID `0x6011`.
 
@@ -36,6 +36,13 @@ Now do this, use B for the SPI, -t to read the FLASH ID
 ```
 ./iceprog -d i:0x0403:0x6011 -I B -t
 ```
+
+You can also do this by running the following command
+
+```
+make flash-readid
+```
+
 
 The output should be:
 
@@ -85,7 +92,13 @@ Generate the C program you want to execute as described in the [ExecuteFromFlash
 then program the FLASH as:
 
 ```
-./iceprog -d i:0x0403:0x6011 -I B ../../../applications/hello_world/hello_world.flash.hex
+./iceprog -d i:0x0403:0x6011 -I B ../../../build/main.hex
+```
+
+You can also program the FLASH by running:
+
+```
+make flash-prog MAINFILE=<main_file_name_of_the_project_that WAS_built WITHOUT EXTENSION>
 ```
 
 You can read the content of the FLASH as:
