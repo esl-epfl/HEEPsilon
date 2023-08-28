@@ -36,6 +36,7 @@
 /****************************************************************************/
 
 //Include kernels!
+#include "kernels/conv/conv.h"
 #include "kernels/bitcount/bitcount.h"
 #include "kernels/reversebits/reversebits.h"
 #include "kernels/gsm/gsm.h"
@@ -75,7 +76,8 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = {
-        &reve_kernel,
+        &conv_kernel,
+        // &reve_kernel,
         // &bitc_kernel,
         // &sqrt_kernel,
         // &gsm_kernel,
