@@ -54,7 +54,7 @@ def string_instr(instr) :
 
         Return
         -----------------------------
-        instruction (string)    
+        instruction (string)
     '''
     string = '['+instr[0]+' '+instr[1]+' '+instr[2]+' '+instr[3]+']'
     return string
@@ -69,7 +69,7 @@ def time_lines (lines) :
 
         Return
         -----------------------------
-        list of list of string    
+        list of list of string
     '''
     cnt = 0
     timed_lines = [[] for _ in range (PE_NBR)]
@@ -94,7 +94,7 @@ def decode_instruction(instruction) :
 
         Return
         -----------------------------
-        separated instruction (list of strings)    
+        separated instruction (list of strings)
     '''
     instr = ['' for _ in range(SIZE_DEC_INSTR)]
     case_list = ['Operation','OP1','OP2','OP3','OP4','END']
@@ -170,11 +170,11 @@ def translate_instructions(instr_usi) :
 
         Parameter
         -----------------------------
-        separated instruction (list of strings)   
+        separated instruction (list of strings)
 
         Return
         -----------------------------
-        instruction (string)  
+        instruction (string)
     '''
     instr_epfl = ['' for _ in range (SIZE_EPFL_ASM)]
     op = instr_usi[0]
@@ -186,12 +186,12 @@ def translate_instructions(instr_usi) :
         instr_epfl=[instr_usi[2] if (instr_usi[2] in muxA_list_ext) else "ZERO",\
                     instr_usi[3] if (instr_usi[3] in muxB_list_ext) else "ZERO",op,instr_usi[1],\
                     '-','-']
-                  
+
         if instr_usi[2] not in muxA_list_ext and instr_usi[2] not in ['-','ROUT'] :
             instr_epfl[-1] = instr_usi[2]
             instr_epfl[0] = 'IMM'
             check = True
-        
+
         if instr_usi[3] not in muxB_list_ext and instr_usi[3] not in ['-','ROUT'] :
             if check :
                 sys.exit("Can't have two immediates as input : "+ string_instr(instr_usi) + " -> " + string_instr(instr_epfl))
@@ -239,11 +239,11 @@ def translate_instructions(instr_usi) :
             else : # SWI
                 instr_epfl=[instr_usi[1],instr_usi[2] if (instr_usi[2] in muxA_list_ext) else "ZERO",op,'-',\
                     '-','-']
-                
+
                 if instr_usi[2] not in muxA_list_ext and instr_usi[2] not in ['-','ROUT'] :
                     instr_epfl[-1] = instr_usi[2]
                     instr_epfl[1] = 'IMM'
-                
+
     elif op in type_5_instr :
         if op == 'SWD' :
             instr_epfl = [instr_usi[1],'-',op,'-','-','-']
@@ -253,12 +253,12 @@ def translate_instructions(instr_usi) :
         instr_epfl=[instr_usi[2] if (instr_usi[2] in muxA_list_ext) else "ZERO",\
                     instr_usi[3] if (instr_usi[3] in muxB_list_ext) else "ZERO",'JUMP',\
                     '-','-','-']
-        
+
         if instr_usi[2] not in muxA_list_ext and instr_usi[2] not in ['-','ROUT'] :
             instr_epfl[-1] = instr_usi[2]
             instr_epfl[0] = 'IMM'
             check = True
-        
+
         if instr_usi[3] not in muxB_list_ext and instr_usi[3] not in ['-','ROUT'] :
             if check :
                 sys.exit("Can't have two immediates as input : "+ string_instr(instr_epfl))
@@ -272,7 +272,7 @@ def translate_instructions(instr_usi) :
     for i in [0,1] :
         if instr_epfl[i] == 'ROUT' :
             instr_epfl[i] = 'SELF'
-    
+
     if instr_epfl[4] == 'ROUT' :
         instr_epfl[4] = 'SELF'
 
@@ -297,7 +297,7 @@ def translate_usi_asm(sched) :
 
         Return
         -----------------------------
-        schedule of the execution (list of list of string) in epfl cgra assembly  
+        schedule of the execution (list of list of string) in epfl cgra assembly
     '''
     new_sched = [[['' for _ in range(SIZE_EPFL_ASM)] for _ in range(len(sched[0]))] for _ in range(PE_NBR)]
     i = 0
@@ -367,7 +367,7 @@ def create_rcs_instructions(start_add,rcs_instructions,epfl_ASM,nbr_instr,col_nb
         Return
         -----------------------------
         rcs_instructions (list of list of list of string)
-    '''   #zegmanek  
+    '''   #zegmanek
     for l in range(col_nbr) :
         for j in range (CGRA_N_ROW) :
             for i in range(nbr_instr) :
@@ -376,7 +376,7 @@ def create_rcs_instructions(start_add,rcs_instructions,epfl_ASM,nbr_instr,col_nb
     for l in range(col_nbr,CGRA_N_COL) :
         for j in range (CGRA_N_ROW) :
             for i in range(nbr_instr) :
-                rcs_instructions[j][start_add+nbr_instr*l+i] = rcs_nop_instr 
+                rcs_instructions[j][start_add+nbr_instr*l+i] = rcs_nop_instr
     return rcs_instructions
 
 def used_col(usi_ASM) :
@@ -390,7 +390,7 @@ def used_col(usi_ASM) :
         Return
         -----------------------------
         int
-    ''' 
+    '''
     cnt = 0
     for line in usi_ASM :
         if line != '\n' :
