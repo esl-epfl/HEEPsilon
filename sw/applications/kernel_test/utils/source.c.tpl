@@ -36,7 +36,7 @@
 #include <stdint.h>
 
 #include "${filename}.h"
-#include "${aux_folder}function.h"
+#include "../function.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -83,8 +83,8 @@ extern kcom_kernel_t ${shortname}_kernel = {
     .kmem   = cgra_kmem_${shortname},
     .imem   = cgra_imem_${shortname},
     .col_n  = CGRA_COLS,
-    .in_n   = ${in_vars_depth},
-    .out_n  = ${out_vars_depth},
+    .in_n   = IN_VAR_DEPTH,
+    .out_n  = OUT_VAR_DEPTH,
     .input  = cgra_input,
     .output = cgra_output,
     .config = config,

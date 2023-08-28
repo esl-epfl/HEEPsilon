@@ -1,0 +1,59 @@
+{
+    "function_name": "",
+    "inputs": [
+        {
+            "name": "80",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "w",
+            "depth": 80,
+            "type": "uint32_t"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "ret",
+            "depth": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "read_col0": [
+        {
+            "name": "w"
+        }
+    ],
+    "write_col0": [
+        {
+            "name": "ret"
+        },
+        {
+            "name": "ret"
+        },
+        {
+            "name": "ret"
+        }
+    ],
+    "read_col1": [
+        {
+            "name": "w"
+        },
+        {
+            "name": "w"
+        },
+        {
+            "name": "w"
+        }
+    ],
+    "write_col1": [],
+    "read_col2": [
+        {
+            "name": "80"
+        },
+        {
+            "name": "w"
+        }
+    ],
+    "write_col2": []
+}

@@ -15,8 +15,8 @@ import copy
 # # Change to the file name you want to compile
 # FILE_NAME = "pseudo_assembly_dbl_max"
 
-SIZE_DEC_INSTR = 5
-SIZE_EPFL_ASM  = 6
+SIZE_DEC_INSTR  = 5
+SIZE_EPFL_ASM   = 6
 
 type_1_instr        = ['SADD','SSUB','SMUL','FXPMUL','SLT','SRT','SRA',
                         'LAND','LOR','LXOR','LNAND','LNOR','LXNOR']
@@ -332,20 +332,6 @@ def transpose_grid(usi_trans, n_col) :
     for i in range(CGRA_N_ROW):
         for j in range(n_col):
             epfl_asm[j*CGRA_N_COL+i] = usi_trans[i*n_col+j]
-            # print(i*n_col+j, '=>', j*CGRA_N_COL+i)
-
-    # epfl_asm[1] = usi_trans[4]
-    # epfl_asm[2] = usi_trans[8]
-    # epfl_asm[3] = usi_trans[12]
-    # epfl_asm[4] = usi_trans[1]
-    # epfl_asm[6] = usi_trans[9]
-    # epfl_asm[7] = usi_trans[13]
-    # epfl_asm[8] = usi_trans[2]
-    # epfl_asm[9] = usi_trans[6]
-    # epfl_asm[11] = usi_trans[14]
-    # epfl_asm[12] = usi_trans[3]
-    # epfl_asm[13] = usi_trans[7]
-    # epfl_asm[14] = usi_trans[11]
 
     return epfl_asm
 
@@ -361,27 +347,10 @@ def set_ker_conf_word(code,n_col) :
         -----------------------------
         the kernel configuration word, k, kernel start aderss
     '''
-    # Use the number of columns set by USI compiler and placement output
-    # nbr_col = 0
-    # if (n_col == CGRA_N_COL) :
-    #     col_used = [0,0,0,0]
-    #     for i in range(PE_NBR) :        #return the columns used
-    #         for instr in code[i] :
-    #             if instr != rcs_nop_instr :
-    #                 if (i <=3) :
-    #                     col_used[0] = 1
-    #                 elif (i <=7) :
-    #                     col_used[1] = 1
-    #                 elif (i <=11) :
-    #                     col_used[2] = 1
-    #                 else :
-    #                     col_used[3] = 1
-    #     nbr_col = sum(col_used)
-    # else : nbr_col = n_col
     nbr_col = n_col # Columns used
     ker_num_instr = len(code[0]) # Number of instruction in the kernel
     ker_conf_w = get_bin(int(pow(2,nbr_col))-1,CGRA_N_COL) +\
-                                get_bin(ker_start_add, CGRA_IMEM_NL_LOG2) +\
+                                get_bin(kernel_start, CGRA_IMEM_NL_LOG2) +\
                                 get_bin(ker_num_instr-1, RCS_NUM_CREG_LOG2)
     # Used for multi-column kernels
 #    k = ker_num_instr
@@ -402,9 +371,9 @@ def create_rcs_instructions(start_add,rcs_instructions,epfl_ASM,nbr_instr,col_nb
     for l in range(col_nbr) :
         for j in range (CGRA_N_ROW) :
             for i in range(nbr_instr) :
-                rcs_instructions[j][start_add+nbr_instr*l+i] = epfl_ASM[j+4*l][i]
+                rcs_instructions[j][start_add+nbr_instr*l+i] = epfl_ASM[j+CGRA_N_ROW*l][i]
                 # print(rcs_instructions[j][start_add+nbr_instr*l+i])
-    for l in range(col_nbr,4) :
+    for l in range(col_nbr,CGRA_N_COL) :
         for j in range (CGRA_N_ROW) :
             for i in range(nbr_instr) :
                 rcs_instructions[j][start_add+nbr_instr*l+i] = rcs_nop_instr 
@@ -439,16 +408,28 @@ def used_col(usi_ASM) :
 CODE
 --------------------------------'''
 # USI will tell us the number of coulmns used
-usi_ASM_file = open(FILE_NAME,"r")                                                          # Open the pseudo-assembly file
-usi_ASM = usi_ASM_file.readlines()                                                          # Store each line
+with open(OUT_SAT_PATH,"r") as f:                                                          # Open the pseudo-assembly file
+    usi_ASM = f.readlines()                                                          # Store each line
 # cgra_n_col = used_col(usi_ASM)                                                              # Return the number of column
-cgra_n_col = 4
+
+# Start from the USI ompiler output and extract only the pseudo-assembly (between "T = 0\n"s)
+usi_ASM = usi_ASM[ usi_ASM.index("T = 0\n")+1 : ]
+usi_ASM = usi_ASM[ : usi_ASM.index("T = 0\n") ]
+# Replace all time stamps for empty lines
+usi_ASM = [ "\n" if "T = " in s else s for s in usi_ASM ]
+# Add the exit instruction at the end
+usi_ASM.append("\n")
+usi_ASM.append("EXIT\n")
+# Fill the rest of the instruction with NOPs
+[ usi_ASM.append("NOP\n") for _ in range(usi_ASM.index("\n")-1)]
+
+cgra_n_col = CGRA_N_COL
 usi_ASM_timed = time_lines(usi_ASM)                                                         # Convert theformat for it being time wise for each PE(RC)
 usi_translated = translate_usi_asm(usi_ASM_timed)                                           # Convert to epfl_asm format
 epfl_ASM = transpose_grid(usi_translated, cgra_n_col) # if cgra_n_col == 4 else usi_translated            # Transpose the confiuration of the PEs if format_line else under 16 PEs we have a format_col
-start_add = ker_start_add                                                                   # Save current start address
+start_add = kernel_start                                                                   # Save current start address
 k = len(epfl_ASM[0])                                                                        # Used for multi-column kernels
-ker_conf_words[ker_next_id],nbr_col = set_ker_conf_word(epfl_ASM,cgra_n_col)                # Set the configuartion word of the kernel
-ker_start_add = ker_start_add + k*nbr_col                                                   # Update start address for next kernel
-ker_next_id += 1                                                                            # Update ID for next kernel
+ker_conf_words[KERNEL_ID],nbr_col = set_ker_conf_word(epfl_ASM,cgra_n_col)                # Set the configuartion word of the kernel
+kernel_start = kernel_start + k*nbr_col                                                   # Update start address for next kernel
+KERNEL_ID += 1                                                                            # Update ID for next kernel
 rcs_instructions = create_rcs_instructions(start_add,rcs_instructions,epfl_ASM,k,nbr_col)   # Convert it to rcs_instruction to be read by inst_encoder.py

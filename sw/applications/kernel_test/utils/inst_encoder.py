@@ -102,10 +102,6 @@ def return_indices_of_a(a, b, name = ''):
 #                                                                        #
 ##########################################################################
 
-CGRA_N_COL = 4
-CGRA_N_ROW = 4
-
-PE_NBR = CGRA_N_ROW*CGRA_N_COL
 
 RCS_NUM_CREG      = 32;
 RCS_NUM_CREG_LOG2 = ceil(log(RCS_NUM_CREG,2));
@@ -116,8 +112,6 @@ CGRA_IMEM_NL_LOG2 = ceil(log(CGRA_IMEM_N_LINE,2))
 # Memory holding the kernel configuration words (KMEM)
 # Max possible number of kernel
 CGRA_KMEM_N_KER = 16
-# Kernel configuration word width
-CGRA_KMEM_WIDTH = CGRA_N_COL + CGRA_IMEM_NL_LOG2 + RCS_NUM_CREG_LOG2
 
 #################################################################
 #  _____   _____  _____    _____ ____  _   _ _____ _____ _____  #
@@ -169,111 +163,72 @@ rcs_nop_instr = ['ZERO', 'ZERO', 'NOP', '-', 'SELF', '0']
 #                                                                                   #
 #####################################################################################
 
-ker_null_conf = get_bin(0, CGRA_KMEM_WIDTH)
+
 
 #####################################################################################
 
-intr_log = False
-set_path = False
-KER_PATH = ""
-KER_ARG = []
-KER_NAME = []
-for i in range(1,len(sys.argv)):
-    if sys.argv[i] == 'd':
-        intr_log = True
-    elif sys.argv[i] == 'p':
-        set_path = True
-    elif (set_path):
-        KER_PATH = sys.argv[i]
-        set_path = False
-    else:
-        KER_ARG.append(sys.argv[i])
-        KER_SPLIT = sys.argv[i].split('/')
-        ker_id = KER_SPLIT[-3] #...../kernel_name/data/file
-        while (ker_id in KER_NAME) :
-            ker_id += "I"
-        KER_NAME.append(ker_id) 
+if len(sys.argv) != 3 :
+    sys.exit("[ERROR] Incomplete data. Please provide a kernel path (<<..../kernel_name>>) and CGRA dimension (<<CxR>>).")
 
-if (KER_PATH == "") :
-    if (len(KER_ARG) == 1) :
-        KER_PATH = KER_ARG[0][0:KER_ARG[0].rfind('/')]
-    else :
-        KER_P_NUM = 0
-        while (1) :
-            KER_PATH = "sw/custom_configs/custom_config_" + str(KER_P_NUM)
-            if (os.path.exists(KER_PATH)) :
-                KER_P_NUM += 1
-            else :
-                break
+# Get the path to the kernel from the input of the command
+KER_PATH = sys.argv[1] # e.g. "../kernels/this_kernel/" 
+if KER_PATH[-1] == "/":
+    # Extract the kernel name
+    KER_NAME = KER_PATH[ KER_PATH.rfind("/") +1 :-1 ] # e.g. "this_kernel"
+else:
+    KER_NAME = KER_PATH[ KER_PATH.rfind("/") +1 :] # e.g. "this_kernel"
+    KER_PATH = KER_PATH + "/"    
 
-# Create folders
-KER_PATH_SPLIT = KER_PATH.split('/')
-sub_path = ""
-for folder in KER_PATH_SPLIT :
-    sub_path += folder
-    if not os.path.exists(sub_path):
-        os.mkdir(sub_path)
-    sub_path += "/"
+# Get the desired dimension
+DIMENSION = sys.argv[2] # e.g. "3x3"
 
-rcs_imem_file = KER_PATH + '/cgra_imem.bit'
-ker_kmem_file = KER_PATH + '/cgra_kmem.bit'
-io_json_file = KER_PATH + '/bit_info.json'
+# Get the dimension-dependant data folder
+DATA_DIR = KER_PATH + "/" + DIMENSION + "/"
 
-open(rcs_imem_file, 'w')
-open(ker_kmem_file, 'w')
+# Obtain the number of columns and row independently
+CGRA_N_COL, CGRA_N_ROW = [int(s) for s in DIMENSION if s.isdigit() ]
 
-rcs_logger = logfunc.log2file(rcs_imem_file, CGRA_IMEM_WIDTH + 4) # + 0b<>, 
-ker_logger = logfunc.log2file(ker_kmem_file, CGRA_KMEM_WIDTH)
+# The file where the bitstreams will be stored 
+BITSTREAMS_PATH = DATA_DIR + 'bitstreams'
+OUT_SAT_PATH    = DATA_DIR + 'out.sat'
 
-# Save kernel names
-io_dict = {}
-io_dict["kernels"] = KER_NAME
-with open(io_json_file, "w") as outfile:
-    json.dump(io_dict, outfile)
+# Obtain the numnber of Processing Elements
+PE_NBR = CGRA_N_ROW*CGRA_N_COL
 
-rcs_instructions = [[rcs_nop_instr for _ in range(CGRA_IMEM_N_LINE)] for _ in range (CGRA_N_ROW)]
-ker_conf_words   = [ker_null_conf for _ in range(CGRA_KMEM_N_KER)]
+# Kernel configuration word width
+CGRA_KMEM_WIDTH = CGRA_N_COL + CGRA_IMEM_NL_LOG2 + RCS_NUM_CREG_LOG2
+
+
+KERNEL_ID       = 1
+kernel_start    = 0
+
+ker_null_conf       = get_bin(0, CGRA_KMEM_WIDTH)
+ker_conf_words      = [ker_null_conf for _ in range(CGRA_KMEM_N_KER)]
+rcs_instructions    = [[rcs_nop_instr for _ in range(CGRA_IMEM_N_LINE)] for _ in range (CGRA_N_ROW)]
 
 # First entry is always null
 ker_conf_words[0] = ker_null_conf
 
-# ================================================================================ #
-# ========================> UNCOMMENT KERNEL INSTRUCTIONS <======================= #
-# ================================================================================ #
+intr_log = False
+set_path = False
 
-# ID zero is reserved (= no kernel request)
-ker_next_id    = 1
-# First kernel start at adress 0
-ker_start_add  = 0
 
-# KERNEL CALL
-for ker_in in KER_ARG:
-    if (ker_in.find('.py') == -1) :
-        FILE_NAME = ker_in
-        exec(open("bitstream_gen.py").read())
-    else :
-        exec(open(ker_in).read())
+exec(open("bitstream_gen.py").read())
+
 
 # PRINT STATS
+print("\n\n-------------------------------------")
 print("CGRA conf. word width  :", CGRA_KMEM_WIDTH)
 print("CGRA instruction width :", CGRA_IMEM_WIDTH)
-print("CGRA number of kernels :", ker_next_id-1)
-print("-------------------------------------")
-
 # Check instruction memory is large enough
-if ker_start_add > CGRA_IMEM_N_LINE:
-    print("ERROR: TOO MANY INSTRUCTIONS FOR CGRA MEMORY")
-else:
-    print("INFO: {}/{} CGRA INSTRUCTIONS".format(ker_start_add, CGRA_IMEM_N_LINE));
-
+print("INFO: {}/{} CGRA INSTRUCTIONS".format(kernel_start, CGRA_IMEM_N_LINE));
 print("-------------------------------------")
 
+bitstreams_str = "kmem: "
 for i in range(0,CGRA_KMEM_N_KER):
-    # ker_logger.log_line(ker_conf_words[i])
-    ker_logger.log_line(hex(int(ker_conf_words[i],2)))
+    bitstreams_str += hex(int(ker_conf_words[i],2)) + ", "
+bitstreams_str += "\nimem: "
 
-    # print(ker_conf_words[i])
-    # print(hex(int(ker_conf_words[i],2)))
 
 instr_count = 0
 for i in range(0,CGRA_N_ROW):
@@ -311,21 +266,33 @@ for i in range(0,CGRA_N_ROW):
                 instr_bits = instr_bits + get_bin(return_indices_of_a(muxF_list, cmd, 'muxF_list'), RCS_MUXFLAG_BITS)
             elif idx == 5:
                 instr_bits = instr_bits + int2bin(int(cmd), RCS_IMM_BITS)
-                
-                # if cmd != '0' :
-                #     print(int2bin(int(cmd), RCS_IMM_BITS))
-                #     print(cmd)
             else:
                 print("ERROR: index overflow in instruction word")
 
-        # rcs_logger.log_line(instr_bits)
-        rcs_logger.log_line(hex(int(instr_bits,2)))
+        bitstreams_str += (hex(int(instr_bits,2))) + ", "
 
 
         instr_count += 1
 
-        # print(instr_bits)
-        # print(hex(int(instr_bits,2)))
-    # print()
+with open(BITSTREAMS_PATH, 'w') as f:
+    f.write(bitstreams_str)
 
 
+
+exec(open("io_gen.py").read())
+
+exec(open("heeptest_gen.py").read())
+
+
+#####################################################################################
+# TO DOs
+#####################################################################################
+
+# Fix the naming of the software function in the source file
+# Differentiate between variables and pointers
+# Give the variables a min and max
+# Make different sizes be considered different "versions" or "configurations"
+# Put all sources' versions into a single file
+# Rename the out.sats as kernel_version.mapit
+# Consider data types (not always uint32_t)
+# Differentiate between function arguments and function constants

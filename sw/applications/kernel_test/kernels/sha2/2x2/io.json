@@ -1,0 +1,45 @@
+{
+    "function_name": "sha2",
+    "inputs": [
+        {
+            "name": "1518500249",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "20",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "W",
+            "depth": 20,
+            "type": "uint32_t"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "ret",
+            "depth": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "read_col0": [
+        {
+            "name": "W"
+        },
+        {
+            "name": "20"
+        },
+        {
+            "name": "20"
+        }
+    ],
+    "write_col0": [
+        {
+            "name": "ret"
+        }
+    ],
+    "read_col1": [],
+    "write_col1": []
+}

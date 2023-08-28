@@ -55,55 +55,47 @@
 #define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
-#define PRINT_KERNEL_STATS      1
+#define PRINT_KERNEL_STATS      0
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           1
+#define PRINT_RESULTS           0
 #define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
 
 #define WATCHDOG_CYCLES         100000
 
-#define ENABLE_PIN_TOGGLE       1
 #define ANALYZE_EVERYTHING      1
+
+#define EXECUTE_SOFTWARE        1
+#define MEASUREMENTS            1
+#define MEASURE_DEVIATION       1
+#define MEASURE_REPORTED        0
+#define MEASURE_RATIO           0
+
+#define PERFORM_RES_CHECK       1
+
 #define CTRL_VCD_W_PIN          0
-
-
-#if CTRL_VCD_W_PIN
-    #define ENABLE_TIME_MEASURE 0
-#else
-    #define ENABLE_TIME_MEASURE 1
-#endif
-
-#if CTRL_VCD_W_PIN
-#define PIN_TO_TOGGLE           PIN_TO_CTRL_VCD
-#else
-#define PIN_TO_TOGGLE           30
-#endif //CTRL_VCD_W_PIN
+#define ENABLE_TIME_MEASURE     1
 
 #define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
 #define PIN_TO_NEW_VCD          21
 
-#define ITERATIONS_PER_KERNEL   5
+#define ITERATIONS_PER_KERNEL   10
 #define PERF_PLOT_SCALE_DOWN    5
 
 
 /* Constants */
 #define CGRA_STAT_PERCENT_MULTIPLIER    100
-#define CGRA_MAX_COLS                   4
 #define HART_ID                         0
 #define KCOM_FUNC_RET_OK                0
 #define TICK_FREQ_HZ                    20 * 1000 * 1000 // 20 MHz
 #define KERNEL_NAME_LENGTH_MAX          20
 #define RANDOM_SEED                     12346
-#define PIN_TO_CTRL_VCD                 0   // In sync w/ hardware, do not change
 
-#define CGRA_ACCESS_FLAT_COST_CYCLES    90  // Measured in Questasim, do not change
-
-
+#define CGRA_ACCESS_FLAT_COST_CYCLES    80  // Measured in Questasim, do not change
 
 /* Macros */
 
@@ -179,7 +171,7 @@ typedef struct
 
 typedef struct
 {
-    kcom_col_perf_t    cols[CGRA_MAX_COLS];
+    kcom_col_perf_t    cols[CGRA_N_COLS];
     kcom_col_perf_t    cols_max;
     uint32_t           cyc_ratio; // Stored *CGRA_STAT_PERCENT_MULTIPLIER
     kcom_timing_t      time;
@@ -187,18 +179,24 @@ typedef struct
 
 typedef struct
 {
+#if EXECUTE_SOFTWARE
     kcom_param_t sw;
+#endif
     kcom_param_t conf;
     kcom_param_t cgra;
     kcom_param_t repo;
+#if MEASURE_RATIO
     kcom_param_t repo_conf;
     kcom_param_t cyc_ratio;
+#endif
 } kcom_run_t;
 
 typedef struct
 {
    kcom_run_t   avg;
+#if MEASURE_DEVIATION
    kcom_run_t   stdev;
+#endif
    uint32_t     n;
    uint32_t     errors;
    uint8_t      *name;
@@ -234,7 +232,7 @@ void kcom_getKernelStats(   kcom_run_t  *run,   kcom_stats_t    *stats );
 
 void kcom_printPerf(        kcom_perf_t *perf );
 void kcom_printKernelStats( kcom_stats_t    *stats );
-void kcom_printSummary( );
+void kcom_printSummary( kcom_stats_t *stats );
 
 void kcom_init();
 void kcom_load(  kcom_kernel_t *ker );

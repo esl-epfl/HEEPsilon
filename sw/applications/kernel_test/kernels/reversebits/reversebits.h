@@ -6,7 +6,7 @@
 ** project  : CGRA-X-HEEP                                                  **
 ** filename : reversebits.h                                                   **
 ** version  : 1                                                            **
-** date     : 2023-04-28                                                    **
+** date     : 2023-06-22                                                    **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -21,7 +21,7 @@
 
 /**
 * @file   reversebits.h
-* @date   2023-04-28
+* @date   2023-06-22
 * @brief  A description of the kernel...
 *
 */
