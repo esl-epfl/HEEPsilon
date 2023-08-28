@@ -22,8 +22,8 @@
 /**
 * @file   kernels_common.c
 * @date   06/04/23
-* @brief  Common functions and types to be used in the characterization of 
-* different kernels. 
+* @brief  Common functions and types to be used in the characterization of
+* different kernels.
 *
 */
 
@@ -90,7 +90,7 @@ void        timeStop(     kcom_time_diff_t    *perf );
 /**                                                                        **/
 /****************************************************************************/
 
-static uint32_t freq_hz; 
+static uint32_t freq_hz;
 
 static uint32_t z1 = RANDOM_SEED, \
                 z2 = RANDOM_SEED, \
@@ -100,15 +100,12 @@ static uint32_t z1 = RANDOM_SEED, \
 // Controlling a pin
 static gpio_t  gpio;
 
-// Timer 
+// Timer
 static rv_timer_t          timer;
 
 // Plic controller variables
-static dif_plic_params_t    rv_plic_params;
-static dif_plic_t           rv_plic;
-static dif_plic_result_t    plic_res;
-static dif_plic_irq_id_t    intr_num;
 volatile bool               cgra_intr_flag;
+
 static cgra_t               cgra;
 static uint8_t              cgra_slot;
 // To stop the counter inside the interupt handler
@@ -120,24 +117,11 @@ static kcom_time_diff_t     *cgraPerf;
 /**                                                                        **/
 /****************************************************************************/
 
-void plic_interrupt_init(dif_plic_irq_id_t irq) {
+void plic_interrupt_init() {
     // Init the PLIC
-    rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)RV_PLIC_START_ADDRESS);
-    plic_res = dif_plic_init(rv_plic_params, &rv_plic);
-    if (plic_res != kDifPlicOk) {
-        PRINTF("PLIC init failed\n;");
-    }
-
-    // Set CGRA priority to 1 (target threshold is by default 0) to trigger an interrupt to the target (the processor)
-    plic_res = dif_plic_irq_set_priority(&rv_plic, irq, 1);
-    if (plic_res != kDifPlicOk) {
-        PRINTF("Set interrupt priority to 1 failed\n");
-    }
-
-    plic_res = dif_plic_irq_set_enabled(&rv_plic, irq, 0, kDifPlicToggleEnabled);
-    if (plic_res != kDifPlicOk) {
-        PRINTF("Enable interrupt failed\n");
-    }
+    plic_Init();
+    plic_irq_set_priority(CGRA_INTR, 1);
+    plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
 
     // Enable interrupt on processor side
     // Enable global interrupt for machine-level interrupts
@@ -145,21 +129,14 @@ void plic_interrupt_init(dif_plic_irq_id_t irq) {
     // Set mie.MEIE bit to one to enable machine-level external interrupts
     const uint32_t mask = 1 << 11;//IRQ_EXT_ENABLE_OFFSET;
     CSR_SET_BITS(CSR_REG_MIE, mask);
+    cgra_intr_flag = 0;
 }
 
-void handler_irq_external(void) {
-    // Claim/clear interrupt
-    plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
-    if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
-        kcom_perfRecordStop( cgraPerf );
-        cgra_intr_flag = 1;
-    }
-
-    // Complete the interrupt
-    plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
-    if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
-        PRINTF("CGRA interrupt complete failed\n");
-    }
+// Interrupt controller variables
+void handler_irq_ext(uint32_t id) {
+  if( id == CGRA_INTR) {
+    cgra_intr_flag = 1;
+  }
 }
 
 /* MISCELANEOUS */
@@ -170,7 +147,7 @@ uint32_t kcom_getRand()
 
     b  = ((z1 << 6) ^ z1) >> 13;
     z1 = ((z1 & 4294967294U) << 18) ^ b;
-    b  = ((z2 << 2) ^ z2) >> 27; 
+    b  = ((z2 << 2) ^ z2) >> 27;
     z2 = ((z2 & 4294967288U) << 2) ^ b;
     b  = ((z3 << 13) ^ z3) >> 21;
     z3 = ((z3 & 4294967280U) << 7) ^ b;
@@ -235,12 +212,12 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 {
 #if ENABLE_TIME_MEASURE
     // These times have already been subtracted the dead time.
-    (run[ it_idx ]).sw          = perf->time.sw.spent_cy;     
-    (run[ it_idx ]).conf        = 0;     
-    (run[ it_idx ]).cgra        = perf->time.cgra.spent_cy;  
+    (run[ it_idx ]).sw          = perf->time.sw.spent_cy;
+    (run[ it_idx ]).conf        = 0;
+    (run[ it_idx ]).cgra        = perf->time.cgra.spent_cy;
     (run[ it_idx ]).repo        = perf->cols_max.cyc_act + perf->cols_max.cyc_stl;
-    (run[ it_idx ]).repo_conf   = 0;   
-    (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio; 
+    (run[ it_idx ]).repo_conf   = 0;
+    (run[ it_idx ]).cyc_ratio   = perf->cyc_ratio;
 
 #ifdef PRINT_ITERATION_VALUES
     PRINTF("\n-----------------\n");
@@ -259,7 +236,7 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
     for( uint32_t i = 0; i < it_n; i++ )
     {
         run[i].conf         = run[0].conf;
-        run[i].repo_conf    = run[0].repo_conf; 
+        run[i].repo_conf    = run[0].repo_conf;
     }
 #else
     kcom_param_t avg        = 0;
@@ -277,8 +254,8 @@ void kcom_extractConfTime( kcom_run_t *run, uint32_t it_n )
     run[0].conf         = avg;
     run[0].repo_conf    = repo_avg;
 
-    run[0].cgra         = run[0].cgra - avg;  
-    run[0].repo         = run[0].repo - repo_avg; 
+    run[0].cgra         = run[0].cgra - avg;
+    run[0].repo         = run[0].repo - repo_avg;
 #endif //REPEAT_FIRST_INPUT
 #endif //ENABLE_TIME_MEASURE
 }
@@ -303,9 +280,9 @@ void kcom_getKernelStats( kcom_run_t *run, kcom_stats_t *stats )
         }
         /* Divide by the population size. */
         ((kcom_param_t*)avg)[p_idx] /= iterations;
-    
+
         /* Get the deviation (sigma). */
-        ((kcom_param_t*)stdev)[p_idx] = 0; 
+        ((kcom_param_t*)stdev)[p_idx] = 0;
         for( uint32_t it_idx = 1; it_idx < iterations+1; it_idx++ )
         {
              /* Get diff with avg. */
@@ -389,7 +366,7 @@ void kcom_printPerf( kcom_perf_t *perf )
 
     PRINTF("\t\t\\midrule \n");
     PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
-    PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
+    PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
 #if ENABLE_TIME_MEASURE
     PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent_cy );
     PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent_cy );
@@ -406,7 +383,7 @@ void kcom_printPerf( kcom_perf_t *perf )
 #endif //PRINT_LATEX
     PRINTF("Param\tValue\tUnit \n");
     PRINTF("Total\t%d+%d=%03d\tcycles \n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
-    PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  ); 
+    PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
     PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
     PRINTF("CGRA\t%d\tcy\n", perf->time.cgra.spent_cy );
     PRINTF("Active\t%d\tcy\n", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
@@ -462,12 +439,12 @@ void kcom_load( kcom_kernel_t *ker )
 void kcom_rstPerfCounter()
 {
     cgra_perf_cnt_reset( &cgra );
-} 
+}
 
 void kcom_launchKernel( uint8_t Id )
 {
-    cgra_set_kernel( &cgra, cgra_slot, Id ); 
-} 
+    cgra_set_kernel( &cgra, cgra_slot, Id );
+}
 
 __attribute__((optimize("O0"))) void kcom_waitingForIntr()
 {
@@ -508,7 +485,7 @@ void pinInit()
 
     pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
     gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
-    
+
     gpio_init(gpio_params, &gpio);
 
     gpio_write(&gpio, PIN_TO_NEW_VCD, false);
@@ -528,21 +505,21 @@ void timerInit()
     freq_hz             = soc_ctrl_get_frequency(&soc_ctrl);
 
     mmio_region_t timer_0_reg = mmio_region_from_addr(RV_TIMER_AO_START_ADDRESS);
-    
+
     rv_timer_init( timer_0_reg, (rv_timer_config_t) { .hart_count = 2, .comparator_count = 1 }, &timer );
 
     rv_timer_tick_params_t tick_params;
 
-    // The same frequency is provaided to get one tick per cycle. 
-    rv_timer_approximate_tick_params( freq_hz, freq_hz, &tick_params ); 
-    rv_timer_set_tick_params(&timer, HART_ID, tick_params); 
+    // The same frequency is provaided to get one tick per cycle.
+    rv_timer_approximate_tick_params( freq_hz, freq_hz, &tick_params );
+    rv_timer_set_tick_params(&timer, HART_ID, tick_params);
 
     // Juan: see if i cannot remove this!
     rv_timer_irq_enable(&timer, HART_ID, 0, kRvTimerEnabled);
     rv_timer_arm(&timer, HART_ID, 0, 1);
 
     rv_timer_counter_set_enabled(&timer, HART_ID, kRvTimerEnabled);
-    
+
 }
 
 uint64_t getTime_cy( )

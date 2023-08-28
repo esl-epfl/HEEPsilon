@@ -22,7 +22,7 @@
 /**
 * @file   main.c
 * @date   05/04/23
-* @brief  An application to run a number of kernels under a same given 
+* @brief  An application to run a number of kernels under a same given
 * structure.
 *
 */
@@ -74,16 +74,16 @@
 /**                                                                        **/
 /****************************************************************************/
 
-static kcom_kernel_t *kernels[] = { 
+static kcom_kernel_t *kernels[] = {
         // Variable execution time
         &reve_kernel,
-        &strs_kernel, 
+        &strs_kernel,
         &bitc_kernel,
         // Constant execution time
-        &gsm_kernel,
-        &sha2_kernel, 
-        &sqrt_kernel, 
-        &sha_kernel,
+        // &gsm_kernel,
+        // &sha2_kernel,
+        // &sqrt_kernel,
+        // &sha_kernel,
         // Add all other kernels here
     };
 
@@ -110,7 +110,7 @@ void main()
 
     PRINTF("Will execute %d kernels %d times each! \n",kernels_n, ITERATIONS_PER_KERNEL );
     kcom_init();
-    
+
     for( uint8_t ker_idx = 0; ker_idx < kernels_n; ker_idx++ )
     {
         kernel = kernels[ ker_idx ];
@@ -118,9 +118,9 @@ void main()
         stats.n = ITERATIONS_PER_KERNEL;
         stats.errors = 0;
         /* Set the kernel ID */
-        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) ) + 1; // Must be between 1 and (KMEM_SIZE - 1). 
+        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) ) + 1; // Must be between 1 and (KMEM_SIZE - 1).
         kernel->kmem[ kernel_id ] = kernel->kmem[1]; // By default the kernels come located with id = 1.
-        // The kernel = 1 is kept, so we can always take it from there. 
+        // The kernel = 1 is kept, so we can always take it from there.
 
         /* CGRA load */
 #if ANALYZE_EVERYTHING
@@ -138,7 +138,7 @@ void main()
 
             /* Load (of inputs). */
 #if REPEAT_FIRST_INPUT
-            if( it_idx < 2 ) kcom_resetRand(); 
+            if( it_idx < 2 ) kcom_resetRand();
 #endif //REPEAT_FIRST_INPUT
             kernel->config();
 
@@ -147,26 +147,26 @@ void main()
             kcom_perfRecordStart(   &(kperf.time.dead) );
             kcom_perfRecordStop(    &(kperf.time.dead) );
 #endif //ANALYZE_EVERYTHING
-           
+
             /* Software */
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
                 kernel->func();
 #if ANALYZE_EVERYTHING
-            kcom_perfRecordStop(    &(kperf.time.sw) );    
+            kcom_perfRecordStop(    &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
-           
+
             /* CGRA Execution */
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
             kcom_perfRecordStart(   &(kperf.time.cgra) );
                 kcom_launchKernel( kernel_id );
                 kcom_waitingForIntr();
             // Time is stopped inside the interrupt handler to make it as fast as possible
-           
+
             /* Result comparison */
             stats.errors += kernel->check();
-            
+
             /* Subtract the dead times from the obtained values */
             kcom_subtractDead( &(kperf.time.sw.spent_cy),    kperf.time.dead.spent_cy );
             kcom_subtractDead( &(kperf.time.load.spent_cy),  kperf.time.dead.spent_cy );
@@ -177,7 +177,7 @@ void main()
 #if PRINT_ITERATION_VALUES
             kcom_printPerf( &kperf );
 #endif //PRINT_ITERATION_VALUES
-            
+
             /* Add this iteration to the runs vector */
             kcom_populateRun( &run, &kperf, it_idx );
         }

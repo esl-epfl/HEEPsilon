@@ -55,12 +55,12 @@
 #define ENABLE_DEBUG_PRINTF     0
 
 #define PRINT_ITERATION_VALUES  0
-#define PRINT_KERNEL_STATS      1  
+#define PRINT_KERNEL_STATS      1
 #define PRINT_COLUMN_STATS      0
 #define PRINT_LATEX             0
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
-#define PRINT_RESULTS           0
+#define PRINT_RESULTS           1
 #define PRINT_CGRA_RESULTS      0
 
 #define REPEAT_FIRST_INPUT      1
@@ -87,8 +87,8 @@
 #define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
 #define PIN_TO_NEW_VCD          21
 
-#define ITERATIONS_PER_KERNEL   10
-#define PERF_PLOT_SCALE_DOWN    5 
+#define ITERATIONS_PER_KERNEL   5
+#define PERF_PLOT_SCALE_DOWN    5
 
 
 /* Constants */
@@ -139,7 +139,7 @@ typedef int32_t*    kcom_io_t;
 
 typedef kcom_time_t kcom_param_t;
 
-typedef struct 
+typedef struct
 {
     kcom_mem_t  kmem;
     kcom_mem_t  imem;
@@ -168,7 +168,7 @@ typedef struct
     kcom_time_t spent_cy;
 } kcom_time_diff_t;
 
-typedef struct 
+typedef struct
 {
     kcom_time_diff_t    sw;
     kcom_time_diff_t    cgra;
@@ -181,11 +181,11 @@ typedef struct
 {
     kcom_col_perf_t    cols[CGRA_MAX_COLS];
     kcom_col_perf_t    cols_max;
-    uint32_t           cyc_ratio; // Stored *CGRA_STAT_PERCENT_MULTIPLIER 
+    uint32_t           cyc_ratio; // Stored *CGRA_STAT_PERCENT_MULTIPLIER
     kcom_timing_t      time;
 } kcom_perf_t;
 
-typedef struct 
+typedef struct
 {
     kcom_param_t sw;
     kcom_param_t conf;

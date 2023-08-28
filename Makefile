@@ -24,7 +24,7 @@ include $(HEEP_DIR)Makefile.venv
 mcu-gen:
 	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} $(MAKECMDGOALS)
 	cd hw/vendor/esl_epfl_x_heep &&\
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
+	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../hw/tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../hw/tb/tb_util.svh.tpl
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
 ## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
