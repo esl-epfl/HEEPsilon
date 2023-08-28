@@ -3,4 +3,4 @@
 # Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 # SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-find hw/rtl tb -name '*.sv*' | xargs verible-verilog-format --inplace 2> /dev/zero
+find hw/rtl tb hw/vendor/esl_epfl_x_heep/hw/core-v-mini-mcu/core_v_mini_mcu.sv -name '*.sv*' | xargs verible-verilog-format --inplace 2> /dev/zero

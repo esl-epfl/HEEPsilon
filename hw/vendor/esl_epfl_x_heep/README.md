@@ -23,15 +23,14 @@
     ├── util
     └── README.md
 
-======================================
-# x-heep
-======================================
+<br />
+<p align="left"><img src="logo/x-heep.png" width="250"></p>
 
-`X-HEEP` (eXtendable Heterogeneous Energy-Efficient Platform) is a `RISC-V` microcontroller described in `SystemVerilog` 
+`X-HEEP` (eXtendable Heterogeneous Energy-Efficient Platform) is a `RISC-V` microcontroller described in `SystemVerilog`
 that can be configured to target small and tiny platforms as well as extended to support accelerators.
-The cool thing about `X-HEEP` is that we provide a simple customizable MCU, so CPUs, common peripherals, memories, etc. 
-so that you can extend it with your own accelerator without modifying the MCU, but just instantiating it in your design. 
-By doing so, you inherit an IP capable of booting RTOS (such as `freeRTOS`) with the whole FW stack, including `HAL` drivers and `SDK`, 
+The cool thing about `X-HEEP` is that we provide a simple customizable MCU, so CPUs, common peripherals, memories, etc.
+so that you can extend it with your own accelerator without modifying the MCU, but just instantiating it in your design.
+By doing so, you inherit an IP capable of booting RTOS (such as `freeRTOS`) with the whole FW stack, including `HAL` drivers and `SDK`,
 and you can focus on building your special HW supported by the microcontroller.
 
 `X-HEEP` supports simulation with Verilator, Questasim, etc. Morever, FW can be built and linked by using `CMake` either with gcc or with clang. It can be implemented on FPGA, and it supports implementation in Silicon, which is its main (but not only) target. See below for more details.
@@ -46,37 +45,56 @@ Note that under `util` folder, the file `generate-makefile-help` is employed to 
 
 # Prerequisite
 
-1. Install [Conda](https://phoenixnap.com/kb/how-to-install-anaconda-ubuntu-18-04-or-20-04) as described in the link,
-and create the Conda enviroment with python 3.8:
+## 1. OS requirements
+
+To use `X-HEEP`, first make sure you have the following apt packages, or install them as:
 
 ```bash
-conda update conda
-conda env create -f environment.yml
-```
-
-Activate the environment with
-
-```bash
-conda activate core-v-mini-mcu
-```
-2. Install the required Python tools:
-
-```
-pip3 install --user -r python-requirements.txt
-```
-
-Add '--root user_builds' to set your build folders for the pip packages
-and add that folder to the `PATH` variable
-
-3. Install the required apt tools:
-
-```
-sudo apt install lcov libelf1 libelf-dev libftdi1-2 libftdi1-dev libncurses5 libssl-dev libudev-dev libusb-1.0-0 lsb-release texinfo autoconf cmake flex bison libexpat-dev gawk tree xterm
+sudo apt install lcov libelf1 libelf-dev libftdi1-2 libftdi1-dev libncurses5 libssl-dev libudev-dev libusb-1.0-0 lsb-release texinfo autoconf cmake flex bison libexpat-dev gawk tree xterm python3-venv python3-dev
 ```
 
 In general, have a look at the [Install required software](https://opentitan.org/guides/getting_started/index.html) section of the OpenTitan documentation.
 
-4. Install the RISC-V Compiler:
+It has been tested only on `Ubuntu 20`, and we know it does NOT WORK on `Ubuntu 22`.
+
+## 2. Python
+
+
+We rely on either (a) `miniconda`, or (b) `virtual environment` enviroment.
+
+Choose between `2.a` or `2.b` to setup your enviroment.
+
+### 2.a Miniconda
+
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html#linux-installers) python 3.8 version as described in the link,
+and create the Conda enviroment:
+
+```bash
+make conda
+```
+
+You need to do it only the first time, then just activate the environment everytime you work with `X-HEEP` as
+
+```bash
+conda activate core-v-mini-mcu
+```
+
+
+### 2.b Virtual Environment
+
+Install the python virtual environment just as:
+
+```bash
+make venv
+```
+
+You need to do it only the first time, then just activate the environment everytime you work with `X-HEEP` as
+
+```bash
+source .venv/bin/activate
+```
+
+## 3. Install the RISC-V Compiler:
 
 ```
 git clone --branch 2022.01.17 --recursive https://github.com/riscv/riscv-gnu-toolchain
@@ -102,7 +120,7 @@ cmake -G "Unix Makefiles" -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Releas
 cmake --build . --target install
 ```
 
-5. Install the Verilator:
+## 4. Install Verilator:
 
 ```
 export VERILATOR_VERSION=4.210
@@ -165,21 +183,20 @@ First, you have to generate the SystemVerilog package and C header file of the c
 make mcu-gen
 ```
 
-To change the default cpu type (i.e., cv32e20), the default bus type (i.e., onetoM) type
-or the memory size (i.e., number of banks):
+To change the default cpu type (i.e., cv32e20), the default bus type (i.e., onetoM),
+the default continuous memory size (i.e., 2 continuous banks) or the default interleaved memory size (i.e., 0 interleaved banks):
 
 ```
-make mcu-gen CPU=cv32e40p BUS=NtoM MEMORY_BANKS=16
+make mcu-gen CPU=cv32e40p BUS=NtoM MEMORY_BANKS=12 MEMORY_BANKS_IL=4
 ```
 
-The last command generates x-heep with the cv32e40p core, with a parallel bus, and 16 memory banks,
-each 32KB, for a total memory of 512KB. Note that in case of executing a FreeRTOS-based application, 
-the **minimum memory banks should be set to 5**. This is related to the FreeRTOS code and ram requirements.
+The last command generates x-heep with the cv32e40p core, with a parallel bus, and 16 memory banks (12 continuous and 4 interleaved),
+each 32KB, for a total memory of 512KB.
 
 ## Compiling Software
 
 Don't forget to set the `RISCV` env variable to the compiler folder (without the `/bin` included).
-To run 'hello world' application, just type 'make app'. 
+To run 'hello world' application, just type 'make app'.
 
 ```
 make app
@@ -188,14 +205,14 @@ make app
 To run any other application, please use the following command with appropiate parameters:
 
 ```
-app PROJECT=<folder_name_of_the_project_to_be_built> MAINFILE=<main_file_name_of_the_project_to_be_built  WITHOUT EXTENSION!> TARGET=sim(default),pynq-z2 LINKER=on_chip(default),flash_load,flash_exec COMPILER=gcc(default),clang ARCH=rv32imc(default),<any RISC-V ISA string supported by the CPU>
+app PROJECT=<folder_name_of_the_project_to_be_built> TARGET=sim(default),pynq-z2 LINKER=on_chip(default),flash_load,flash_exec COMPILER=gcc(default),clang COMPILER_PREFIX=riscv32-unknown-(default) ARCH=rv32imc(default),<any RISC-V ISA string supported by the CPU>
 
 Params:
-- PROJECT (ex: <folder_name_of_the_project_to_be_built>, hello_wolrd(default))
-- MAINFILE (ex: <main_file_name_of_the_project_to_be_built WITHOUT EXTENSION!>, hello_wolrd(default))
+- PROJECT (ex: <folder_name_of_the_project_to_be_built>, hello_world(default))
 - TARGET (ex: sim(default),pynq-z2)
 - LINKER (ex: on_chip(default),flash_load,flash_exec)
 - COMPILER (ex: gcc(default),clang)
+- COMPILER_PREFIX (ex: riscv32-unknown-(default))
 - ARCH (ex: rv32imc(default),<any RISC-V ISA string supported by the CPU>)
 ```
 
@@ -205,6 +222,13 @@ For instance, to run 'hello world' app for the pynq-z2 FPGA targets, just run:
 make app TARGET=pynq-z2
 ```
 
+Or, if you use the OpenHW Group [GCC](https://www.embecosm.com/resources/tool-chain-downloads/#corev) compiler with CORE_PULP extensions, make sure to point the `RISCV` env variable to the OpenHW Group compiler, then just run:
+
+
+```
+make app COMPILER_PREFIX=riscv32-corev- ARCH=rv32imc_zicsr_zifencei_xcvhwlp1p0_xcvmem1p0_xcvmac1p0_xcvbi1p0_xcvalu1p0_xcvsimd1p0_xcvbitmanip1p0
+```
+
 This will create the executable file to be loaded in your target system (ASIC, FPGA, Simulation).
 Remember that, `X-HEEP` is using CMake to compile and link. Thus, the generated files after having
 compiled and linked are under `sw\build`
@@ -212,16 +236,11 @@ compiled and linked are under `sw\build`
 ## FreeROTS based applications
 
 'X-HEEP' supports 'FreeRTOS' based applications. Please see `sw\applications\blinky_freertos`.
-Note that before runing such application, and due to current memory constraints, the core-v-mini-mcu package needs to be generated using more memory banks than the default settings. Thus, as previously specified: in case of executing a FreeRTOS-based application, the **minimum memory banks should be set to 5**. This is related to the FreeRTOS code and ram requirements. In this case, please, run the following command:
-
-```
-make mcu-gen MEMORY_BANKS=5
-```
 
 After that, you can run the command to compile and link the FreeRTOS based application. Please also set 'LINKER' and 'TARGET' parameters if needed.
 
 ```
-make app PROJECT=blinky_freertos MAINFILE=main 
+make app PROJECT=blinky_freertos
 ```
 
 The main FreeRTOS configuration is allocated under `sw\freertos`, in `FreeRTOSConfig.h`. Please, change this file based on your application requirements.
@@ -230,6 +249,10 @@ Moreover, FreeRTOS is being fetch from 'https://github.com/FreeRTOS/FreeRTOS-Ker
 ## Simulating
 
 This project supports simulation with Verilator, Synopsys VCS, and Siemens Questasim.
+It relies on `fusesoc` to handle multiple EDA tools and parameters.
+For example, if you want to set the `FPU` and `COREV_PULP` parameters of the `cv32e40p` CPU,
+you need to add next to your compilation command `FUSESOC_PARAM="--COREV_PULP=1 --FPU=1"`
+Below the different EDA examples commands.
 
 ### Compiling for Verilator
 
@@ -278,6 +301,28 @@ and type to run your compiled software:
 ./openhwgroup.org_systems_core-v-mini-mcu_0 +firmware=../../../sw/build/main.hex
 ```
 
+Waveforms can be viewed with Verdi. Make sure you have the env variable `VERDI_HOME` set to your Verdi install folder, then run your compiled software as above, but with the `-gui` flag:
+
+```
+./openhwgroup.org_systems_core-v-mini-mcu_0 +firmware=../../../sw/build/main.hex -gui
+```
+
+An Analog / Mixed-Signal simulation of X-HEEP, combining both the RTL system verilog files for the digital part and a SPICE file connected through a `control.init` file for the analog / mixed-signal part, can be ran by typing
+
+```
+make vcs-ams-sim
+```
+
+then going to the target system built folder
+
+```
+cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-vcs
+```
+
+and running the same executable as for the digital simulation. Note that with Verdi you can view both the digital and the analog waveforms.
+
+Additional instructions on how to run an analog / mixed-signal simulation of X-HEEP can be found [here](AnalogMixedSignal.md). To try out the simulation, we provide an example SPICE netlist of an simple 1-bit ADC created by us and exported from [xschem](https://xschem.sourceforge.io/stefan/index.html) and which uses the PTM 65nm bulk CMOS model from [https://ptm.asu.edu](https://ptm.asu.edu/).
+
 ### Compiling for Questasim
 
 To simulate your application with Questasim, first set the env variable `MODEL_TECH` to your Questasim bin folder, then compile the HDL:
@@ -318,7 +363,7 @@ make run RUN_OPT=1 PLUSARGS="c firmware=../../../sw/build/main.hex"
 You can also compile with the UPF power domain description as:
 
 ```
-make questasim-sim-opt-upf FUSESOC_FLAGS="--flag=use_upf"
+make questasim-sim-opt-upf FUSESOC_PARAM="--USE_UPF"
 ```
 
 and then execute software as:
@@ -388,6 +433,10 @@ To run SW, follow the [Debug](./Debug.md) guide
 to load the binaries with the HS2 cable over JTAG,
 or follow the [ExecuteFromFlash](./ExecuteFromFlash.md)
 guide if you have a FLASH attached to the FPGA.
+
+
+Do not forget that the `pynq-z2` board requires you to have the ethernet cable attached to the board while running.
+
 
 ### Linux-FEMU (Linux Fpga EMUlation)
 

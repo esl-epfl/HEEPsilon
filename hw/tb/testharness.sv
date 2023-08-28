@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
 module testharness #(
-    parameter PULP_XPULP    = 0,
+    parameter COREV_PULP    = 0,
     parameter FPU           = 0,
-    parameter PULP_ZFINX    = 0,
+    parameter ZFINX    = 0,
     parameter JTAG_DPI      = 0,
     parameter CLK_FREQUENCY = 'd100_000  //KHz
 ) (
@@ -51,14 +51,13 @@ module testharness #(
   wire spi_sck;
 
   // External subsystems
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch;
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_switch_ack;
-  logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] external_subsystem_powergate_iso;
+  logic external_subsystem_powergate_switch;
+  logic external_subsystem_powergate_switch_ack;
 
   cgra_x_heep_top #(
-      .PULP_XPULP(PULP_XPULP),
+      .COREV_PULP(COREV_PULP),
       .FPU(FPU),
-      .PULP_ZFINX(PULP_ZFINX)
+      .ZFINX(ZFINX)
   ) cgra_x_heep_top_i (
       .clk_i,
       .rst_ni,
@@ -86,9 +85,6 @@ module testharness #(
       .spi2_sd_3_io(gpio[29]),
       .i2c_scl_io(gpio[31]),
       .i2c_sda_io(gpio[30]),
-      .external_subsystem_powergate_switch_o(external_subsystem_powergate_switch),
-      .external_subsystem_powergate_switch_ack_i(external_subsystem_powergate_switch_ack),
-      .external_subsystem_powergate_iso_o(external_subsystem_powergate_iso),
       .exit_value_o,
       .exit_valid_o
   );
@@ -108,7 +104,7 @@ module testharness #(
     tb_cpu_subsystem_powergate_switch_ack[0] <= cgra_x_heep_top_i.x_heep_system_i.cpu_subsystem_powergate_switch;
     tb_peripheral_subsystem_powergate_switch_ack[0] <= cgra_x_heep_top_i.x_heep_system_i.peripheral_subsystem_powergate_switch;
     tb_memory_subsystem_banks_powergate_switch_ack[0] <= cgra_x_heep_top_i.x_heep_system_i.memory_subsystem_banks_powergate_switch;
-    tb_external_subsystem_powergate_switch_ack[0] <= external_subsystem_powergate_switch;
+    tb_external_subsystem_powergate_switch_ack[0] <= cgra_x_heep_top_i.external_subsystem_powergate_switch;
     for (int i = 0; i < SWITCH_ACK_LATENCY; i++) begin
       tb_memory_subsystem_banks_powergate_switch_ack[i+1] <= tb_memory_subsystem_banks_powergate_switch_ack[i];
       tb_cpu_subsystem_powergate_switch_ack[i+1] <= tb_cpu_subsystem_powergate_switch_ack[i];
@@ -127,12 +123,12 @@ module testharness #(
     force cgra_x_heep_top_i.x_heep_system_i.core_v_mini_mcu_i.cpu_subsystem_powergate_switch_ack_i = delayed_tb_cpu_subsystem_powergate_switch_ack;
     force cgra_x_heep_top_i.x_heep_system_i.core_v_mini_mcu_i.peripheral_subsystem_powergate_switch_ack_i = delayed_tb_peripheral_subsystem_powergate_switch_ack;
     force cgra_x_heep_top_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_i = delayed_tb_memory_subsystem_banks_powergate_switch_ack;
-    force external_subsystem_powergate_switch_ack = delayed_tb_external_subsystem_powergate_switch_ack;
+    force cgra_x_heep_top_i.external_subsystem_powergate_switch_ack = delayed_tb_external_subsystem_powergate_switch_ack;
 `else
     cgra_x_heep_top_i.x_heep_system_i.cpu_subsystem_powergate_switch_ack = delayed_tb_cpu_subsystem_powergate_switch_ack;
     cgra_x_heep_top_i.x_heep_system_i.peripheral_subsystem_powergate_switch_ack = delayed_tb_peripheral_subsystem_powergate_switch_ack;
     cgra_x_heep_top_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_ack = delayed_tb_memory_subsystem_banks_powergate_switch_ack;
-    external_subsystem_powergate_switch_ack = delayed_tb_external_subsystem_powergate_switch_ack;
+    cgra_x_heep_top_i.external_subsystem_powergate_switch_ack = delayed_tb_external_subsystem_powergate_switch_ack;
 `endif
   end
 
