@@ -13,6 +13,8 @@ PORT		?= /dev/ttyUSB2
 
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
+# Use more memory banks
+MEMORY_BANKS = 4
 
 # Project options are based on the app to be build (default - hello_world)
 PROJECT  ?= hello_world
