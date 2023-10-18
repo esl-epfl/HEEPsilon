@@ -13,6 +13,6 @@
 // #define REAL_FFT
 
 // Check for error and print results
-// #define CHECK_ERRORS
+#define CHECK_ERRORS
 
 #endif // _DEFINES_H_
