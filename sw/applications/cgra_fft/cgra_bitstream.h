@@ -438,7 +438,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x13280000,
   0x81090000,
   0x0,
-  0x9a171ffc,
+  0xa170004,
   0xab0000,
   0xa090001,
   0xa0d0001,
