@@ -76,14 +76,21 @@ module cgra
   begin
     for (int l=0; l<N_COL; l++) begin
       // Merge rows branch request
-      rcs_br_req_row_s[l] = {rcs_br_req[3][l], rcs_br_req[2][l], rcs_br_req[1][l], rcs_br_req[0][l]};
-      rcs_br_req_row_merged_s[l] = rcs_br_req[3][l] | rcs_br_req[2][l] | rcs_br_req[1][l] | rcs_br_req[0][l];
-      // branch cols branch request for multi-cols kernels
-      rcs_br_req_col_merged_s[l] = rcs_br_req_row_merged_s & col_acc_map_i[l];
+      rcs_br_req_row_merged_s[l] = '0;
+      for (int k=0; k<N_ROW; k++) begin
+        rcs_br_req_row_s[l][k] = rcs_br_req[k][l];
+        rcs_br_req_row_merged_s[l] |= rcs_br_req[k][l];
+      end
       // Capture execution end signal
-      rcs_exec_end_col_merged[l] = (rcs_ex_end[3][l] | rcs_ex_end[2][l] | rcs_ex_end[1][l] | rcs_ex_end[0][l]) & ~rcs_br_req_o[l];
+      rcs_exec_end_col_merged[l] = '0;
+      for (int k=0; k<N_ROW; k++) begin
+        rcs_exec_end_col_merged[l] |= rcs_ex_end[k][l];
+      end
       // RCs stall capture
-      rc_stall_col[l]  = rcs_stall_s[3][l] | rcs_stall_s[2][l] | rcs_stall_s[1][l] | rcs_stall_s[0][l];
+      rc_stall_col[l] = '0;
+      for (int k=0; k<N_ROW; k++) begin
+        rc_stall_col[l] |= rcs_stall_s[k][l];
+      end
     end
   end
 
@@ -92,23 +99,19 @@ module cgra
     for (int l=0; l<N_COL; l++) begin
       // Combine the stall for multi-columns kernel
       rc_stall_comb[l] = |(rc_stall_col & col_acc_map_i[l]);
+      // Branch cols request for multi-cols kernels
+      rcs_br_req_col_merged_s[l] = rcs_br_req_row_merged_s & col_acc_map_i[l];
     end
   end
 
-  // For some unclear reason this has to be separated from rcs_exec_end_col_merged block otherwise the logic produced is not purely combinational and there is a delay
-  // for exec_end signal for multi-column kernels.
-  always_comb
-  begin
-    for (int l=0; l<N_COL; l++) begin
-      exec_end_s[l]      = |(rcs_exec_end_col_merged & col_acc_map_i[l]);
-    end
-  end
+  // Only let the execution end signal go through if there is not branch request (rcs_br_req_o is already combined with col_acc_map_i)
+  assign exec_end_s = rcs_exec_end_col_merged & ~rcs_br_req_o;
 
   // Maintain request high as long as one RC is not served
   always_comb
   begin
     for (int l=0; l<N_COL; l++) begin
-      data_req_o[l] = data_req_gnt_mask[l][0] | data_req_gnt_mask[l][1] | data_req_gnt_mask[l][2] | data_req_gnt_mask[l][3];
+      data_req_o[l] = |data_req_gnt_mask[l];
     end
   end
 
@@ -119,14 +122,11 @@ module cgra
       begin
         gnt_demux[j] = '0;
         // for each row
-        if (data_req_gnt_mask[j][0] == 1'b1 && data_gnt_i[j] == 1'b1) begin
-          gnt_demux[j][0] = 1'b1;
-        end else if (data_req_gnt_mask[j][1] == 1'b1 && data_gnt_i[j] == 1'b1) begin
-          gnt_demux[j][1] = 1'b1;
-        end else if (data_req_gnt_mask[j][2] == 1'b1 && data_gnt_i[j] == 1'b1) begin
-          gnt_demux[j][2] = 1'b1;
-        end else if (data_req_gnt_mask[j][3] == 1'b1 && data_gnt_i[j] == 1'b1) begin
-          gnt_demux[j][3] = 1'b1;
+        for (int k=0; k<N_ROW; k++) begin
+          if (data_req_gnt_mask[j][k] == 1'b1 && data_gnt_i[j] == 1'b1) begin
+            gnt_demux[j][k] = 1'b1;
+            break;
+          end
         end
       end
     end : gnt_demux_gen
@@ -139,14 +139,12 @@ module cgra
       begin
         rvalid_demux[j] = '0;
         // for each row
-        if (data_req_rvalid_mask[j][0] == 1'b1 && data_wen_s[0][j] == 1'b1 && data_rvalid_i[j] == 1'b1) begin
-          rvalid_demux[j][0] = 1'b1;
-        end else if (data_req_rvalid_mask[j][1] == 1'b1 && data_wen_s[1][j] == 1'b1 && data_rvalid_i[j] == 1'b1) begin
-          rvalid_demux[j][1] = 1'b1;
-        end else if (data_req_rvalid_mask[j][2] == 1'b1 && data_wen_s[2][j] == 1'b1 && data_rvalid_i[j] == 1'b1) begin
-          rvalid_demux[j][2] = 1'b1;
-        end else if (data_req_rvalid_mask[j][3] == 1'b1 && data_wen_s[3][j] == 1'b1 && data_rvalid_i[j] == 1'b1) begin
-          rvalid_demux[j][3] = 1'b1;
+
+        for (int k=0; k<N_ROW; k++) begin
+          if (data_req_rvalid_mask[j][k] == 1'b1 && data_wen_s[k][j] == 1'b1 && data_rvalid_i[j] == 1'b1) begin
+            rvalid_demux[j][k] = 1'b1;
+            break;
+          end
         end
       end
     end : rvalid_demux_gen
@@ -261,128 +259,71 @@ module cgra
 
   generate // generate is used to create separated statement blocks
     for (j=0; j<N_COL; j++) begin : data_req_gen
-      always_comb
-      begin
+
+      always_comb begin
         // for each row
-        if (data_req_gnt_mask[j][0] == 1'b1 && data_ind_s[0][j] == 1'b1) begin
-          data_add_o[j] = data_add_s[0][j];
-        end else if (data_req_gnt_mask[j][1] == 1'b1 && data_ind_s[1][j] == 1'b1) begin
-          data_add_o[j] = data_add_s[1][j];
-        end else if (data_req_gnt_mask[j][2] == 1'b1 && data_ind_s[2][j] == 1'b1) begin
-          data_add_o[j] = data_add_s[2][j];
-        end else if (data_req_gnt_mask[j][3] == 1'b1 && data_ind_s[3][j] == 1'b1) begin
-          data_add_o[j] = data_add_s[3][j];
-        end else begin
-          data_add_o[j] = '0;
+        data_add_o[j] = '0; // default value
+        for (int k=0; k<N_ROW; k++) begin
+          if (data_req_gnt_mask[j][k] == 1'b1 && data_ind_s[k][j] == 1'b1) begin
+            data_add_o[j] = data_add_s[k][j];
+            break;
+          end
         end
       end
 
-      always_comb
-      begin
-        // for each row ...
-        if (data_req_gnt_mask[j][0] == 1'b1 && data_wen_s[0][j] == 1'b0) begin
-          rcs_wdata_s[j] = data_wdata_s[0][j];
-        end else if (data_req_gnt_mask[j][1] == 1'b1 && data_wen_s[1][j] == 1'b0) begin
-          rcs_wdata_s[j] = data_wdata_s[1][j];
-        end else if (data_req_gnt_mask[j][2] == 1'b1 && data_wen_s[2][j] == 1'b0) begin
-          rcs_wdata_s[j] = data_wdata_s[2][j];
-        end else if (data_req_gnt_mask[j][3] == 1'b1 && data_wen_s[3][j] == 1'b0) begin
-          rcs_wdata_s[j] = data_wdata_s[3][j];
-        end else begin
-          rcs_wdata_s[j] = '0;
+      always_comb begin
+        // for each row
+        rcs_wdata_s[j] = '0; // default value
+        for (int k=0; k<N_ROW; k++) begin
+          if (data_req_gnt_mask[j][k] == 1'b1 && data_wen_s[k][j] == 1'b0) begin
+            rcs_wdata_s[j] = data_wdata_s[k][j];
+            break;
+          end
         end
       end
 
-      always_comb
-      begin
-        // for each row ...
-        if (data_req_gnt_mask[j][0] == 1'b1) begin
-          data_wen_o[j] = data_wen_s[0][j];
-          data_ind_o[j] = data_ind_s[0][j];
-        end else if (data_req_gnt_mask[j][1] == 1'b1) begin
-          data_wen_o[j] = data_wen_s[1][j];
-          data_ind_o[j] = data_ind_s[1][j];
-        end else if (data_req_gnt_mask[j][2] == 1'b1) begin
-          data_wen_o[j] = data_wen_s[2][j];
-          data_ind_o[j] = data_ind_s[2][j];
-        end else if (data_req_gnt_mask[j][3] == 1'b1) begin
-          data_wen_o[j] = data_wen_s[3][j];
-          data_ind_o[j] = data_ind_s[3][j];
-        end else begin
-          data_wen_o[j] = '0;
-          data_ind_o[j] = '0;
+      always_comb begin
+        // for each row
+        data_wen_o[j] = '0; // default value
+        data_ind_o[j] = '0; // default value
+        for (int k=0; k<N_ROW; k++) begin
+          if (data_req_gnt_mask[j][k] == 1'b1) begin
+            data_wen_o[j] = data_wen_s[k][j];
+            data_ind_o[j] = data_ind_s[k][j];
+            break;
+          end
         end
       end
     end
   endgenerate
 
+  logic [N_COL-1:0] one_hot_encoding_col;
+  logic [N_ROW-1:0] one_hot_encoding_row;
+
   // Branch request
   always_comb
   begin
+
     for (int l=0; l<N_COL; l++) begin
       
-      rcs_br_req_o[l]  = 1'b0;
+      rcs_br_req_o[l] = 1'b0;
       rcs_br_add_o[l] = '0;
+      one_hot_encoding_col = 1'b1;
+      one_hot_encoding_row = 1'b1;
 
-      if (rcs_br_req_col_merged_s[l] == 4'b0001) begin
-        if (rcs_br_req_row_s[0] == 4'b0001) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[0][0];
-        end else if (rcs_br_req_row_s[0] == 4'b0010) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[1][0];
-        end else if (rcs_br_req_row_s[0] == 4'b0100) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[2][0];
-        end else if (rcs_br_req_row_s[0] == 4'b1000) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[3][0];
+      for (int k=0; k<N_COL; k++) begin
+        if (rcs_br_req_col_merged_s[l] == one_hot_encoding_col) begin
+          for (int n=0; n<N_ROW; n++) begin
+            if (rcs_br_req_row_s[k] == one_hot_encoding_row) begin
+              rcs_br_req_o[l]  = 1'b1;
+              rcs_br_add_o[l] = rcs_br_add[n][k];
+              break;
+            end
+            one_hot_encoding_row = one_hot_encoding_row << 1;
+          end
+          break;
         end
-
-      end else if (rcs_br_req_col_merged_s[l] == 4'b0010) begin
-        if (rcs_br_req_row_s[1] == 4'b0001) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[0][1];
-        end else if (rcs_br_req_row_s[1] == 4'b0010) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[1][1];
-        end else if (rcs_br_req_row_s[1] == 4'b0100) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[2][1];
-        end else if (rcs_br_req_row_s[1] == 4'b1000) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[3][1];
-        end
-
-      end else if (rcs_br_req_col_merged_s[l] == 4'b0100) begin
-        if (rcs_br_req_row_s[2] == 4'b0001) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[0][2];
-        end else if (rcs_br_req_row_s[2] == 4'b0010) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[1][2];
-        end else if (rcs_br_req_row_s[2] == 4'b0100) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[2][2];
-        end else if (rcs_br_req_row_s[2] == 4'b1000) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[3][2];
-        end
-
-      end else if (rcs_br_req_col_merged_s[l] == 4'b1000) begin
-        if (rcs_br_req_row_s[3] == 4'b0001) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[0][3];
-        end else if (rcs_br_req_row_s[3] == 4'b0010) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[1][3];
-        end else if (rcs_br_req_row_s[3] == 4'b0100) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[2][3];
-        end else if (rcs_br_req_row_s[3] == 4'b1000) begin
-          rcs_br_req_o[l]  = 1'b1;
-          rcs_br_add_o[l] = rcs_br_add[3][3];
-        end
+        one_hot_encoding_col = one_hot_encoding_col << 1;
       end
     end
   end
@@ -432,15 +373,16 @@ module cgra
   //
   //---------------------------------------------------------------------
 
+  //  Example: 4x4 CGRA
   //  N_ROW x N_COL        col_0          col_1         col_2           col_3
   //
-  //  RC1 / row_0      LTRC(0,0) ---- TRC (0,0) ---- TRC (0,0) ---- RTRC(0,0)
+  //  RC1 / row_0      LTRC(0,0) ---- TRC (0,1) ---- TRC (0,2) ---- RTRC(0,3)
   //                       |              |              |              |
-  //  RC2 / row_1      LRC (0,0) ---- CRC (0,0) ---- CRC (0,0) ---- RRC (0,0)
+  //  RC2 / row_1      LRC (1,0) ---- CRC (1,1) ---- CRC (1,2) ---- RRC (1,3)
   //                       |              |              |              | 
-  //  RC3 / row_2      LRC (0,0) ---- CRC (0,0) ---- CRC (0,0) ---- RRC (0,0)
+  //  RC3 / row_2      LRC (2,0) ---- CRC (2,1) ---- CRC (2,2) ---- RRC (2,3)
   //                       |              |              |              | 
-  //  RC4 / row_3      LBRC(0,0) ---- BRC (0,0) ---- BRC (0,0) ---- RBRC(0,0)
+  //  RC4 / row_3      LBRC(3,0) ---- BRC (3,1) ---- BRC (3,2) ---- RBRC(3,3)
 
   generate
     for (i=0; i<N_ROW; i++) begin : rc_row_gen

@@ -169,59 +169,59 @@ int main(void) {
   //   wait_for_interrupt();
   // }
 
-  printf("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
+//  printf("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
 
-  cgra_slot = cgra_get_slot(&cgra);
-  column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
-  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
+//  cgra_slot = cgra_get_slot(&cgra);
+//  column_idx = 0;
+//  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
+//  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
 
-  // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&RealOut_fxp[0];
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&f_real[0];
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE;
+//  // input data ptr column 0
+//  cgra_input[column_idx][cgra_slot][0] = (int32_t)&RealOut_fxp[0];
+//  cgra_input[column_idx][cgra_slot][1] = (int32_t)&f_real[0];
+//  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE;
 
-  column_idx = 1;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
-  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
+//  column_idx = 1;
+//  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
+//  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
 
-  // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&f_imag[0];
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&ImagOut_fxp[0];
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)numBits;
+//  // input data ptr column 0
+//  cgra_input[column_idx][cgra_slot][0] = (int32_t)&f_imag[0];
+//  cgra_input[column_idx][cgra_slot][1] = (int32_t)&ImagOut_fxp[0];
+//  cgra_input[column_idx][cgra_slot][2] = (int32_t)numBits;
 
-  // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_CPLX_ID);
+//  // Launch CGRA kernel
+//  cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_CPLX_ID);
 
-  // Wait CGRA is done
-  cgra_intr_flag=0;
-  while(cgra_intr_flag==0) {
-    wait_for_interrupt();
-  }
+//  // Wait CGRA is done
+//  cgra_intr_flag=0;
+//  while(cgra_intr_flag==0) {
+//    wait_for_interrupt();
+//  }
 
   // Check the cgra values are correct
 
   // Bitrev check
-  // int32_t errors=0;
-  // for (int i=0; i<FFT_SIZE; i++) {
-  //   uint32_t revBit = ReverseBits(i, numBits);
-  //   if(RealOut_fxp[i] != input_signal[2*revBit] ||
-  //       ImagOut_fxp[i] != input_signal[2*revBit+1]) {
-  //         printf("Real[%d->%d] (out/expected) %08x != %08x)\n", i, revBit, RealOut_fxp[i], input_signal[2*revBit]);
-  //         printf("Imag[%d->%d] (out/expected) %08x != %08x)\n", i, revBit, ImagOut_fxp[i], input_signal[2*revBit+1]);
-  //       errors++;
-  //     }
-  // }
-
   int32_t errors=0;
   for (int i=0; i<FFT_SIZE; i++) {
-    if(RealOut_fxp[i] != exp_output_real[i] ||
-        ImagOut_fxp[i] != exp_output_imag[i]) {
-          printf("Real[%d] (out/expected) %08x != %08x)\n", i, RealOut_fxp[i], exp_output_real[i]);
-          printf("Imag[%d] (out/expected) %08x != %08x)\n", i, ImagOut_fxp[i], exp_output_imag[i]);
+    uint32_t revBit = ReverseBits(i, numBits);
+    if(RealOut_fxp[i] != input_signal[2*revBit] ||
+        ImagOut_fxp[i] != input_signal[2*revBit+1]) {
+          printf("Real[%d->%d] (out/expected) %08x != %08x)\n", i, revBit, RealOut_fxp[i], input_signal[2*revBit]);
+          printf("Imag[%d->%d] (out/expected) %08x != %08x)\n", i, revBit, ImagOut_fxp[i], input_signal[2*revBit+1]);
         errors++;
       }
   }
+
+//  int32_t errors=0;
+//  for (int i=0; i<FFT_SIZE; i++) {
+//    if(RealOut_fxp[i] != exp_output_real[i] ||
+//        ImagOut_fxp[i] != exp_output_imag[i]) {
+//          printf("Real[%d] (out/expected) %08x != %08x)\n", i, RealOut_fxp[i], exp_output_real[i]);
+//          printf("Imag[%d] (out/expected) %08x != %08x)\n", i, ImagOut_fxp[i], exp_output_imag[i]);
+//        errors++;
+//      }
+//  }
 
   printf("CGRA FFT computation finished with %d errors\n", errors);
 

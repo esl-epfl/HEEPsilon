@@ -32,7 +32,6 @@ module context_memory_decoder
   output logic [  IMEM_N_LINES_LOG2-1:0] cm_addr_o
 );
 
-  // logic [INSTR_WIDTH-1:0] instr_mem [0:N_ROW-1][0:IMEM_N_LINES-1];
   logic [ KMEM_WIDTH-1:0] ker_conf_mem [0:KER_CONF_N_REG-1];
 
   // Use to select which bank to write to.
@@ -68,29 +67,24 @@ module context_memory_decoder
   // Request mux
   always_comb
   begin
-    cm_row_req = 4'b0000;
+    cm_row_req = '0; //4'b0000;
     cm_addr = '0;
     cm_we = 1'b0;
-    // cmem_gnt_out = 1'b0;
     cmem_gnt_ctrl = 1'b0;
 
     if (cm_req_i == 1'b1) begin
       cm_addr = w_bk_add;
       cm_we = cm_we_i;
-      // cmem_gnt_out = 1'b1;
-      if (bk_sel == 3'b000) begin
-        cm_row_req[0] = 1'b1;
-      end else if (bk_sel == 3'b001) begin
-        cm_row_req[1] = 1'b1;
-      end else if (bk_sel == 3'b010) begin
-        cm_row_req[2] = 1'b1;
-      end else if (bk_sel == 3'b011) begin
-        cm_row_req[3] = 1'b1;
-      end else begin
-        cm_row_req = 4'b0000;
+
+      for (int i=0; i<N_ROW; i++) begin
+        if (bk_sel == i) begin
+          cm_row_req[i] = 1'b1;
+          break;
+        end
       end
+
     end else if (rcs_conf_req_i == 1'b1) begin
-      cm_row_req = 4'b1111;
+      cm_row_req = '1;
       cm_addr = imem_radd_i;
       cm_we = 1'b0;
       cmem_gnt_ctrl = 1'b1;
@@ -128,7 +122,7 @@ module context_memory_decoder
   // WRITE OPERATION INSUTRCTIONS
   always_ff @(posedge clk_mem_cg_i)
   begin
-    if (bk_sel == 3'b100) begin
+    if (bk_sel == N_ROW) begin
       ker_conf_mem[w_bk_add[KER_CONF_N_REG_LOG2-1:0]] <= cm_wdata_i[KMEM_WIDTH-1:0];
     end
   end

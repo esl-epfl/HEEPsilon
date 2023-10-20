@@ -8,7 +8,7 @@
 
   upstream: {
     url: "https://eslgit.epfl.ch/cgra/cgra_esl_epfl.git",
-    rev: "c4602289a493672d9c6e46405636a6d08829d134",
+    rev: "67bbb57de216c14cbe8d1562c14f269b7a4c1012",
   },
 
   patch_dir: "patches/esl_epfl_cgra",
@@ -27,8 +27,6 @@
     "kernel_mapping",
     "platform_files",
     "testbench",
-    "utilities/INSTRUCTIONS_FFT_BITREV.py",
-    "utilities/INSTRUCTIONS_FFT_CPLX.py",
     "utilities/INSTRUCTIONS_FFT_SPLITOPS.py",
     "utilities/instructions_max_peak.py",
     "utilities/instructions_min_max_circular.py",
