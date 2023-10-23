@@ -270,18 +270,6 @@ int main(void) {
 #endif // REAL_FFT
 
 #ifdef CHECK_ERRORS
-  // // Bitrev check
-  // int32_t errors=0;
-  // for (int i=0; i<FFT_SIZE; i++) {
-  //   uint32_t revBit = ReverseBits(i, numBits);
-  //   if(RealOut_fft0_fxp[i] != input_signal[2*revBit] ||
-  //       ImagOut_fft0_fxp[i] != input_signal[2*revBit+1]) {
-  //         printf("Real[%d->%d] (out/expected) %08x != %08x)\n", i, revBit, RealOut_fft1_fxp[i], input_signal[2*revBit]);
-  //         printf("Imag[%d->%d] (out/expected) %08x != %08x)\n", i, revBit, ImagOut_fft1_fxp[i], input_signal[2*revBit+1]);
-  //       errors++;
-  //     }
-  // }
-
   int32_t errors=0;
   for (int i=0; i<FFT_SIZE; i++) {
     if(RealOut_fft0_fxp[i] != exp_output_real[i] ||
@@ -291,6 +279,17 @@ int main(void) {
         errors++;
       }
   }
+
+#ifdef CGRA_100_PERCENT
+  for (int i=0; i<FFT_SIZE; i++) {
+    if(RealOut_fft1_fxp[i] != exp_output_real[i] ||
+        ImagOut_fft1_fxp[i] != exp_output_imag[i]) {
+          printf("Real[%d] (out/expected) %08x != %08x)\n", i, RealOut_fft1_fxp[i], exp_output_real[i]);
+          printf("Imag[%d] (out/expected) %08x != %08x)\n", i, ImagOut_fft1_fxp[i], exp_output_imag[i]);
+        errors++;
+      }
+  }
+#endif
 
   printf("CGRA FFT computation finished with %d errors\n", errors);
 #endif // CHECK_ERRORS
