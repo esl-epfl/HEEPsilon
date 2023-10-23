@@ -285,9 +285,9 @@ int main(void) {
   int32_t errors=0;
   for (int i=0; i<FFT_SIZE; i++) {
     if(RealOut_fft0_fxp[i] != exp_output_real[i] ||
-        ImagOut_fft1_fxp[i] != exp_output_imag[i]) {
-          printf("Real[%d] (out/expected) %08x != %08x)\n", i, RealOut_fft1_fxp[i], exp_output_real[i]);
-          printf("Imag[%d] (out/expected) %08x != %08x)\n", i, ImagOut_fft1_fxp[i], exp_output_imag[i]);
+        ImagOut_fft0_fxp[i] != exp_output_imag[i]) {
+          printf("Real[%d] (out/expected) %08x != %08x)\n", i, RealOut_fft0_fxp[i], exp_output_real[i]);
+          printf("Imag[%d] (out/expected) %08x != %08x)\n", i, ImagOut_fft0_fxp[i], exp_output_imag[i]);
         errors++;
       }
   }
