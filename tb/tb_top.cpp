@@ -1,1 +1,1 @@
-../hw/vendor/esl_epfl_x_heep/tb/tb_top.cpp
+../vendor/esl_epfl_x_heep/tb/tb_top.cpp
