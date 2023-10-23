@@ -98,7 +98,15 @@ static uint32_t z1 = RANDOM_SEED, \
                 z4 = RANDOM_SEED;
 
 // Controlling a pin
-static gpio_t  gpio;
+static gpio_cfg_t pin_cfg_new_vcd = {
+        .pin = PIN_TO_NEW_VCD,
+        .mode = GpioModeOutPushPull
+    };
+
+static gpio_cfg_t pin_cfg_ctrl_vcd = {
+    .pin = PIN_TO_NEW_VCD,
+    .mode = PIN_TO_CTRL_VCD
+};
 
 // Timer
 static rv_timer_t          timer;
@@ -482,12 +490,12 @@ __attribute__((optimize("O0"))) void kcom_waitingForIntr()
 
 inline __attribute__((always_inline)) void pinHigh( uint8_t pin )
 {
-    gpio_write(&gpio, pin, true );
+    gpio_write(pin, true );
 }
 
 inline __attribute__((always_inline)) void pinLow( uint8_t pin )
 {
-    gpio_write(&gpio, pin, false );
+    gpio_write(pin, false );
 }
 
 void pinInit()
@@ -497,16 +505,8 @@ void pinInit()
     gpio_params_t gpio_params;
     pad_control_t pad_control;
 
-    pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
-    gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
-
-    gpio_init(gpio_params, &gpio);
-
-    gpio_write(&gpio, PIN_TO_NEW_VCD, false);
-    gpio_write(&gpio, PIN_TO_CTRL_VCD, false);
-
-    gpio_output_set_enabled(&gpio, PIN_TO_NEW_VCD, true);
-    gpio_output_set_enabled(&gpio, PIN_TO_CTRL_VCD, true);
+    gpio_config (pin_cfg_ctrl_vcd);
+    gpio_config (pin_cfg_new_vcd);
 
     pad_control_set_mux(&pad_control, (ptrdiff_t)(PAD_CONTROL_PAD_MUX_I2C_SDA_REG_OFFSET), 1);
 #endif
