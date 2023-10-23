@@ -1,0 +1,56 @@
+{
+    "function_name": "",
+    "inputs": [
+        {
+            "name": "length",
+            "depth": 1,
+            "type": "uint32_t"
+        },
+        {
+            "name": "d",
+            "depth": 1,
+            "type": "uint32_t"
+        },
+        {
+            "name": "-32768",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "32767",
+            "depth": 1,
+            "type": "val"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "dmax",
+            "depth": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "read_col0": [],
+    "write_col0": [
+        {
+            "name": "dmax"
+        }
+    ],
+    "read_col1": [
+        {
+            "name": "length"
+        }
+    ],
+    "write_col1": [],
+    "read_col2": [
+        {
+            "name": "-32768"
+        },
+        {
+            "name": "32767"
+        },
+        {
+            "name": "d"
+        }
+    ],
+    "write_col2": []
+}
