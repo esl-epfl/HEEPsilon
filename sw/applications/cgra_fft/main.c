@@ -122,13 +122,12 @@ int main(void) {
   //////////////////////////////////////////////////////////
 #ifdef CPLX_FFT
 
-  printf("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
-  
   cgra_perf_cnt_enable(&cgra, 1);
   uint16_t numBits = NumberOfBitsNeeded ( FFT_SIZE );
   int8_t column_idx;
 
   // STEP 1: bit reverse
+  PRINTF("Run input bit reverse reordering on %d points on CGRA...\n", FFT_SIZE);
   // Select request slot of CGRA (2 slots)
   uint32_t cgra_slot = cgra_get_slot(&cgra);
   column_idx = 0;
@@ -202,7 +201,8 @@ int main(void) {
     wait_for_interrupt();
   }
 
-  printf("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
+  // Step 2: complex-valued FFT computation
+  PRINTF("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
 
   cgra_slot = cgra_get_slot(&cgra);
   column_idx = 0;
