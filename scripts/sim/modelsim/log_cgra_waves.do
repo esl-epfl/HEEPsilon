@@ -1,4 +1,4 @@
-log -r tb_top/testharness_i/cgra_x_heep_top_i/cgra_top_wrapper_i/* -filter Memory
+log -r tb_top/testharness_i/cgra_x_heep_top_i/cgra_top_wrapper_i/* -nofilter Memory
 
 onerror {resume}
 quietly WaveActivateNextPane {} 0
