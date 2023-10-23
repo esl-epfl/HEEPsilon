@@ -1,0 +1,38 @@
+{
+    "function_name": "",
+    "inputs": [
+        {
+            "name": "index",
+            "num": 1,
+            "type": "uint32_t"
+        },
+        {
+            "name": "NumBits",
+            "num": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "ret",
+            "num": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "read_col0": [
+        {
+            "name": "index"
+        }
+    ],
+    "write_col0": [
+        {
+            "name": "ret"
+        }
+    ],
+    "read_col1": [
+        {
+            "name": "NumBits"
+        }
+    ],
+    "write_col1": []
+}

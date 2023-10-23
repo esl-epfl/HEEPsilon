@@ -1,22 +1,22 @@
 # Repo folder structure
 
-    .             
-    ├── hw      
-    │   ├── rtl            
-    │   └── vendor         
-    ├── scripts     
-    │   ├── sim   
-    │   └── synthesis              
-    ├── sw       
-    │   ├── applications          
+    .
+    ├── hw
+    │   ├── rtl
+    │   └── vendor
+    ├── scripts
+    │   ├── sim
+    │   └── synthesis
+    ├── sw
+    │   ├── applications
     │   ├── device
-    │   ├── x_heep_applications (hw/vendor/esl_epfl_x_heep/sw/applications)       
+    │   ├── x_heep_applications (hw/vendor/esl_epfl_x_heep/sw/applications)
     │   ├── x_heep_device (hw/vendor/esl_epfl_x_heep/sw/device)
-    │   └── x_heep_linker (hw/vendor/esl_epfl_x_heep/sw/linker)               
+    │   └── x_heep_linker (hw/vendor/esl_epfl_x_heep/sw/linker)
     ├── tb
     ├── util
     └── README.md
-    
+
 
 
 Minimal configuration of a cgra-x-heep
@@ -24,9 +24,9 @@ Minimal configuration of a cgra-x-heep
 
 # Prerequisite
 
-The simulation enrironment is based on the x-heep one.
+The simulation environment is based on the one from [X-HEEP](https://github.com/esl-epfl/x-heep).
 
-Follow the prequisite steps on the [x-heep repository](https://github.com/esl-epfl/cgra_x_heep/blob/main/hw/vendor/esl_epfl_x_heep/README.md#prerequisite).
+Follow the prequisite steps on the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep#prerequisite).
 
 Consider that both the `environment.yml` and `python-requirements.txt` are now located in:
 ```bash
@@ -174,7 +174,7 @@ then go to
 ```
 cd ./build/eslepfl_systems_cgra-x-heep_0/sim_opt-modelsim/
 ```
-and 
+and
 
 ```
 make run RUN_OPT=1 PLUSARGS="c firmware=../../../sw/x_applications/hello_world/hello_world.hex"
@@ -182,9 +182,35 @@ make run RUN_OPT=1 PLUSARGS="c firmware=../../../sw/x_applications/hello_world/h
 
 Questasim version must be >= Questasim 2020.4
 
+## Running on the FPGA
+
+To generate the bitstream run
+```
+make vivado-fpga
+```
+
+The generated bitstream is found in
+```
+build/eslepfl_systems_cgra-x-heep_0/pynq-z2-vivado/eslepfl_systems_cgra-x-heep_0.bit
+```
+
+Load the bitstream into the FPGA using Vivado.
+
+You can build, load and monitor apps calling
+```
+make run-fpga PROJECT=<name_of_your_app>
+```
+and open the serial monitor of your preference to read the UART output.
+
+If you have picocom installed, you can call
+```
+make run-fpga-com PROJECT=<name_of_your_app>
+```
+Note that you might need to modify the serial port adding `PORT=/dev/ttyUSB5` in he previous command (default is set to `/dev/ttyUSB2`).
+
 ### UART DPI
 
-To simulate the UART, we use the LowRISC OpenTitan [UART DPI](https://github.com/lowRISC/opentitan/tree/master/hw/dv/dpi/uartdpi). 
+To simulate the UART, we use the LowRISC OpenTitan [UART DPI](https://github.com/lowRISC/opentitan/tree/master/hw/dv/dpi/uartdpi).
 Read how to interact with it in the Section "Interact with the simulated UART" [here](https://docs.opentitan.org/doc/ug/getting_started_verilator/).
 The output of the UART DPI module is printed in the `uart0.log` file in the simulation folder.
 

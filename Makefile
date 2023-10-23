@@ -7,48 +7,35 @@
 
 .PHONY: clean help
 
-TARGET ?= sim
+TARGET 		?= sim
+FPGA_BOARD 	?= pynq-z2
+PORT		?= /dev/ttyUSB2
 
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 
-# Generates mcu files
+
+export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
+include $(HEEP_DIR)Makefile.venv
+
+
+# Generates mcu files. First the mcu-gen from X-HEEP is called.
+# This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.
 mcu-gen:
-	cd hw/vendor/esl_epfl_x_heep && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/include --cpu $(CPU) --bus $(BUS) --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/core-v-mini-mcu/include/core_v_mini_mcu_pkg.sv.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/ --memorybanks $(MEMORY_BANKS) --tpl-sv hw/core-v-mini-mcu/system_bus.sv.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/ --tpl-sv hw/system/pad_ring.sv.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/core-v-mini-mcu/ --tpl-sv hw/core-v-mini-mcu/core_v_mini_mcu.sv.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/ --tpl-sv hw/system/x_heep_system.sv.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/device/lib/runtime --cpu $(CPU) --memorybanks $(MEMORY_BANKS) --header-c sw/device/lib/runtime/core_v_mini_mcu.h.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link.ld.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir . --memorybanks $(MEMORY_BANKS) --pkg-sv ./core-v-mini-mcu.upf.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/ip/power_manager/rtl --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/ip/power_manager/data/power_manager.sv.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/ip/power_manager/data --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv hw/ip/power_manager/data/power_manager.hjson.tpl  && \
-	bash -c "cd hw/ip/power_manager; source power_manager_gen.sh; cd ../../../"  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/device/lib/drivers/power_manager --memorybanks $(MEMORY_BANKS) --external_domains $(EXTERNAL_DOMAINS) --pkg-sv sw/device/lib/drivers/power_manager/data/power_manager.h.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/pad_control/data --pkg-sv hw/system/pad_control/data/pad_control.hjson.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir hw/system/pad_control/rtl --pkg-sv hw/system/pad_control/rtl/pad_control.sv.tpl  && \
-	bash -c "cd hw/system/pad_control; source pad_control_gen.sh; cd ../../../"  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_exec.ld.tpl  && \
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --outdir sw/linker --memorybanks $(MEMORY_BANKS) --linker_script sw/linker/link_flash_load.ld.tpl;
-	$(MAKE) verible
+	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} $(MAKECMDGOALS)
+	cd hw/vendor/esl_epfl_x_heep &&\
+	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../hw/tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../hw/tb/tb_util.svh.tpl
+
+## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
+## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
+## @param FUSESOC_FLAGS=--flag=<flagname>
+vivado-fpga: |venv
+	fusesoc --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildvivado.log
+
 
 # Runs verible formating
 verible:
 	util/format-verible;
-
-app-helloworld:
-	$(MAKE) -C sw x_heep_applications/hello_world/hello_world.hex  TARGET=$(TARGET)
-
-app-cgra-test:
-	$(MAKE) -C sw applications/cgra_func_test/main.hex  TARGET=$(TARGET)
-
-app-cgra-dbl-search:
-	$(MAKE) -C sw applications/cgra_dbl_search/main.hex  TARGET=$(TARGET)
-
-# Tools specific fusesoc call
 
 # Simulation
 verilator-sim: mcu-gen
@@ -63,55 +50,30 @@ questasim-sim-opt: questasim-sim
 vcs-sim:
 	fusesoc --cores-root . run --no-export --target=sim --tool=vcs $(FUSESOC_FLAGS) --setup --build eslepfl:systems:cgra-x-heep 2>&1 | tee buildsim.log
 
-run-helloworld-verilator: mcu-gen verilator-sim app-helloworld
+
+## Generates the build output for a given application
+## Uses verilator to simulate the HW model and run the FW
+## UART Dumping in uart0.log to show recollected results
+run-verilator:
+	$(MAKE) app PROJECT=$(PROJECT)
 	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex; \
+	./Vtestharness +firmware=../../../sw/build/main.hex; \
 	cat uart0.log; \
 	cd ../../..;
 
-run-cgra-test-verilator: mcu-gen verilator-sim app-cgra-test
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator; \
-	./Vtestharness +firmware=../../../sw/applications/cgra_func_test/main.hex; \
-	cat uart0.log; \
-	cd ../../..;
+# Builds the program and uses flash-load to run on the FPGA
+run-fpga:
+	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
+	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
+	sudo $(MAKE) flash-prog ;\
 
-run-helloworld-questasim: mcu-gen questasim-sim app-helloworld
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-	make run PLUSARGS="c firmware=../../../sw/x_heep_applications/hello_world/hello_world.hex"; \
-	cat uart0.log; \
-	cd ../../..;
+# Builds the program and uses flash-load to run on the FPGA.
+# Additionally opens picocom (if available) to see the output.
+run-fpga-com:
+	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
+	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
+	sudo $(MAKE) flash-prog ;\
+	sudo picocom -b 115200 -r -l --imap lfcrlf $(PORT)
 
-run-cgra-test-questasim: mcu-gen questasim-sim app-cgra-test
-	cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim; \
-	make run PLUSARGS="c firmware=../../../sw/applications/cgra_func_test/main.hex"; \
-	cat uart0.log; \
-	cd ../../..;
-
-help:
-	@echo "SIMULATION BUILD TARGETS"
-	@echo "Build for simulation :"
-	@echo "\tmake [verilator,questasim,vcs]-sim"
-	@echo "\tex: make verilator-sim"
-	@echo "Change cpu and/or bus:"
-	@echo "\tmake <toolname>-sim CPU=[cv32e20(default),cv32e40p] BUS=[onetoM(default),NtoM]"
-	@echo "\tex: make verilator-sim CPU=cv32e40p BUS=NtoM)"
-	@echo "Add fusesoc flags:"
-	@echo "\tmake <toolname>-sim FUSESOC_FLAGS=\"--flag=<flagname0> --flag=<flagname1>\""
-	@echo "\tex: make verilator-sim FUSESOC_FLAGS=\"--flag=use_external_device_example --flag=use_jtag_dpi\""
-	@echo ""
-	@echo "SOFTWARE BUILD TARGETS"
-	@echo "Build example applications:"
-	@echo "\tmake app-[helloworld,cgra-test,cgra-dbl-search]"
-	@echo "\tex: make app-helloworld"
-	@echo ""
-	@echo "RUN BASIC EXAMPLES"
-	@echo "\tex: make run-helloworld-<verilator,questasim>"
-	@echo "\tex: make run-cgra-test-<verilator,questasim>"
-
-clean: clean-app clean-sim
-
-clean-sim:
-	@rm -rf build
-
-clean-app:
-	$(MAKE) -C sw clean
+XHEEP_MAKE = $(HEEP_DIR)/external.mk
+include $(XHEEP_MAKE)

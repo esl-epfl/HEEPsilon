@@ -12,12 +12,15 @@
 #include "cgra_bitstream.h"
 #include "stimuli.h"
 
+#define DEBUG
+
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
-  #define PRINTF(fmt, ...)    PRINTF(fmt, ## __VA_ARGS__)
+  #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
 #endif
+#define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
 
 #define OUTPUT_LENGTH 4
 
@@ -28,46 +31,23 @@ volatile int32_t cgra_res[OUTPUT_LENGTH] = {0};
 int32_t exp_res[OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
-dif_plic_params_t rv_plic_params;
-dif_plic_t rv_plic;
-dif_plic_result_t plic_res;
-dif_plic_irq_id_t intr_num;
-
-void handler_irq_external(void) {
-    // Claim/clear interrupt
-    plic_res = dif_plic_irq_claim(&rv_plic, 0, &intr_num);
-    if (plic_res == kDifPlicOk && intr_num == CGRA_INTR) {
-      cgra_intr_flag = 1;
-    }
+void handler_irq_ext(uint32_t id) {
+  if( id == CGRA_INTR) {
+    cgra_intr_flag = 1;
+  }
 }
 
 int main(void) {
 
-  PRINTF("Init CGRA context memory...\n");
+  //PRINTF("Init CGRA context memory...\n");
   cgra_cmem_init(cgra_imem_bistream, cgra_kem_bitstream);
-  PRINTF("\rdone\n");
+  //PRINTF("Bye!\n");
+  //PRINTF("\rdone\n");
 
   // Init the PLIC
-  rv_plic_params.base_addr = mmio_region_from_addr((uintptr_t)PLIC_START_ADDRESS);
-  plic_res = dif_plic_init(rv_plic_params, &rv_plic);
-
-  if (plic_res != kDifPlicOk) {
-    printf("PLIC init failed\n;");
-    return EXIT_FAILURE;
-  }
-
-  // Set CGRA priority to 1 (target threshold is by default 0) to trigger an interrupt to the target (the processor)
-  plic_res = dif_plic_irq_set_priority(&rv_plic, CGRA_INTR, 1);
-  if (plic_res != kDifPlicOk) {
-    printf("Set CGRA interrupt priority to 1 failed\n;");
-    return EXIT_FAILURE;
-  }
-
-  plic_res = dif_plic_irq_set_enabled(&rv_plic, CGRA_INTR, 0, kDifPlicToggleEnabled);
-  if (plic_res != kDifPlicOk) {
-    printf("Enable CGRA interrupt failed\n;");
-    return EXIT_FAILURE;
-  }
+  plic_Init();
+  plic_irq_set_priority(CGRA_INTR, 1);
+  plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
 
   // Enable interrupt on processor side
   // Enable global interrupt for machine-level interrupts
@@ -121,7 +101,7 @@ int main(void) {
   // input size
   cgra_input[cgra_slot][1] = INPUT_LENGTH-1;
 
-  printf("Run double minimum search on CGRA...\n");
+  PRINTF("Run double minimum search on CGRA...\n");
   cgra_perf_cnt_enable(&cgra, 1);
   column_idx;
   // Set CGRA kernel pointers
@@ -136,27 +116,21 @@ int main(void) {
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
-  // Complete the interrupt
-  plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
-  if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
-    printf("CGRA interrupt complete failed\n");
-    return EXIT_FAILURE;
-  }
 
   // Check the cgra values are correct
   errors=0;
   for (int i=0; i<OUTPUT_LENGTH; i++) {
     if (cgra_res[i] != exp_res[i]) {
-      printf("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
-      printf("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
       errors++;
     }
   }
 
-  printf("CGRA double minimum check finished with %d errors\n", errors);
+  PRINTF("CGRA double minimum check finished with %d errors\n", errors);
 
   // Performance counter display
-  printf("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
+  PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  _____   ____  _    _ ____  _      ______   __  __          __   __   _____ ______          _____   _____ _    _  //
@@ -166,7 +140,7 @@ int main(void) {
   // | |__| | |__| | |__| | |_) | |____| |____  | |  | |/ ____ \  / . \   ____) | |____ / ____ \| | \ \| |____| |  | | //
   // |_____/ \____/ \____/|____/|______|______| |_|  |_/_/    \_\/_/ \_\ |_____/|______/_/    \_\_|  \_\\_____|_|  |_| //
   //                                                                                                                   //
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                                                                                             
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   exp_res[0] = stimuli[0];
   exp_res[1] = INT32_MIN;
@@ -194,7 +168,7 @@ int main(void) {
   // input size
   cgra_input[cgra_slot][1] = INPUT_LENGTH-1;
 
-  printf("Run double maximum search on CGRA...\n");
+  PRINTF("Run double maximum search on CGRA...\n");
   cgra_perf_cnt_enable(&cgra, 1);
   // Set CGRA kernel pointers
   column_idx = 0;
@@ -208,27 +182,21 @@ int main(void) {
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
-  // Complete the interrupt
-  plic_res = dif_plic_irq_complete(&rv_plic, 0, &intr_num);
-  if (plic_res != kDifPlicOk || intr_num != CGRA_INTR) {
-    printf("CGRA interrupt complete failed\n");
-    return EXIT_FAILURE;
-  }
 
   // Check the cgra values are correct
   errors=0;
   for (int i=0; i<OUTPUT_LENGTH; i++) {
     if (cgra_res[i] != exp_res[i]) {
-      printf("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
-      printf("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
+      PRINTF("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
       errors++;
     }
   }
 
-  printf("CGRA double maximum check finished with %d errors\n", errors);
+  PRINTF("CGRA double maximum check finished with %d errors\n", errors);
 
   // Performance counter display
-  printf("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
+  PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
   column_idx = 0;
   PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
@@ -242,5 +210,5 @@ int main(void) {
   PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
 
-  return EXIT_SUCCESS;
+  return errors ? EXIT_FAILURE : EXIT_SUCCESS;
 }

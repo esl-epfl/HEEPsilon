@@ -11,7 +11,7 @@ filesets:
   files_rtl:
     depend:
     - x-heep::packages
-    - pulp-platform.org::common_cells:1.26.0
+    - pulp-platform.org::common_cells
     files:
     - esl_epfl_cgra/rtl/cgra_pkg.sv
     - esl_epfl_cgra/rtl/cgra_reg_pkg.sv
