@@ -78,15 +78,15 @@ run-questasim:
 run-fpga:
 	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
 	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
-	sudo $(MAKE) flash-prog ;\
+	$(MAKE) flash-prog ;\
 
 # Builds the program and uses flash-load to run on the FPGA.
 # Additionally opens picocom (if available) to see the output.
 run-fpga-com:
 	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
 	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
-	sudo $(MAKE) flash-prog ;\
-	sudo picocom -b 115200 -r -l --imap lfcrlf $(PORT)
+	$(MAKE) flash-prog ;\
+	picocom -b 115200 -r -l --imap lfcrlf $(PORT)
 
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
