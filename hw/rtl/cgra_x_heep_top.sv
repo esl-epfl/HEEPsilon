@@ -188,12 +188,12 @@ module cgra_x_heep_top #(
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
 
-      .external_subsystem_powergate_switch_o(external_subsystem_powergate_switch),
-      .external_subsystem_powergate_switch_ack_i(external_subsystem_powergate_switch_ack),
-      .external_subsystem_powergate_iso_o(external_subsystem_powergate_iso),
+      .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch),
+      .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack),
+      .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso),
 
       .external_subsystem_rst_no(external_subsystem_rst_n),
-      .external_ram_banks_set_retentive_o(external_ram_banks_set_retentive)
+      .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive)
   );
 
 endmodule  // cgra_x_heep_pkg
