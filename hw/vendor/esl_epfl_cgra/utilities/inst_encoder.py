@@ -203,6 +203,7 @@ ker_start_add  = 0
 
 exec(open("instructions_fft_bitrev.py").read())
 exec(open("instructions_fft_cplx.py").read())
+exec(open("instructions_fft_cplx_forever.py").read())
 # exec(open("instructions_fft_splitops.py").read())
 
 # exec(open("instructions_while_loop_100percent.py").read())

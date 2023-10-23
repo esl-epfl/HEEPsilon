@@ -9,6 +9,6 @@
   upstream:
   {
     url: https://eslgit.epfl.ch/cgra/cgra_esl_epfl.git
-    rev: 67bbb57de216c14cbe8d1562c14f269b7a4c1012
+    rev: a73e8754175a018f4c163d0aeb28836df1cf798e
   }
 }
