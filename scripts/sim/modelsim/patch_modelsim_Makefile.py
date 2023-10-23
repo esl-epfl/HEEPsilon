@@ -26,7 +26,7 @@ string_replaced.append('RUN_OPT = '+ "\n" + \
                        'ifdef RUN_UPF'+ "\n" + \
                        '    RUN_UPF_OPTIONS := -pa' + "\n" + \
                        'endif'+ "\n\n");
-string_replaced.append('EXTRA_OPTIONS ?= $(VSIM_OPTIONS) $(addprefix -g,$(PARAMETERS)) $(addprefix +,$(PLUSARGS)) $(RUN_UPF_OPTIONS)')
+string_replaced.append('EXTRA_OPTIONS ?= $(VSIM_OPTIONS) $(VSIM_USER_OPTIONS) $(addprefix -g,$(PARAMETERS)) $(addprefix +,$(PLUSARGS)) $(RUN_UPF_OPTIONS)')
 
 
 string_toappend = []
