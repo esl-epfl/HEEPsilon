@@ -76,6 +76,7 @@ This will create the executable file to be loaded in your target system.
 ## Simulating
 
 This project supports simulation with Verilator, Synopsys VCS, and Siemens Questasim.
+In addition, an instruction-accurate (but not cycle-accurate) simulator in Python is available in the [ESL-CGRA-simulator](https://github.com/esl-epfl/ESL-CGRA-simulator) repository.
 
 ### Compiling for Verilator
 
