@@ -51,14 +51,10 @@ module cgra_x_heep_top #(
   import cgra_x_heep_pkg::*;
 
   // External xbar master/slave and peripheral ports
-  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_req;
-  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_xbar_master_resp;
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
   reg_rsp_t ext_periph_slave_resp;
-
-
   obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_req;
   obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_req;
   obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_resp;
@@ -89,6 +85,7 @@ module cgra_x_heep_top #(
   // External subsystems
   logic external_subsystem_rst_n;
   logic external_ram_banks_set_retentive;
+  /* verilator lint_off unused */
   logic external_subsystem_clkgate_en_n;
   logic external_subsystem_powergate_switch;
   logic external_subsystem_powergate_switch_ack;
@@ -114,13 +111,13 @@ module cgra_x_heep_top #(
   // The external bus connects the external peripherals among them and to
   // the corresponding X-HEEP slave port (to the internal system bus).
   ext_bus #(
-      .EXT_XBAR_NMASTER(EXT_XBAR_NMASTER),
-      .EXT_XBAR_NSLAVE (EXT_XBAR_NSLAVE)
+      .EXT_XBAR_NMASTER(CGRA_XBAR_NMASTER),
+      .EXT_XBAR_NSLAVE (1)
   ) ext_bus_i (
       .clk_i                    (clk_i),
       .rst_ni                   (rst_ni),
       .addr_map_i               (EXT_XBAR_ADDR_RULES),
-      .default_idx_i            (SLOW_MEMORY_IDX[LOG_EXT_XBAR_NSLAVE-1:0]),
+      .default_idx_i            ('0),
 
       .heep_core_instr_req_i    (heep_core_instr_req),
       .heep_core_instr_resp_o   (heep_core_instr_resp),
@@ -148,8 +145,8 @@ module cgra_x_heep_top #(
       .rst_ni,
       .cgra_enable_i(cgra_enable),
       .rst_logic_ni(cgra_logic_rst_n),
-      .masters_req_o(ext_xbar_master_req),
-      .masters_resp_i(ext_xbar_master_resp),
+      .masters_req_o(ext_master_req),
+      .masters_resp_i(ext_master_resp),
       .reg_req_i(ext_periph_slave_req),
       .reg_rsp_o(ext_periph_slave_resp),
       .slave_req_i(ext_xbar_slave_req),
