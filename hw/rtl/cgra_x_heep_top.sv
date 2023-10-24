@@ -58,6 +58,26 @@ module cgra_x_heep_top #(
   reg_req_t ext_periph_slave_req;
   reg_rsp_t ext_periph_slave_resp;
 
+
+  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_req;
+  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_req;
+  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_resp;
+  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_resp;
+  obi_req_t heep_core_instr_req;
+  obi_resp_t heep_core_instr_resp;
+  obi_req_t heep_core_data_req;
+  obi_resp_t heep_core_data_resp;
+  obi_req_t heep_debug_master_req;
+  obi_resp_t heep_debug_master_resp;
+  obi_req_t heep_dma_read_ch0_req;
+  obi_resp_t heep_dma_read_ch0_resp;
+  obi_req_t heep_dma_write_ch0_req;
+  obi_resp_t heep_dma_write_ch0_resp;
+  obi_req_t heep_dma_addr_ch0_req;
+  obi_resp_t heep_dma_addr_ch0_resp;
+
+
+
   // External interrupts
   logic [core_v_mini_mcu_pkg::NEXT_INT-1:0] ext_intr_vector;
 
@@ -69,6 +89,7 @@ module cgra_x_heep_top #(
   // External subsystems
   logic external_subsystem_rst_n;
   logic external_ram_banks_set_retentive;
+  logic external_subsystem_clkgate_en_n;
   logic external_subsystem_powergate_switch;
   logic external_subsystem_powergate_switch_ack;
   logic external_subsystem_powergate_iso;
@@ -86,6 +107,41 @@ module cgra_x_heep_top #(
     // Re-assign the interrupt lines used here
     ext_intr_vector[0] = cgra_int;
   end
+
+
+  // External bus
+  // ----------------------
+  // The external bus connects the external peripherals among them and to
+  // the corresponding X-HEEP slave port (to the internal system bus).
+  ext_bus #(
+      .EXT_XBAR_NMASTER(EXT_XBAR_NMASTER),
+      .EXT_XBAR_NSLAVE (EXT_XBAR_NSLAVE)
+  ) ext_bus_i (
+      .clk_i                    (clk_i),
+      .rst_ni                   (rst_ni),
+      .addr_map_i               (EXT_XBAR_ADDR_RULES),
+      .default_idx_i            (SLOW_MEMORY_IDX[LOG_EXT_XBAR_NSLAVE-1:0]),
+
+      .heep_core_instr_req_i    (heep_core_instr_req),
+      .heep_core_instr_resp_o   (heep_core_instr_resp),
+      .heep_core_data_req_i     (heep_core_data_req),
+      .heep_core_data_resp_o    (heep_core_data_resp),
+      .heep_debug_master_req_i  (heep_debug_master_req),
+      .heep_debug_master_resp_o (heep_debug_master_resp),
+      .heep_dma_read_ch0_req_i  (heep_dma_read_ch0_req),
+      .heep_dma_read_ch0_resp_o (heep_dma_read_ch0_resp),
+      .heep_dma_write_ch0_req_i (heep_dma_write_ch0_req),
+      .heep_dma_write_ch0_resp_o(heep_dma_write_ch0_resp),
+      .heep_dma_addr_ch0_req_i  (heep_dma_addr_ch0_req),
+      .heep_dma_addr_ch0_resp_o (heep_dma_addr_ch0_resp),
+
+      .ext_master_req_i         (ext_master_req),
+      .ext_master_resp_o        (ext_master_resp),
+      .heep_slave_req_o         (heep_slave_req),
+      .heep_slave_resp_i        (heep_slave_resp),
+      .ext_slave_req_o          (ext_xbar_slave_req),
+      .ext_slave_resp_i         (ext_xbar_slave_resp)
+  );
 
   cgra_top_wrapper cgra_top_wrapper_i (
       .clk_i,
@@ -181,10 +237,31 @@ module cgra_x_heep_top #(
       .xif_mem_if(ext_if),
       .xif_mem_result_if(ext_if),
       .xif_result_if(ext_if),
-      .ext_xbar_master_req_i(ext_xbar_master_req),
-      .ext_xbar_master_resp_o(ext_xbar_master_resp),
-      .ext_xbar_slave_req_o(ext_xbar_slave_req),
-      .ext_xbar_slave_resp_i(ext_xbar_slave_resp),
+
+
+      // OK - but weird that the input variable is also called maste, or that in the testharness its slave
+      .ext_xbar_master_req_i(heep_slave_req),
+      .ext_xbar_master_resp_o(heep_slave_resp),
+
+      // Missing
+      .ext_core_instr_req_o(heep_core_instr_req),
+      .ext_core_instr_resp_i(heep_core_instr_resp),
+      .ext_core_data_req_o(heep_core_data_req),
+      .ext_core_data_resp_i(heep_core_data_resp),
+      .ext_debug_master_req_o(heep_debug_master_req),
+      .ext_debug_master_resp_i(heep_debug_master_resp),
+      .ext_dma_read_ch0_req_o(heep_dma_read_ch0_req),
+      .ext_dma_read_ch0_resp_i(heep_dma_read_ch0_resp),
+      .ext_dma_write_ch0_req_o(heep_dma_write_ch0_req),
+      .ext_dma_write_ch0_resp_i(heep_dma_write_ch0_resp),
+      .ext_dma_addr_ch0_req_o(heep_dma_addr_ch0_req),
+      .ext_dma_addr_ch0_resp_i(heep_dma_addr_ch0_resp),
+
+
+
+      .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n),
+
+
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
 

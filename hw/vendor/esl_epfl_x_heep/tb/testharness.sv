@@ -228,8 +228,13 @@ module testharness #(
       .xif_mem_if(ext_if),
       .xif_mem_result_if(ext_if),
       .xif_result_if(ext_if),
+
+
+
       .ext_xbar_master_req_i(heep_slave_req),
       .ext_xbar_master_resp_o(heep_slave_resp),
+
+
       .ext_core_instr_req_o(heep_core_instr_req),
       .ext_core_instr_resp_i(heep_core_instr_resp),
       .ext_core_data_req_o(heep_core_data_req),
@@ -242,6 +247,9 @@ module testharness #(
       .ext_dma_write_ch0_resp_i(heep_dma_write_ch0_resp),
       .ext_dma_addr_ch0_req_o(heep_dma_addr_ch0_req),
       .ext_dma_addr_ch0_resp_i(heep_dma_addr_ch0_resp),
+      .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n)
+
+
       .ext_peripheral_slave_req_o(periph_slave_req),
       .ext_peripheral_slave_resp_i(periph_slave_rsp),
       .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch_n),
@@ -249,7 +257,6 @@ module testharness #(
       .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso_n),
       .external_subsystem_rst_no(external_subsystem_rst_n),
       .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive_n),
-      .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n)
   );
 
   // Testbench external bus
