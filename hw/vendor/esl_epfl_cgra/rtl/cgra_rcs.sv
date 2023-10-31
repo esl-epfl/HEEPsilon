@@ -1,8 +1,8 @@
-// Copyright 2022 EPFL
+// Copyright 2023 EPFL
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-module cgra
+module cgra_rcs
   import cgra_pkg::*;
 (
   input  logic [            N_COL-1:0] clk_i,
@@ -221,34 +221,33 @@ module cgra
           for (int k=0; k<N_ROW; k++) begin
             rcs_res_reg[k][j]  <= '0;
             rcs_flag_reg[k][j] <= '0;
-			      rcs_res_reg_temp[k][j]  <= '0;
-			      rcs_flag_reg_temp[k][j] <= '0;
+            rcs_res_reg_temp[k][j]  <= '0;
+            rcs_flag_reg_temp[k][j] <= '0;
           end
         end else begin
           for (int k=0; k<N_ROW; k++) begin
-            
             if( rcs_pc_e_i[j] == 1'b0 ) begin // PC enable is low
               if( rvalid_demux[j][k] == 1'b1 ) begin // If the data is ready, copy it to a temproary buffer
                 rcs_res_reg_temp[k][j]  <= data_rdata_i[j];
                 rcs_flag_reg_temp[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
               end
             end else begin // PC enable is high
-              if( data_req_s[k][j] == 1'b0 ) begin 
+              if( data_req_s[k][j] == 1'b0 ) begin
                 if (rcs_nop_s[k][j] == 1'b0) begin
                   rcs_res_reg[k][j]  <= rcs_res[k][j];
                   rcs_flag_reg[k][j] <= rcs_flag[k][j];
-                end 
+                end
               end else begin  // Read data instruction
-                if( rcs_nop_s[k][j] == 1'b0  ) begin 
-                  if ( rvalid_demux[j][k] == 1'b1) begin // If the data is ready, copy it straight away. 
+                if( rcs_nop_s[k][j] == 1'b0  ) begin
+                  if ( rvalid_demux[j][k] == 1'b1) begin // If the data is ready, copy it straight away.
                     rcs_res_reg[k][j]  <= data_rdata_i[j];
                     rcs_flag_reg[k][j] <= {data_rdata_i[j][DP_WIDTH-1], ~(|data_rdata_i[j])};
-                  end else begin  // If the data is not ready, it was ready before, so copy the temp buffer. 
-                    // This is necessary as some special cases require it. 
+                  end else begin  // If the data is not ready, it was ready before, so copy the temp buffer.
+                    // This is necessary as some special cases require it.
                     rcs_res_reg[k][j]  <= rcs_res_reg_temp[k][j];
                     rcs_flag_reg[k][j] <= rcs_flag_reg_temp[k][j];
                   end
-                end 
+                end
               end
             end
           end
@@ -305,7 +304,7 @@ module cgra
   begin
 
     for (int l=0; l<N_COL; l++) begin
-      
+
       rcs_br_req_o[l] = 1'b0;
       rcs_br_add_o[l] = '0;
       one_hot_encoding_col = 1'b1;
@@ -379,9 +378,9 @@ module cgra
   //  RC1 / row_0      LTRC(0,0) ---- TRC (0,1) ---- TRC (0,2) ---- RTRC(0,3)
   //                       |              |              |              |
   //  RC2 / row_1      LRC (1,0) ---- CRC (1,1) ---- CRC (1,2) ---- RRC (1,3)
-  //                       |              |              |              | 
+  //                       |              |              |              |
   //  RC3 / row_2      LRC (2,0) ---- CRC (2,1) ---- CRC (2,2) ---- RRC (2,3)
-  //                       |              |              |              | 
+  //                       |              |              |              |
   //  RC4 / row_3      LBRC(3,0) ---- BRC (3,1) ---- BRC (3,2) ---- RBRC(3,3)
 
   generate

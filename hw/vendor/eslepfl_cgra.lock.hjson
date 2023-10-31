@@ -8,7 +8,7 @@
 {
   upstream:
   {
-    url: https://eslgit.epfl.ch/cgra/cgra_esl_epfl.git
-    rev: a73e8754175a018f4c163d0aeb28836df1cf798e
+    url: https://github.com/esl-epfl/OpenEdgeCGRA.git
+    rev: 34db4ced03ae958a636a8b0c0c359320dfe7bd8c
   }
 }

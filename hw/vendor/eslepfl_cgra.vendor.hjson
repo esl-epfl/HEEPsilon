@@ -7,25 +7,17 @@
   target_dir: "esl_epfl_cgra",
 
   upstream: {
-    url: "https://eslgit.epfl.ch/cgra/cgra_esl_epfl.git",
-    rev: "a73e8754175a018f4c163d0aeb28836df1cf798e",
+    url: "https://github.com/esl-epfl/OpenEdgeCGRA.git",
+    rev: "34db4ced03ae958a636a8b0c0c359320dfe7bd8c",
   },
 
   patch_dir: "patches/esl_epfl_cgra",
 
   exclude_from_upstream: [
     ".gitattributes"
-    "eda/cds_genus",
-    "eda/cds_irun",
-    "eda/mgsim",
-    "eda/snps_dc",
-    "eda/snps_pt",
-    "mem",
     "apps",
-    "doc",
+    "docs",
     "README.md"
-    "kernel_mapping",
-    "platform_files",
     "testbench",
     "utilities/INSTRUCTIONS_FFT_SPLITOPS.py",
     "utilities/instructions_max_peak.py",
