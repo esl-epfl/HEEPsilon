@@ -27,7 +27,7 @@ filesets:
     - esl_epfl_cgra/rtl/data_bus_handler.sv
     - esl_epfl_cgra/rtl/synchronizer.sv
     - esl_epfl_cgra/rtl/cgra_controller.sv
-    - esl_epfl_cgra/rtl/cgra.sv
+    - esl_epfl_cgra/rtl/cgra_rcs.sv
     - esl_epfl_cgra/rtl/context_memory_decoder.sv
     - esl_epfl_cgra/rtl/cgra_top.sv
     - esl_epfl_cgra/rtl/context_memory.sv
@@ -37,7 +37,7 @@ filesets:
 
   files_behav_rtl:
     files:
-    - esl_epfl_cgra/eda/HDL/tech_lib/clkgate/rtl/cgra_clock_gate.sv
+    - esl_epfl_cgra/sim/cgra_clock_gate.sv
     - esl_epfl_cgra/sim/cgra_sram_wrapper.sv
     file_type: systemVerilogSource
 

@@ -307,8 +307,8 @@ module cgra_rcs
 
       rcs_br_req_o[l] = 1'b0;
       rcs_br_add_o[l] = '0;
-      one_hot_encoding_col = 1'b1;
-      one_hot_encoding_row = 1'b1;
+      one_hot_encoding_col = {{(N_COL-1){1'b0}}, 1'b1};
+      one_hot_encoding_row = {{(N_ROW-1){1'b0}}, 1'b1};
 
       for (int k=0; k<N_COL; k++) begin
         if (rcs_br_req_col_merged_s[l] == one_hot_encoding_col) begin
