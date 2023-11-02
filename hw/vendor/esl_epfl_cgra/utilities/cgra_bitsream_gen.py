@@ -1,10 +1,6 @@
-'''
-    File name: inst_encoder.py
-    Author: Benoit Denkinger
-    Date created: 28/06/2018
-    Python Version: Python 3.4.3
-    Description: Encode instructions for the CGRA
-'''
+# Copyright EPFL contributors.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
 
 import os
 import sys
@@ -194,16 +190,21 @@ ker_next_id    = 1
 # First kernel start at adress 0
 ker_start_add  = 0
 
-# KERNEL ORDRE IN MEMORY
-# 1. instructions_dbl_min.py
-# 2. instructions_dbl_max.py
-# 3. instructions_max_peak.py
-# 4. instructions_min_max_circular.py
+# The order of the kernel in memory (and their ID) correspond to the execution order given below
 
-exec(open("instructions_dbl_min.py").read())
-exec(open("instructions_dbl_max.py").read())
+# exec(open("instructions_dbl_min.py").read())
+# exec(open("instructions_dbl_max.py").read())
 # exec(open("instructions_max_peak.py").read())
 # exec(open("instructions_min_max_circular.py").read())
+
+exec(open("instructions_fft_bitrev.py").read())
+exec(open("instructions_fft_cplx.py").read())
+exec(open("instructions_fft_cplx_forever.py").read())
+# exec(open("instructions_fft_splitops.py").read())
+
+# exec(open("instructions_while_loop_100percent.py").read())
+# exec(open("instructions_while_loop_75percent.py").read())
+# exec(open("instructions_while_loop_50percent.py").read())
 
 # exec(open("instructions_func_test.py").read())
 
@@ -236,31 +237,31 @@ for i in range(0,CGRA_N_ROW):
             cmd = instruction[idx]
 
             # Don't care is replaced by default value
-            if cmd is '-':
+            if cmd == '-':
                 cmd = rcs_nop_instr[idx]
 
             # Don't care for register destination also need a 0 bit to disable write to register
-            if idx is 3:
+            if idx == 3:
                 # Default command
                 cmd_tmp = ['R0', '0']
                 # If we write to a register put a 1 for write enable
-                if cmd is not '-':
+                if cmd != '-':
                     cmd_tmp[0] = cmd
                     cmd_tmp[1] = '1'
                 cmd = cmd_tmp
 
-            if idx is 0:
+            if idx == 0:
                 instr_bits = instr_bits + get_bin(return_indices_of_a(muxA_list, cmd, 'muxA_list'), RCS_MUXA_BITS)
-            elif idx is 1:
+            elif idx == 1:
                 instr_bits = instr_bits + get_bin(return_indices_of_a(muxB_list, cmd, 'muxB_list'), RCS_MUXB_BITS)
-            elif idx is 2:
+            elif idx == 2:
                 instr_bits = instr_bits + get_bin(return_indices_of_a(ALU_op_list, cmd, 'ALU_op_list'), RCS_ALU_OP_BITS)
-            elif idx is 3:
+            elif idx == 3:
                 instr_bits = instr_bits + get_bin(return_indices_of_a(reg_dest_list, cmd[0], 'reg_dest_list'), RCS_RF_WADD_BITS)
                 instr_bits = instr_bits + get_bin(return_indices_of_a(reg_we_list, cmd[1], 'reg_we_list'), RCS_RF_WE_BITS)
-            elif idx is 4:
+            elif idx == 4:
                 instr_bits = instr_bits + get_bin(return_indices_of_a(muxF_list, cmd, 'muxF_list'), RCS_MUXFLAG_BITS)
-            elif idx is 5:
+            elif idx == 5:
                 instr_bits = instr_bits + int2bin(int(cmd), RCS_IMM_BITS)
                 # print(int2bin(int(cmd), RCS_IMM_BITS))
                 # print(cmd)

@@ -112,7 +112,7 @@ int main(void) {
 
   // Select request slot of CGRA (2 slots)
   uint32_t cgra_slot = cgra_get_slot(&cgra);
-  // input data ptr coumn 0
+  // input data ptr column 0
   cgra_input[0][cgra_slot][0] = (int32_t)&stimuli[0][0];
   cgra_input[0][cgra_slot][1] = (int32_t)&stimuli[1][0];
   cgra_input[0][cgra_slot][2] = (int32_t)&stimuli[2][0];
@@ -122,7 +122,7 @@ int main(void) {
   cgra_input[0][cgra_slot][6] = (int32_t)&cgra_res[0][2][0];
   cgra_input[0][cgra_slot][7] = (int32_t)&cgra_res[0][3][0];
 
-  // input data ptr coumn 1
+  // input data ptr column 1
   cgra_input[1][cgra_slot][0] = (int32_t)&stimuli[0][0];
   cgra_input[1][cgra_slot][1] = (int32_t)&stimuli[1][0];
   cgra_input[1][cgra_slot][2] = (int32_t)&stimuli[2][0];
@@ -132,7 +132,7 @@ int main(void) {
   cgra_input[1][cgra_slot][6] = (int32_t)&cgra_res[1][2][0];
   cgra_input[1][cgra_slot][7] = (int32_t)&cgra_res[1][3][0];
 
-  // input data ptr coumn 2
+  // input data ptr column 2
   cgra_input[2][cgra_slot][0] = (int32_t)&stimuli[0][0];
   cgra_input[2][cgra_slot][1] = (int32_t)&stimuli[1][0];
   cgra_input[2][cgra_slot][2] = (int32_t)&stimuli[2][0];
@@ -142,7 +142,7 @@ int main(void) {
   cgra_input[2][cgra_slot][6] = (int32_t)&cgra_res[2][2][0];
   cgra_input[2][cgra_slot][7] = (int32_t)&cgra_res[2][3][0];
 
-  // input data ptr coumn 3
+  // input data ptr column 3
   cgra_input[3][cgra_slot][0] = (int32_t)&stimuli[0][0];
   cgra_input[3][cgra_slot][1] = (int32_t)&stimuli[1][0];
   cgra_input[3][cgra_slot][2] = (int32_t)&stimuli[2][0];
