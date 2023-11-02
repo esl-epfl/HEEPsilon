@@ -105,7 +105,6 @@ module cgra_rcs
   end
 
   // Only let the execution end signal go through if there is not branch request and check if signal should be propagated to other columns
-  // assign exec_end_s = rcs_exec_end_col_merged & ~rcs_br_req_o;
   always_comb
   begin
     for (int l=0; l<N_COL; l++) begin

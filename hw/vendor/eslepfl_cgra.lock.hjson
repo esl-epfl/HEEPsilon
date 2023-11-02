@@ -9,6 +9,6 @@
   upstream:
   {
     url: https://github.com/esl-epfl/OpenEdgeCGRA.git
-    rev: 34db4ced03ae958a636a8b0c0c359320dfe7bd8c
+    rev: d53dd7a98ec59754ed21a5411dc985ebbdc39d3e
   }
 }
