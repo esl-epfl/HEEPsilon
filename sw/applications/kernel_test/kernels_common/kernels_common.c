@@ -125,11 +125,18 @@ static kcom_time_diff_t     *cgraPerf;
 /**                                                                        **/
 /****************************************************************************/
 
+// Interrupt controller variables
+void handler_irq_cgra(uint32_t id) {
+    kcom_perfRecordStop( cgraPerf );
+    cgra_intr_flag = 1;
+}
+
 void plic_interrupt_init() {
     // Init the PLIC
     plic_Init();
     plic_irq_set_priority(CGRA_INTR, 1);
     plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
+    plic_assign_external_irq_handler( CGRA_INTR, (void *) &handler_irq_cgra);
 
     // Enable interrupt on processor side
     // Enable global interrupt for machine-level interrupts
@@ -138,12 +145,6 @@ void plic_interrupt_init() {
     const uint32_t mask = 1 << 11;//IRQ_EXT_ENABLE_OFFSET;
     CSR_SET_BITS(CSR_REG_MIE, mask);
     cgra_intr_flag = 0;
-}
-
-// Interrupt controller variables
-void handler_irq_cgra(uint32_t id) {
-    kcom_perfRecordStop( cgraPerf );
-    cgra_intr_flag = 1;
 }
 
 /* MISCELANEOUS */
