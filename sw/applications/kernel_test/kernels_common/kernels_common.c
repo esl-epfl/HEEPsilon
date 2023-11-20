@@ -218,6 +218,7 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 #endif //EXECUTE_SOFTWARE
     (run[ it_idx ]).conf        = 0;
     (run[ it_idx ]).cgra        = perf->time.cgra.spent_cy;
+    (run[ it_idx ]).loading_result = perf->time.loading_result.spent_cy;
     (run[ it_idx ]).repo        = perf->cols_max.cyc_act + perf->cols_max.cyc_stl;
 #if MEASURE_RATIO
     (run[ it_idx ]).repo_conf   = 0;
@@ -409,6 +410,7 @@ void kcom_printKernelStats( kcom_stats_t *stats  )
     PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.conf, stats->stdev.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.conf%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("REPO\t%d\t%0d.%01d\n", stats->avg.repo, stats->stdev.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.repo%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->stdev.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("LOADING OUTPUT\t%d\t%0d.%01d\n", stats->avg.loading_result, stats->stdev.loading_result/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.loading_result%CGRA_STAT_PERCENT_MULTIPLIER);
 #if MEASURE_RATIO
     PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
     PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
