@@ -77,13 +77,13 @@ static Pixel outSW[IMG_DIM];
 static Pixel outCGRA[IMG_DIM];
 
 
-    static uint32_t	i_index_soft;
-    static uint32_t	i_index_cgra;
-    static uint32_t	i_NumBits_soft;
-    static uint32_t	i_NumBits_cgra;
+static uint32_t	i_index_soft;
+static uint32_t	i_index_cgra;
+static uint32_t	i_NumBits_soft;
+static uint32_t	i_NumBits_cgra;
 
-    static uint32_t	o_ret_soft;
-    static uint32_t	o_ret_cgra;
+static uint32_t	o_ret_soft;
+static uint32_t	o_ret_cgra;
 
 
 /****************************************************************************/

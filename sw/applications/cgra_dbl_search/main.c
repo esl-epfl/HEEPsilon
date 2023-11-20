@@ -31,10 +31,8 @@ volatile int32_t cgra_res[OUTPUT_LENGTH] = {0};
 int32_t exp_res[OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
-void handler_irq_ext(uint32_t id) {
-  if( id == CGRA_INTR) {
+void handler_irq_cgra(uint32_t id) {
     cgra_intr_flag = 1;
-  }
 }
 
 int main(void) {
@@ -48,6 +46,7 @@ int main(void) {
   plic_Init();
   plic_irq_set_priority(CGRA_INTR, 1);
   plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
+  plic_assign_external_irq_handler( CGRA_INTR, (void *) &handler_irq_cgra);
 
   // Enable interrupt on processor side
   // Enable global interrupt for machine-level interrupts

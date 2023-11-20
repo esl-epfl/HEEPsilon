@@ -13,3 +13,6 @@ build
 
 # ignore automatically generated files
 tb/tb_util.svh
+*.vscode*
+*vivado*
+*__pycache__*

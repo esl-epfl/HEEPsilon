@@ -141,11 +141,9 @@ void plic_interrupt_init() {
 }
 
 // Interrupt controller variables
-void handler_irq_ext(uint32_t id) {
-  if( id == CGRA_INTR) {
+void handler_irq_cgra(uint32_t id) {
     kcom_perfRecordStop( cgraPerf );
     cgra_intr_flag = 1;
-  }
 }
 
 /* MISCELANEOUS */
@@ -444,7 +442,8 @@ void kcom_init()
 {
     pinInit();
     timerInit();
-    plic_interrupt_init( CGRA_INTR );
+    plic_interrupt_init();
+    plic_assign_external_irq_handler( CGRA_INTR, (void *) &handler_irq_cgra);
 }
 
 void kcom_load( kcom_kernel_t *ker )
