@@ -106,7 +106,7 @@
 #endif //ENABLE_PRINTF
 #if ENABLE_DEBUG_PRINTF
     #define PRINTDBG(fmt, ...)  printf(fmt, ## __VA_ARGS__)
-    #define PRINTLINE()         printf("%d\n", __LINE__)
+    #define PRINTLINE()         printf("%d\n\r", __LINE__)
 #else
     #define PRINTDBG(...)
     #define PRINTLINE()

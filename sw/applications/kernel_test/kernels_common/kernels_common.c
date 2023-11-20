@@ -232,7 +232,7 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 #endif //MEASURE_RATIO
 
 #if PRINT_ITERATION_VALUES
-    PRINTF("i%d\tSW:%d\tCG:%d\n",it_idx, (run[ it_idx ]).sw, (run[ it_idx ]).cgra );
+    PRINTF("i%d\tSW:%d\tCG:%d\n\r",it_idx, (run[ it_idx ]).sw, (run[ it_idx ]).cgra );
 #endif //PRINT_ITERATION_VALUES
 #endif //ENABLE_TIME_MEASURE
 }
@@ -352,54 +352,54 @@ void kcom_printPerf( kcom_perf_t *perf )
     {
         PRINTF(" ");
     }
-    PRINTF("*\n");
+    PRINTF("*\n\r");
 #endif
 
 #if PRINT_COLUMN_STATS
-    PRINTF("\n===========\n COLUMN STATS BELOW \n===========\n");
-    PRINTF("Col\tAct\tStl\n");
+    PRINTF("\n\r===========\n\r COLUMN STATS BELOW \n\r===========\n\r");
+    PRINTF("Col\tAct\tStl\n\r");
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++)
     {
-        PRINTF("%01d\t%03d\t%03d\n", col_idx, perf->cols[col_idx].cyc_act, perf->cols[col_idx].cyc_stl );
+        PRINTF("%01d\t%03d\t%03d\n\r", col_idx, perf->cols[col_idx].cyc_act, perf->cols[col_idx].cyc_stl );
     }
-    PRINTF("Max:\t%03d\t%03d\n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl );
+    PRINTF("Max:\t%03d\t%03d\n\r", perf->cols_max.cyc_act, perf->cols_max.cyc_stl );
 #endif //PRINT_COLUMN_STATS
 
 #if PRINT_LATEX
 #if PRINT_TABBED
-    PRINTF("\n===========\n LATEX VERSION BELOW \n===========\n");
+    PRINTF("\n\r===========\n\r LATEX VERSION BELOW \n\r===========\n\r");
 #endif // PRINT_TABBED
-    PRINTF("\\begin{table}[h!] \n");
-    PRINTF("\t\\centering \n");
-    PRINTF("\t\\caption{\\small Some table caption} \n");
-    PRINTF("\t\\begin{tabular}{lll} \n");
-    PRINTF("\t\t\\toprule \n");
+    PRINTF("\\begin{table}[h!] \n\r");
+    PRINTF("\t\\centering \n\r");
+    PRINTF("\t\\caption{\\small Some table caption} \n\r");
+    PRINTF("\t\\begin{tabular}{lll} \n\r");
+    PRINTF("\t\t\\toprule \n\r");
 
-    PRINTF("\t\t\\textbf{Parameter}&\\textbf{Value}&\\textbf{Unit}\\\\\n");
+    PRINTF("\t\t\\textbf{Parameter}&\\textbf{Value}&\\textbf{Unit}\\\\\n\r");
 
-    PRINTF("\t\t\\midrule \n");
-    PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
-    PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
+    PRINTF("\t\t\\midrule \n\r");
+    PRINTF("\t\tActive&%03d&cycles\\\\\n\r", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
+    PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n\r", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
 #if ENABLE_TIME_MEASURE
-    PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent_cy );
-    PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent_cy );
+    PRINTF("\t\tSoftware&%d&sec\\\\\n\r",  perf->time.sw.spent_cy );
+    PRINTF("\t\tCGRA&%d&sec\\\\\n\r", perf->time.cgra.spent_cy );
 #endif //ENABLE_TIME_MEASURE
 
-    PRINTF("\t\t\\bottomrule \n");
-	PRINTF("\t\\end{tabular} \n");
-    PRINTF("\\end{table} \n");
+    PRINTF("\t\t\\bottomrule \n\r");
+	PRINTF("\t\\end{tabular} \n\r");
+    PRINTF("\\end{table} \n\r");
 #endif //PRINT_LATEX
 
 #if PRINT_TABBED
 #if PRINT_LATEX
-    PRINTF("\n===========\n TABBED VERSION BELOW \n===========\n");
+    PRINTF("\n\r===========\n\r TABBED VERSION BELOW \n\r===========\n\r");
 #endif //PRINT_LATEX
-    PRINTF("Param\tValue\tUnit \n");
-    PRINTF("Total\t%d+%d=%03d\tcycles \n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
-    PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
-    PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
-    PRINTF("CGRA\t%d\tcy\n", perf->time.cgra.spent_cy );
-    PRINTF("Active\t%d\tcy\n", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
+    PRINTF("Param\tValue\tUnit \n\r");
+    PRINTF("Total\t%d+%d=%03d\tcycles \n\r", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
+    PRINTF("Act/Stl\t%d.%01d\t%% \n\r", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
+    PRINTF("Sw\t%d\tcy\n\r",  perf->time.sw.spent_cy );
+    PRINTF("CGRA\t%d\tcy\n\r", perf->time.cgra.spent_cy );
+    PRINTF("Active\t%d\tcy\n\r", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
 #endif // PRINT_TABBED
 
 }
@@ -407,33 +407,33 @@ void kcom_printPerf( kcom_perf_t *perf )
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
 #if ENABLE_TIME_MEASURE
-    // PRINTF("\n===================\n %s \n", stats->name);
-    // PRINTF("PARA\tAVG(cy)\tDEV\n");
+    // PRINTF("\n\r===================\n\r %s \n\r", stats->name);
+    // PRINTF("PARA\tAVG(cy)\tDEV\n\r");
 #if MEASURE_DEVIATION
 #if EXECUTE_SOFTWARE
-    PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->stdev.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.sw%CGRA_STAT_PERCENT_MULTIPLIER );
+    PRINTF("SOFT\t%d\t%0d.%01d\n\r", stats->avg.sw, stats->stdev.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.sw%CGRA_STAT_PERCENT_MULTIPLIER );
 #endif //EXECUTE_SOFTWARE
-    PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.conf, stats->stdev.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.conf%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("REPO\t%d\t%0d.%01d\n", stats->avg.repo, stats->stdev.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.repo%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->stdev.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CONF\t%d\t%0d.%01d\n\r", stats->avg.conf, stats->stdev.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.conf%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("REPO\t%d\t%0d.%01d\n\r", stats->avg.repo, stats->stdev.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.repo%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CGRA\t%d\t%0d.%01d\n\r", stats->avg.cgra, stats->stdev.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
 #if MEASURE_RATIO
-    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
+    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n\r", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CG/S\t%0d%%\t-\n\r",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
 #endif //MEASURE_RATIO
 #else
 #if EXECUTE_SOFTWARE
-    PRINTF("SOFT\t%d\n", stats->avg.sw );
+    PRINTF("SOFT\t%d\n\r", stats->avg.sw );
 #endif //EXECUTE_SOFTWARE
-    PRINTF("CONF\t%d\n", stats->avg.conf );
-    PRINTF("REPO\t%d\n", stats->avg.repo );
-    PRINTF("CGRA\t%d\n", stats->avg.cgra );
+    PRINTF("CONF\t%d\n\r", stats->avg.conf );
+    PRINTF("REPO\t%d\n\r", stats->avg.repo );
+    PRINTF("CGRA\t%d\n\r", stats->avg.cgra );
 #endif
 #endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_printSummary( kcom_stats_t *stats  )
 {
-    PRINTF("E\t%d\n", stats->errors );
+    PRINTF("E\t%d\n\r", stats->errors );
 }
 
 
