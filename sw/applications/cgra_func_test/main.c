@@ -12,6 +12,11 @@
 #include "cgra_bitstream.h"
 #include "fxp.h"
 
+// This application only works with a 4x4 CGRA
+#if CGRA_N_COLS != 4 | CGRA_N_ROWS != 4
+  #error The CGRA must have a 4x4 size to run this example
+#endif
+
 #define DEBUG
 
 // Use PRINTF instead of PRINTF to remove print by default
@@ -21,11 +26,11 @@
   #define PRINTF(...)
 #endif
 
-#define INPUT_LENGTH 4
+#define INPUT_LENGTH 8
 #define OUTPUT_LENGTH 5
 
 // one dim slot x n input values (data ptrs, constants, ...)
-int32_t cgra_input[CGRA_N_COLS][10] __attribute__ ((aligned (4)));
+int32_t cgra_input[CGRA_N_COLS][INPUT_LENGTH] __attribute__ ((aligned (4)));
 int8_t cgra_intr_flag;
 int32_t cgra_res[CGRA_N_COLS][CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
 
@@ -45,9 +50,9 @@ void handler_irq_cgra(uint32_t id) {
 
 int main(void) {
 
-  PRINTF("Init CGRA context memory...\n\r");
+  PRINTF("Init CGRA context memory...");
   cgra_cmem_init(cgra_imem_bitstream, cgra_kmem_bitstream);
-  PRINTF("\rdone\n\r");
+  PRINTF("done\n");
 
   // Init the PLIC
   plic_Init();
@@ -151,7 +156,7 @@ int main(void) {
   cgra_input[3][6] = (int32_t)&cgra_res[3][2][0];
   cgra_input[3][7] = (int32_t)&cgra_res[3][3][0];
 
-  printf("Run functionality check on CGRA...\n");
+  printf("Running functionality check on CGRA...\n");
   // Check the CGRA can accept a new request
   cgra_wait_ready(&cgra);
   // Enable performance counters
@@ -183,39 +188,21 @@ int main(void) {
     wait_for_interrupt();
   }
 
-<<<<<<< HEAD
   // Check the cgra values are correct
   int32_t errors=0;
   for (int k=0; k<CGRA_N_COLS; k++) {
     for (int i=0; i<CGRA_N_ROWS; i++) {
       for (int j=0; j<OUTPUT_LENGTH; j++) {
         if (cgra_res[k][i][j] != exp_rc_c0[i][j]) {
-          printf("[%d][%d][%d]: %d != %d\n\r", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
-          printf("[%d][%d][%d]: %08x != %08x\n\r", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
+          PRINTF("[%d][%d][%d]: %d != %d\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
+          PRINTF("[%d][%d][%d]: %08x != %08x\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
           errors++;
         }
       }
     }
   }
 
-  printf("CGRA functionality check finished with %d errors\n\r", errors);
-=======
-  // // Check the cgra values are correct
-  // int32_t errors=0;
-  // for (int k=0; k<CGRA_N_COLS; k++) {
-  //   for (int i=0; i<CGRA_N_ROWS; i++) {
-  //     for (int j=0; j<OUTPUT_LENGTH; j++) {
-  //       if (cgra_res[k][i][j] != exp_rc_c0[i][j]) {
-  //         printf("[%d][%d][%d]: %d != %d\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
-  //         printf("[%d][%d][%d]: %08x != %08x\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
-  //         errors++;
-  //       }
-  //     }
-  //   }
-  // }
-
-  // printf("CGRA functionality check finished with %d errors\n", errors);
->>>>>>> 0ef7326 (Adding, renaming, removing many file to make the cgra peripheral registers configurable and the software driver compatible.)
+  printf("CGRA functionality check finished with %d errors\n", errors);
 
   // Performance counter display
   printf("CGRA kernel executed: %d\n\r", cgra_perf_cnt_get_kernel(&cgra));

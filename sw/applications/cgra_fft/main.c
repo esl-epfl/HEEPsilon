@@ -14,6 +14,11 @@
 #include "defines.h"
 #include "fft_data.h"
 
+// This application only works with a 4x4 CGRA
+#if CGRA_N_COLS != 4 | CGRA_N_ROWS != 4
+  #error The CGRA must have a 4x4 size to run this example
+#endif
+
 #ifdef CPLX_FFT
   #if FFT_SIZE==512
     #include "fft_factors_512_32b_int.h"
@@ -74,10 +79,8 @@ fxp ImagOut_fxp_exp[FFT_SIZE] __attribute__ ((aligned (4))) = { 0 };
 #endif // REAL_FFT
 
 // one dim per core x n input values (data ptrs, constants, ...)
-int32_t cgra_input[CGRA_N_COLS][CGRA_N_SLOTS][10] __attribute__ ((aligned (4))) = { 0 };
+int32_t cgra_input[CGRA_N_COLS][10] __attribute__ ((aligned (4))) = { 0 };
 int8_t cgra_intr_flag;
-// Nothing should be write here by the FFT kernel
-// int32_t cgra_output[CGRA_N_COLS][CGRA_N_ROWS][10] __attribute__ ((aligned (4))) = { 0 };
 
 /*----------------------------------------------------------------------------
                         INTERRUPTS
@@ -127,71 +130,74 @@ int main(void) {
 
   // STEP 1: bit reverse
   PRINTF("Run input bit reverse reordering on %d points on CGRA...\n", FFT_SIZE);
-  // Select request slot of CGRA (2 slots)
-  uint32_t cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&input_signal[1]; // imaginary part is given second
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&input_signal[0]; // imaginary part is given first
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE/2; // idx end
-  cgra_input[column_idx][cgra_slot][3] = (int32_t)numBits;
-  cgra_input[column_idx][cgra_slot][4] = (int32_t)&ImagOut_fft0_fxp[0];
-  cgra_input[column_idx][cgra_slot][5] = (int32_t)&RealOut_fft0_fxp[0];
-  cgra_input[column_idx][cgra_slot][6] = 0; // idx start
+  cgra_input[column_idx][0] = (int32_t)&input_signal[1]; // imaginary part is given second
+  cgra_input[column_idx][1] = (int32_t)&input_signal[0]; // imaginary part is given first
+  cgra_input[column_idx][2] = (int32_t)FFT_SIZE/2; // idx end
+  cgra_input[column_idx][3] = (int32_t)numBits;
+  cgra_input[column_idx][4] = (int32_t)&ImagOut_fft0_fxp[0];
+  cgra_input[column_idx][5] = (int32_t)&RealOut_fft0_fxp[0];
+  cgra_input[column_idx][6] = 0; // idx start
 
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_BITREV_ID);
+  cgra_set_kernel(&cgra, CGRA_FTT_BITREV_ID);
 
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&input_signal[FFT_SIZE/2+1]; // imaginary part is given second
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&input_signal[FFT_SIZE/2]; // imaginary part is given first
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE; // idx end
-  cgra_input[column_idx][cgra_slot][3] = (int32_t)numBits;
-  cgra_input[column_idx][cgra_slot][4] = (int32_t)&ImagOut_fft0_fxp[0];
-  cgra_input[column_idx][cgra_slot][5] = (int32_t)&RealOut_fft0_fxp[0];
-  cgra_input[column_idx][cgra_slot][6] = FFT_SIZE/2; // idx start
+  cgra_input[column_idx][0] = (int32_t)&input_signal[FFT_SIZE/2+1]; // imaginary part is given second
+  cgra_input[column_idx][1] = (int32_t)&input_signal[FFT_SIZE/2]; // imaginary part is given first
+  cgra_input[column_idx][2] = (int32_t)FFT_SIZE; // idx end
+  cgra_input[column_idx][3] = (int32_t)numBits;
+  cgra_input[column_idx][4] = (int32_t)&ImagOut_fft0_fxp[0];
+  cgra_input[column_idx][5] = (int32_t)&RealOut_fft0_fxp[0];
+  cgra_input[column_idx][6] = FFT_SIZE/2; // idx start
 
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_BITREV_ID);
+  cgra_set_kernel(&cgra, CGRA_FTT_BITREV_ID);
 
 #ifdef CGRA_100_PERCENT
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&input_signal[1]; // imaginary part is given second
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&input_signal[0]; // imaginary part is given first
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE/2; // idx end
-  cgra_input[column_idx][cgra_slot][3] = (int32_t)numBits;
-  cgra_input[column_idx][cgra_slot][4] = (int32_t)&ImagOut_fft1_fxp[0];
-  cgra_input[column_idx][cgra_slot][5] = (int32_t)&RealOut_fft1_fxp[0];
-  cgra_input[column_idx][cgra_slot][6] = 0; // idx start
+  cgra_input[column_idx][0] = (int32_t)&input_signal[1]; // imaginary part is given second
+  cgra_input[column_idx][1] = (int32_t)&input_signal[0]; // imaginary part is given first
+  cgra_input[column_idx][2] = (int32_t)FFT_SIZE/2; // idx end
+  cgra_input[column_idx][3] = (int32_t)numBits;
+  cgra_input[column_idx][4] = (int32_t)&ImagOut_fft1_fxp[0];
+  cgra_input[column_idx][5] = (int32_t)&RealOut_fft1_fxp[0];
+  cgra_input[column_idx][6] = 0; // idx start
 
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_BITREV_ID);
+  cgra_set_kernel(&cgra, CGRA_FTT_BITREV_ID);
 
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&input_signal[FFT_SIZE/2+1]; // imaginary part is given second
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&input_signal[FFT_SIZE/2]; // imaginary part is given first
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE; // idx end
-  cgra_input[column_idx][cgra_slot][3] = (int32_t)numBits;
-  cgra_input[column_idx][cgra_slot][4] = (int32_t)&ImagOut_fft1_fxp[0];
-  cgra_input[column_idx][cgra_slot][5] = (int32_t)&RealOut_fft1_fxp[0];
-  cgra_input[column_idx][cgra_slot][6] = FFT_SIZE/2; // idx start
+  cgra_input[column_idx][0] = (int32_t)&input_signal[FFT_SIZE/2+1]; // imaginary part is given second
+  cgra_input[column_idx][1] = (int32_t)&input_signal[FFT_SIZE/2]; // imaginary part is given first
+  cgra_input[column_idx][2] = (int32_t)FFT_SIZE; // idx end
+  cgra_input[column_idx][3] = (int32_t)numBits;
+  cgra_input[column_idx][4] = (int32_t)&ImagOut_fft1_fxp[0];
+  cgra_input[column_idx][5] = (int32_t)&RealOut_fft1_fxp[0];
+  cgra_input[column_idx][6] = FFT_SIZE/2; // idx start
 
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_BITREV_ID);
+  cgra_set_kernel(&cgra, CGRA_FTT_BITREV_ID);
 #endif // CGRA_100_PERCENT
 
   // Wait CGRA is done
@@ -203,57 +209,59 @@ int main(void) {
   // Step 2: complex-valued FFT computation
   PRINTF("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
 
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
-  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_output[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&RealOut_fft0_fxp[0];
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&f_real[0];
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE;
+  cgra_input[column_idx][0] = (int32_t)&RealOut_fft0_fxp[0];
+  cgra_input[column_idx][1] = (int32_t)&f_real[0];
+  cgra_input[column_idx][2] = (int32_t)FFT_SIZE;
 
   column_idx = 1;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
-  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_output[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&f_imag[0];
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&ImagOut_fft0_fxp[0];
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)numBits;
+  cgra_input[column_idx][0] = (int32_t)&f_imag[0];
+  cgra_input[column_idx][1] = (int32_t)&ImagOut_fft0_fxp[0];
+  cgra_input[column_idx][2] = (int32_t)numBits;
 
   // Launch CGRA kernel
   #ifdef CGRA_FFT_FOREVER
-    cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_CPLX_FOREVER_ID);
+    cgra_set_kernel(&cgra, CGRA_FTT_CPLX_FOREVER_ID);
   #else
-    cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_CPLX_ID);
+    cgra_set_kernel(&cgra, CGRA_FTT_CPLX_ID);
   #endif
 
 #ifdef CGRA_100_PERCENT
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
-  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_output[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&RealOut_fft1_fxp[0];
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&f_real[0];
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)FFT_SIZE;
+  cgra_input[column_idx][0] = (int32_t)&RealOut_fft1_fxp[0];
+  cgra_input[column_idx][1] = (int32_t)&f_real[0];
+  cgra_input[column_idx][2] = (int32_t)FFT_SIZE;
 
   column_idx = 1;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[column_idx][cgra_slot], column_idx);
-  // cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_output[column_idx][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[column_idx], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_output[column_idx], column_idx);
 
   // input data ptr column 0
-  cgra_input[column_idx][cgra_slot][0] = (int32_t)&f_imag[0];
-  cgra_input[column_idx][cgra_slot][1] = (int32_t)&ImagOut_fft1_fxp[0];
-  cgra_input[column_idx][cgra_slot][2] = (int32_t)numBits;
+  cgra_input[column_idx][0] = (int32_t)&f_imag[0];
+  cgra_input[column_idx][1] = (int32_t)&ImagOut_fft1_fxp[0];
+  cgra_input[column_idx][2] = (int32_t)numBits;
 
   // Launch CGRA kernel
   #ifdef CGRA_FFT_FOREVER
-    cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_CPLX_FOREVER_ID);
+    cgra_set_kernel(&cgra, CGRA_FTT_CPLX_FOREVER_ID);
   #else
-    cgra_set_kernel(&cgra, cgra_slot, CGRA_FTT_CPLX_ID);
+    cgra_set_kernel(&cgra, CGRA_FTT_CPLX_ID);
   #endif
 #endif // CGRA_100_PERCENT
 
@@ -265,7 +273,7 @@ int main(void) {
 #endif // CPLX_FFT
 
 #ifdef REAL_FFT
-  printf("REAL FFT KERNEL DEPRECATED FOR CURRENT CGRA ARCHITECTURE")
+  #error REAL FFT KERNEL DEPRECATED FOR CURRENT CGRA ARCHITECTURE
 #endif // REAL_FFT
 
 #ifdef CHECK_ERRORS

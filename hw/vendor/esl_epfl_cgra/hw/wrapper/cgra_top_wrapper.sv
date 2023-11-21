@@ -45,7 +45,7 @@ module cgra_top_wrapper
   logic [DATA_BUS_DATA_WIDTH-1:0] cm_rdata;
   logic                           cm_rvalid;
 
-  logic [            N_SLOTS-1:0] cgra_evt;
+  logic                           cgra_evt;
 
   // Context memory decoder to actual SRAM macro
   logic [              N_ROW-1:0] cm_row_req_s;
@@ -81,7 +81,7 @@ module cgra_top_wrapper
   assign cm_wdata            = slave_req_i.wdata;
   
   // all request merged for now
-  assign cgra_int_o = |cgra_evt;
+  assign cgra_int_o = cgra_evt;
 
   // No actual need to read this memory so only cgra_ram0 is connected for read
   assign cm_rdata = rcs_cmem_rdata_s[0];

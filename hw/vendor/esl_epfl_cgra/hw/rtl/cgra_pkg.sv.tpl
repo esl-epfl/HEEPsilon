@@ -4,11 +4,6 @@
 
 package cgra_pkg;
 
-  // This configures the number of peripheral registers
-  // in order to have independent set of registers for each slot
-  localparam N_SLOTS      = 2;
-  localparam N_SLOTS_LOG2 = $clog2(N_SLOTS);
-
   // CGRA GRID CONFIGURATION
   localparam N_ROW      = ${cgra_num_rows};
   localparam N_ROW_LOG2 = $clog2(N_ROW);

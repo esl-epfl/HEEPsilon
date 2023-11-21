@@ -36,7 +36,7 @@ module cgra_top
   output logic [  IMEM_N_LINES_LOG2-1:0] cm_addr_o,
   input  logic [        INSTR_WIDTH-1:0] rcs_cmem_rdata_i [0:N_ROW-1],
   // CGRA interrupts
-  output logic [            N_SLOTS-1:0] evt_o
+  output logic                           evt_o
 );
 
   logic [              N_COL-1:0] rcs_data_req_s;

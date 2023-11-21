@@ -6,19 +6,18 @@ module peripheral_regs
   import cgra_pkg::*;
   import reg_pkg::*;
 (
-  input  logic                           clk_i,
-  input  logic                           rst_ni,
-  input  logic                           acc_ack_i,
-  input  logic                           req_clear_i,
-  input  logic [              N_COL-1:0] col_stall_i,
-  input  reg_req_t                       reg_req_i,
-  output reg_rsp_t                       reg_rsp_o,
-  input  logic [              N_COL-1:0] acc_req_i,
-  input  logic [              N_COL-1:0] acc_end_i,
-  output logic [              N_COL-1:0] col_status_o,
-  output logic [KER_CONF_N_REG_LOG2-1:0] core_ker_id_o,
-  output logic [           DP_WIDTH-1:0] core_rd_ptr_o [0:MAX_COL_REQ-1],
-  output logic [           DP_WIDTH-1:0] core_wr_ptr_o [0:MAX_COL_REQ-1]
+  input  logic                               clk_i,
+  input  logic                               rst_ni,
+  input  logic                               acc_ack_i,
+  input  logic     [              N_COL-1:0] col_stall_i,
+  input  reg_req_t                           reg_req_i,
+  output reg_rsp_t                           reg_rsp_o,
+  input  logic     [              N_COL-1:0] acc_req_i,
+  input  logic     [              N_COL-1:0] acc_end_i,
+  output logic     [              N_COL-1:0] col_status_o,
+  output logic     [KER_CONF_N_REG_LOG2-1:0] core_ker_id_o,
+  output logic     [           DP_WIDTH-1:0] core_rd_ptr_o [0:MAX_COL_REQ-1],
+  output logic     [           DP_WIDTH-1:0] core_wr_ptr_o [0:MAX_COL_REQ-1]
 );
 
   import cgra_reg_pkg::*;
@@ -41,32 +40,30 @@ module peripheral_regs
   begin
     core_ker_id_o = reg2hw.kernel_id.q[KER_CONF_N_REG_LOG2-1:0];
 
-    % for col in range(cgra_num_columns):
-      core_rd_ptr_o[${col}] = reg2hw.ptr_in_col_${col}.q;
-      core_wr_ptr_o[${col}] = reg2hw.ptr_out_col_${col}.q;
-    % endfor
+% for col in range(cgra_num_columns):
+  core_rd_ptr_o[${col}] = reg2hw.ptr_in_col_${col}.q;
+  core_wr_ptr_o[${col}] = reg2hw.ptr_out_col_${col}.q;
+% endfor
   end
 
   // Reset/update performance counters
   assign hw2reg.perf_cnt_total_kernels.de = perf_cnt_reset | (perf_cnt_en & acc_ack_i);
   assign hw2reg.perf_cnt_total_kernels.d  = perf_cnt_reset == 1'b1 ? '0 : reg2hw.perf_cnt_total_kernels.q + 1;
 
-  % for col in range(cgra_num_columns):
-    assign hw2reg.perf_cnt_col_${col}_active_cycles.de = perf_cnt_reset | (perf_cnt_en & (col_status[${col}] | acc_req_i[${col}]));
-    assign hw2reg.perf_cnt_col_${col}_active_cycles.d  = perf_cnt_reset == 1'b1 ? '0 : reg2hw.perf_cnt_col_${col}_active_cycles.q + 1;
-    assign hw2reg.perf_cnt_col_${col}_stall_cycles.de  = perf_cnt_reset | (perf_cnt_en & col_stall_i[${col}]);
-    assign hw2reg.perf_cnt_col_${col}_stall_cycles.d   = perf_cnt_reset == 1'b1 ? '0 : reg2hw.perf_cnt_col_${col}_stall_cycles.q + 1;
-  % endfor
+% for col in range(cgra_num_columns):
+  assign hw2reg.perf_cnt_col_${col}_active_cycles.de = perf_cnt_reset | (perf_cnt_en & (col_status[${col}] | acc_req_i[${col}]));
+  assign hw2reg.perf_cnt_col_${col}_active_cycles.d  = perf_cnt_reset == 1'b1 ? '0 : reg2hw.perf_cnt_col_${col}_active_cycles.q + 1;
+  assign hw2reg.perf_cnt_col_${col}_stall_cycles.de  = perf_cnt_reset | (perf_cnt_en & col_stall_i[${col}]);
+  assign hw2reg.perf_cnt_col_${col}_stall_cycles.d   = perf_cnt_reset == 1'b1 ? '0 : reg2hw.perf_cnt_col_${col}_stall_cycles.q + 1;
+% endfor
 
   // Disable reset
   assign hw2reg.perf_cnt_reset.de = perf_cnt_reset;
   assign hw2reg.perf_cnt_reset.d  = '0;
 
   // Clear kernel ID request
-  assign hw2reg.slot0_ker_id.de = acc_ack_i | ~req_clear_i;
-  assign hw2reg.slot0_ker_id.d  = '0;
-  assign hw2reg.slot1_ker_id.de = acc_ack_i | req_clear_i;
-  assign hw2reg.slot1_ker_id.d  = '0;
+  assign hw2reg.kernel_id.de = acc_ack_i;
+  assign hw2reg.kernel_id.d  = '0;
 
   // Update CGRA column status:
   // 0 - Column is free

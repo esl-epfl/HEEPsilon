@@ -4,6 +4,7 @@ build
 *.log
 *.do
 .venv/
+*__pycache__*
 # sw files
 *.map
 *.hex

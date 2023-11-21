@@ -31,8 +31,6 @@ module synchronizer
 
   sync_fsm_state_typ sync_fsm_state, sync_fsm_n_state;
 
-  logic                           pending_req_s;
-  // logic [       N_SLOTS_LOG2-1:0] req_loop_cnt;
   logic [KER_CONF_N_REG_LOG2-1:0] ker_id_req_s;
   logic [              N_COL-1:0] map_ready [0:N_COL-1];
   logic [              N_COL-1:0] col_map_sel [0:N_COL-1];
@@ -42,8 +40,6 @@ module synchronizer
   logic [KER_CONF_N_REG_LOG2-1:0] conf_w_add_reg;
   logic [              N_COL-1:0] ker_col_req_s;
   logic [              N_COL-1:0] ker_col_req_reg;
-  // logic [       N_SLOTS_LOG2-1:0] c_id_exec [0:N_COL-1];
-  logic [KER_CONF_N_REG_LOG2-1:0] core_ker_id_req_s;
   logic [              N_COL-1:0] col_acc_map_reg [0:N_COL-1];
   logic [           DP_WIDTH-1:0] core_rd_ptr_s [0:MAX_COL_REQ-1];
   logic [           DP_WIDTH-1:0] core_wr_ptr_s [0:MAX_COL_REQ-1];
@@ -96,7 +92,7 @@ module synchronizer
   //   end
   // end
 
-  assign pending_req_s = |core_ker_id_req_s;
+  // assign pending_req_s = |core_ker_id_req_s;
 
   ///////////////////////////////////////////////////////////////////////
   //
@@ -255,7 +251,6 @@ module synchronizer
     .clk_i              ( clk_i              ),
     .rst_ni             ( rst_ni             ),
     .acc_ack_i          ( acc_ack_i          ),
-    .req_clear_i        ( req_clear_s        ),
     .col_stall_i        ( col_stall_i        ),
     .reg_req_i          ( reg_req_i          ),
     .acc_req_i          ( acc_req_reg        ),

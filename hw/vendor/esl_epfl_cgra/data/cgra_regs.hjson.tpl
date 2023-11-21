@@ -27,24 +27,24 @@
       ]
     },
 
-    % for col in range(cgra_num_columns):
-      { name:     "PTR_IN_COL_${col}",
-        desc:     "Input data pointer for column ${col} used",
-        swaccess: "rw",
-        hwaccess: "hrw",
-        fields: [
-          { bits: "31:0", name: "PTR_IN_C${col}", desc: "Input data pointer for column ${col} used" }
-        ]
-      },
-      { name:     "PTR_OUT_COL_${col}",
-        desc:     "Output data pointer for column ${col} used",
-        swaccess: "rw",
-        hwaccess: "hro",
-        fields: [
-          { bits: "31:0", name: "PTR_OUT_COL_${col}", desc: "Output data pointer for column ${col} used" }
-        ]
-      },
-    % endfor
+  % for col in range(cgra_num_columns):
+    { name:     "PTR_IN_COL_${col}",
+      desc:     "Input data pointer for column ${col} used",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "31:0", name: "PTR_IN_C${col}", desc: "Input data pointer for column ${col} used" }
+      ]
+    },
+    { name:     "PTR_OUT_COL_${col}",
+      desc:     "Output data pointer for column ${col} used",
+      swaccess: "rw",
+      hwaccess: "hro",
+      fields: [
+        { bits: "31:0", name: "PTR_OUT_COL_${col}", desc: "Output data pointer for column ${col} used" }
+      ]
+    },
+  % endfor
 
     { name:     "PERF_CNT_ENABLE",
       desc:     "Enable performance counters",
@@ -71,23 +71,23 @@
       ]
     },
 
-    % for col in range(cgra_num_columns):
-      { name:     "PERF_CNT_COL_${col}_ACTIVE_CYCLES",
-        desc:     "Number of active cycles (configuration+execution)) of column ${col}",
-        swaccess: "rw",
-        hwaccess: "hrw",
-        fields: [
-          { bits: "31:0", name: "PERF_CNT_COL_${col}_ACTIVE_CYCLES", desc: "Number of active cycles (configuration+execution)) of column ${col}" }
-        ]
-      },
-      { name:     "PERF_CNT_COL_${col}_STALL_CYCLES",
-        desc:     "Number of stall cycles during execution of column ${col}",
-        swaccess: "rw",
-        hwaccess: "hrw",
-        fields: [
-          { bits: "31:0", name: "PERF_CNT_COL_${col}_STALL_CYCLES", desc: "Number of stall cycles during execution of column ${col}" }
-        ]
-      },
-    % endfor
+  % for col in range(cgra_num_columns):
+    { name:     "PERF_CNT_COL_${col}_ACTIVE_CYCLES",
+      desc:     "Number of active cycles (configuration+execution)) of column ${col}",
+      swaccess: "rw",
+      hwaccess: "hrw",
+      fields: [
+        { bits: "31:0", name: "PERF_CNT_COL_${col}_ACTIVE_CYCLES", desc: "Number of active cycles (configuration+execution)) of column ${col}" }
+      ]
+    },
+    { name:     "PERF_CNT_COL_${col}_STALL_CYCLES",
+      desc:     "Number of stall cycles during execution of column ${col}",
+      swaccess: "rw",
+      hwaccess: "hrw",
+      fields: [
+        { bits: "31:0", name: "PERF_CNT_COL_${col}_STALL_CYCLES", desc: "Number of stall cycles during execution of column ${col}" }
+      ]
+    },
+  % endfor
    ]
 }
