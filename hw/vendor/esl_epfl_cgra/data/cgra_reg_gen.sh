@@ -6,4 +6,4 @@ echo "Generating RTL"
 ${PYTHON} ../util/lowrisc_opentitan/regtool.py -r -t ../hw/rtl ./cgra_regs.hjson
 echo "Generating SW"
 mkdir -p ../sw
-${PYTHON} ../utiliutilties/lowrisc_opentitan/regtool.py --cdefines -o ../sw/cgra_regs.h ./cgra_regs.hjson
+${PYTHON} ../util/lowrisc_opentitan/regtool.py --cdefines -o ../sw/cgra_regs.h ./cgra_regs.hjson

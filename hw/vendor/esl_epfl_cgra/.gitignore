@@ -12,4 +12,4 @@ data/cgra_regs.hjson
 
 # Generated software files
 sw/cgra_regs.h
-utilities/cgra_bitsream_gen.py
+util/cgra_bitstream_gen.py
