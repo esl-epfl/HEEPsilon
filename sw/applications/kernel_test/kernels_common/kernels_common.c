@@ -444,7 +444,6 @@ void kcom_init()
     pinInit();
     timerInit();
     plic_interrupt_init();
-    plic_assign_external_irq_handler( CGRA_INTR, (void *) &handler_irq_cgra);
 }
 
 void kcom_load( kcom_kernel_t *ker )
