@@ -71,6 +71,10 @@ def main():
                         metavar="TPL_SV",
                         help="Name of SystemVerilog template for your module (output)")
 
+    parser.add_argument("--header-c",
+                        metavar="HEADER_C",
+                        help="Name of header file (output)")
+
     parser.add_argument("-v",
                         "--verbose",
                         help="increase output verbosity",
@@ -115,6 +119,9 @@ def main():
 
     if args.tpl_sv != None:
         write_template(args.tpl_sv, outdir, outfile, **kwargs)
+
+    if args.header_c != None:
+        write_template(args.header_c, outdir, outfile, **kwargs)
 
 if __name__ == "__main__":
     main()

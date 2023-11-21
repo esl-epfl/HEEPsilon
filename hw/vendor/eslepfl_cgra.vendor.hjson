@@ -21,7 +21,6 @@
     "testbench",
     "utilities/INSTRUCTIONS_FFT_SPLITOPS.py",
     "utilities/instructions_max_peak.py",
-    "utilities/instructions_min_max_circular.py",
-    "utilities/lowrisc_opentitan"
+    "utilities/instructions_min_max_circular.py"
   ]
 }

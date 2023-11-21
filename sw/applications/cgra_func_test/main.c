@@ -25,7 +25,7 @@
 #define OUTPUT_LENGTH 5
 
 // one dim slot x n input values (data ptrs, constants, ...)
-int32_t cgra_input[CGRA_N_COLS][CGRA_N_SLOTS][10] __attribute__ ((aligned (4)));
+int32_t cgra_input[CGRA_N_COLS][10] __attribute__ ((aligned (4)));
 int8_t cgra_intr_flag;
 int32_t cgra_res[CGRA_N_COLS][CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
 
@@ -109,70 +109,73 @@ int main(void) {
   exp_rc_c0[2][4] = tmp3==0 ? exp_rc_c0[2][2] : 1; // 1
   exp_rc_c0[3][4] = tmp0 <0 ? exp_rc_c0[3][2] : 1; // 1
 
-  // Select request slot of CGRA (2 slots)
-  uint32_t cgra_slot = cgra_get_slot(&cgra);
+
+  // Prepare input data for the CGRA
   // input data ptr column 0
-  cgra_input[0][cgra_slot][0] = (int32_t)&stimuli[0][0];
-  cgra_input[0][cgra_slot][1] = (int32_t)&stimuli[1][0];
-  cgra_input[0][cgra_slot][2] = (int32_t)&stimuli[2][0];
-  cgra_input[0][cgra_slot][3] = (int32_t)&stimuli[3][0];
-  cgra_input[0][cgra_slot][4] = (int32_t)&cgra_res[0][0][0];
-  cgra_input[0][cgra_slot][5] = (int32_t)&cgra_res[0][1][0];
-  cgra_input[0][cgra_slot][6] = (int32_t)&cgra_res[0][2][0];
-  cgra_input[0][cgra_slot][7] = (int32_t)&cgra_res[0][3][0];
+  cgra_input[0][0] = (int32_t)&stimuli[0][0];
+  cgra_input[0][1] = (int32_t)&stimuli[1][0];
+  cgra_input[0][2] = (int32_t)&stimuli[2][0];
+  cgra_input[0][3] = (int32_t)&stimuli[3][0];
+  cgra_input[0][4] = (int32_t)&cgra_res[0][0][0];
+  cgra_input[0][5] = (int32_t)&cgra_res[0][1][0];
+  cgra_input[0][6] = (int32_t)&cgra_res[0][2][0];
+  cgra_input[0][7] = (int32_t)&cgra_res[0][3][0];
 
   // input data ptr column 1
-  cgra_input[1][cgra_slot][0] = (int32_t)&stimuli[0][0];
-  cgra_input[1][cgra_slot][1] = (int32_t)&stimuli[1][0];
-  cgra_input[1][cgra_slot][2] = (int32_t)&stimuli[2][0];
-  cgra_input[1][cgra_slot][3] = (int32_t)&stimuli[3][0];
-  cgra_input[1][cgra_slot][4] = (int32_t)&cgra_res[1][0][0];
-  cgra_input[1][cgra_slot][5] = (int32_t)&cgra_res[1][1][0];
-  cgra_input[1][cgra_slot][6] = (int32_t)&cgra_res[1][2][0];
-  cgra_input[1][cgra_slot][7] = (int32_t)&cgra_res[1][3][0];
+  cgra_input[1][0] = (int32_t)&stimuli[0][0];
+  cgra_input[1][1] = (int32_t)&stimuli[1][0];
+  cgra_input[1][2] = (int32_t)&stimuli[2][0];
+  cgra_input[1][3] = (int32_t)&stimuli[3][0];
+  cgra_input[1][4] = (int32_t)&cgra_res[1][0][0];
+  cgra_input[1][5] = (int32_t)&cgra_res[1][1][0];
+  cgra_input[1][6] = (int32_t)&cgra_res[1][2][0];
+  cgra_input[1][7] = (int32_t)&cgra_res[1][3][0];
 
   // input data ptr column 2
-  cgra_input[2][cgra_slot][0] = (int32_t)&stimuli[0][0];
-  cgra_input[2][cgra_slot][1] = (int32_t)&stimuli[1][0];
-  cgra_input[2][cgra_slot][2] = (int32_t)&stimuli[2][0];
-  cgra_input[2][cgra_slot][3] = (int32_t)&stimuli[3][0];
-  cgra_input[2][cgra_slot][4] = (int32_t)&cgra_res[2][0][0];
-  cgra_input[2][cgra_slot][5] = (int32_t)&cgra_res[2][1][0];
-  cgra_input[2][cgra_slot][6] = (int32_t)&cgra_res[2][2][0];
-  cgra_input[2][cgra_slot][7] = (int32_t)&cgra_res[2][3][0];
+  cgra_input[2][0] = (int32_t)&stimuli[0][0];
+  cgra_input[2][1] = (int32_t)&stimuli[1][0];
+  cgra_input[2][2] = (int32_t)&stimuli[2][0];
+  cgra_input[2][3] = (int32_t)&stimuli[3][0];
+  cgra_input[2][4] = (int32_t)&cgra_res[2][0][0];
+  cgra_input[2][5] = (int32_t)&cgra_res[2][1][0];
+  cgra_input[2][6] = (int32_t)&cgra_res[2][2][0];
+  cgra_input[2][7] = (int32_t)&cgra_res[2][3][0];
 
   // input data ptr column 3
-  cgra_input[3][cgra_slot][0] = (int32_t)&stimuli[0][0];
-  cgra_input[3][cgra_slot][1] = (int32_t)&stimuli[1][0];
-  cgra_input[3][cgra_slot][2] = (int32_t)&stimuli[2][0];
-  cgra_input[3][cgra_slot][3] = (int32_t)&stimuli[3][0];
-  cgra_input[3][cgra_slot][4] = (int32_t)&cgra_res[3][0][0];
-  cgra_input[3][cgra_slot][5] = (int32_t)&cgra_res[3][1][0];
-  cgra_input[3][cgra_slot][6] = (int32_t)&cgra_res[3][2][0];
-  cgra_input[3][cgra_slot][7] = (int32_t)&cgra_res[3][3][0];
+  cgra_input[3][0] = (int32_t)&stimuli[0][0];
+  cgra_input[3][1] = (int32_t)&stimuli[1][0];
+  cgra_input[3][2] = (int32_t)&stimuli[2][0];
+  cgra_input[3][3] = (int32_t)&stimuli[3][0];
+  cgra_input[3][4] = (int32_t)&cgra_res[3][0][0];
+  cgra_input[3][5] = (int32_t)&cgra_res[3][1][0];
+  cgra_input[3][6] = (int32_t)&cgra_res[3][2][0];
+  cgra_input[3][7] = (int32_t)&cgra_res[3][3][0];
 
-  printf("Run functionality check on CGRA...\n\r");
+  printf("Run functionality check on CGRA...\n");
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
+  // Enable performance counters
   cgra_perf_cnt_enable(&cgra, 1);
   int8_t column_idx;
   // Set CGRA kernel pointers
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[0][cgra_slot], column_idx);
-  cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res[0][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[0], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[0][0], column_idx);
   // Set CGRA kernel pointers column 1
   column_idx = 1;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[1][cgra_slot], column_idx);
-  cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res[1][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[1], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[1][0], column_idx);
   // Set CGRA kernel pointers column 2
   column_idx = 2;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[2][cgra_slot], column_idx);
-  cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res[2][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[2], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[2][0], column_idx);
   // Set CGRA kernel pointers column 3
   column_idx = 3;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[3][cgra_slot], column_idx);
-  cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res[3][cgra_slot], column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[3], column_idx);
+  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[3][0], column_idx);
 
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, CGRA_FUNC_TEST);
+  cgra_set_kernel(&cgra, CGRA_FUNC_TEST);
 
   // Wait CGRA is done
   cgra_intr_flag=0;
@@ -180,6 +183,7 @@ int main(void) {
     wait_for_interrupt();
   }
 
+<<<<<<< HEAD
   // Check the cgra values are correct
   int32_t errors=0;
   for (int k=0; k<CGRA_N_COLS; k++) {
@@ -195,6 +199,23 @@ int main(void) {
   }
 
   printf("CGRA functionality check finished with %d errors\n\r", errors);
+=======
+  // // Check the cgra values are correct
+  // int32_t errors=0;
+  // for (int k=0; k<CGRA_N_COLS; k++) {
+  //   for (int i=0; i<CGRA_N_ROWS; i++) {
+  //     for (int j=0; j<OUTPUT_LENGTH; j++) {
+  //       if (cgra_res[k][i][j] != exp_rc_c0[i][j]) {
+  //         printf("[%d][%d][%d]: %d != %d\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
+  //         printf("[%d][%d][%d]: %08x != %08x\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
+  //         errors++;
+  //       }
+  //     }
+  //   }
+  // }
+
+  // printf("CGRA functionality check finished with %d errors\n", errors);
+>>>>>>> 0ef7326 (Adding, renaming, removing many file to make the cgra peripheral registers configurable and the software driver compatible.)
 
   // Performance counter display
   printf("CGRA kernel executed: %d\n\r", cgra_perf_cnt_get_kernel(&cgra));

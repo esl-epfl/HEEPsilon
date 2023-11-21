@@ -25,8 +25,12 @@ include $(HEEP_DIR)Makefile.venv
 HEEPSILON_CFG  ?= heepsilon_cfg.hjson
 
 heepsilon_gen:
-	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/rtl --pkg-sv hw/vendor/esl_epfl_cgra/rtl/cgra_pkg.sv.tpl
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/hw/rtl --pkg-sv hw/vendor/esl_epfl_cgra/hw/rtl/cgra_pkg.sv.tpl
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/hw/rtl --tpl-sv hw/vendor/esl_epfl_cgra/hw/rtl/peripheral_regs.sv.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/rtl --pkg-sv hw/rtl/cgra_x_heep_pkg.sv.tpl
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir sw/external/drivers/cgra --header-c sw/external/drivers/cgra/cgra.h.tpl
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/data --pkg-sv hw/vendor/esl_epfl_cgra/data/cgra_regs.hjson.tpl
+	bash -c "cd hw/vendor/esl_epfl_cgra/data; source cgra_reg_gen.sh; cd ../../../.."
 
 # Generates mcu files. First the mcu-gen from X-HEEP is called.
 # This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.

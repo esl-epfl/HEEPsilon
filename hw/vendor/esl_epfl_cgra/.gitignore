@@ -4,4 +4,11 @@ build
 bitstream
 
 # Generated hardware files
-rtl/cgra_pkg.sv
+hw/rtl/cgra_pkg.sv
+hw/rtl/cgra_reg_pkg.sv
+hw/rtl/cgra_reg_top.sv
+hw/rtl/peripheral_regs.sv
+data/cgra_regs.hjson
+
+# Generated software files
+sw/cgra_regs.h
