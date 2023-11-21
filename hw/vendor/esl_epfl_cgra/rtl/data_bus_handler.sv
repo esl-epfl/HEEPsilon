@@ -15,7 +15,7 @@ module data_bus_handler
   input  logic [           DP_WIDTH-1:0] rd_ptr_i [0:MAX_COL_REQ-1],
   input  logic [           DP_WIDTH-1:0] wr_ptr_i [0:MAX_COL_REQ-1],
   input  logic [              N_COL-1:0] bus_data_gnt_i,
-  input  logic [DATA_BUS_DATA_WIDTH-1:0] bus_data_rdata_i [0:MP-1],
+  input  logic [DATA_BUS_DATA_WIDTH-1:0] bus_data_rdata_i [0:N_COL-1],
   input  logic [              N_COL-1:0] bus_r_valid_i,
   input  logic [              N_COL-1:0] col_start_i,
   input  logic [              N_COL-1:0] col_conf_ack_i,

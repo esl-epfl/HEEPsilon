@@ -2,3 +2,6 @@
 build
 *_app
 bitstream
+
+# Generated hardware files
+rtl/cgra_pkg.sv

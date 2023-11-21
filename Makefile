@@ -22,13 +22,18 @@ PROJECT  ?= hello_world
 export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
 include $(HEEP_DIR)Makefile.venv
 
+HEEPSILON_CFG  ?= heepsilon_cfg.hjson
+
+heepsilon_gen:
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/rtl --pkg-sv hw/vendor/esl_epfl_cgra/rtl/cgra_pkg.sv.tpl
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/rtl --pkg-sv hw/rtl/cgra_x_heep_pkg.sv.tpl
 
 # Generates mcu files. First the mcu-gen from X-HEEP is called.
 # This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.
-mcu-gen:
+mcu-gen: heepsilon_gen
 	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} MEMORY_BANKS=${MEMORY_BANKS} $(MAKECMDGOALS)
 	cd hw/vendor/esl_epfl_x_heep &&\
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
+	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
 ## @param FPGA_BOARD=nexys-a7-100t,pynq-z2

@@ -12,6 +12,7 @@ build
 *.dump
 
 # ignore automatically generated files
+hw/rtl/cgra_x_heep_pkg.sv
 tb/tb_util.svh
 *.vscode*
 *vivado*

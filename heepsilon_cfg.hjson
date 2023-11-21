@@ -1,0 +1,18 @@
+// Copyright 2020 ETH Zurich and University of Bologna.
+// Solderpad Hardware License, Version 0.51, see LICENSE for details.
+// SPDX-License-Identifier: SHL-0.51
+// Derived from Occamy: https://github.com/pulp-platform/snitch/blob/master/hw/system/occamy/src/occamy_cfg.hjson
+// Peripherals configuration for core-v-mini-mcu.
+{
+
+    cpu_type: cv32e20
+
+    bus_type: onetoM
+
+    cgra: {
+        num_columns: 4,
+        num_rows: 4,
+    },
+
+    
+}

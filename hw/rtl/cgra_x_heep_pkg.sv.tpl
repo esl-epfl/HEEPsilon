@@ -8,7 +8,7 @@ package cgra_x_heep_pkg;
   import core_v_mini_mcu_pkg::*;
 
   // One master port per CGRA column
-  localparam CGRA_XBAR_NMASTER = 4;
+  localparam CGRA_XBAR_NMASTER = ${cgra_num_columns};
   // One slave port to the CGRA context memory
   localparam EXT_XBAR_NSLAVE = 1;
 

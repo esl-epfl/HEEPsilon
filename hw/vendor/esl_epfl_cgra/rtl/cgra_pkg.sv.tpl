@@ -10,14 +10,10 @@ package cgra_pkg;
   localparam N_SLOTS_LOG2 = $clog2(N_SLOTS);
 
   // CGRA GRID CONFIGURATION
-  localparam N_ROW      = 4;
+  localparam N_ROW      = ${cgra_num_rows};
   localparam N_ROW_LOG2 = $clog2(N_ROW);
-  localparam N_COL      = 4;
+  localparam N_COL      = ${cgra_num_columns};
   localparam N_COL_LOG2 = $clog2(N_COL);
-
-  // Data bus master ports
-  localparam MP         = N_COL;
-  localparam ID         = 9;
 
   // CGRA APB REGISTERS
   localparam N_PERIPH_REGS      = 32;
@@ -53,10 +49,6 @@ package cgra_pkg;
 
   // Number of bits needed to write to the multi-banks instruction memory
   localparam WR_INSTR_ADD_LEN = N_MEM_BANKS_LOG2+RC_INSTR_N_REG_LOG2;
-
-  // PLATFORM SPECIFIC CONFIGURATION
-  localparam CGRA_BITSTREAM_FILENAME = "$IPS_ROOT/cgra/mem/cgra_imem.bit";
-  localparam CGRA_KER_MEM_FILENAME   = "$IPS_ROOT/cgra/mem/cgra_kmem.bit";
 
   // AHB MEMORY INTERFACE
   localparam DATA_BUS_DATA_WIDTH = 32;
