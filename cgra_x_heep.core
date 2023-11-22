@@ -195,7 +195,7 @@ targets:
     - tool_vcs? (systemverilog_only_simjtag)
     - tool_modelsim? (cypress_flash)
     - tool_vcs? (cypress_flash)
-
+    - ext_bus
     - tool_modelsim? (pre_build_remote_bitbang)
     - tool_modelsim? (pre_build_uartdpi)
     - tool_modelsim? (pre_patch_modelsim_Makefile)

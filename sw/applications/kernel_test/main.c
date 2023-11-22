@@ -121,7 +121,7 @@ void main()
         kernel->kmem[ kernel_id ] = kernel->kmem[1]; // By default the kernels come located with id = 1.
         // The kernel = 1 is kept, so we can always take it from there.
 
-        PRINTF(" %s\n", stats.name );
+        PRINTF(" %s\n\r", stats.name );
 
         /* CGRA load */
 #if ANALYZE_EVERYTHING
