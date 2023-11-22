@@ -42,9 +42,9 @@
   #endif
 #endif // REAL_FFT
 
-#define DEBUG
+// #define DEBUG
 
-// Use PRINTF instead of PRINTF to remove print by default
+// Use PRINTF instead of printf to remove print by default
 #ifdef DEBUG
   #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else

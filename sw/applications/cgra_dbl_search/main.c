@@ -17,15 +17,14 @@
   #error The CGRA must have a 4x4 size to run this example
 #endif
 
-// #define DEBUG
+#define DEBUG
 
-// Use PRINTF instead of PRINTF to remove print by default
+// Use PRINTF instead of printf to remove print by default
 #ifdef DEBUG
   #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
 #endif
-#define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
 
 #define CGRA_IN_LEN  2
 #define CGRA_OUT_LEN 4
@@ -83,7 +82,7 @@ int main(void) {
   exp_res[2] = 0;
   exp_res[3] = -1;
 
-  PRINTF("Run double minimum search on cpu... ");
+  PRINTF("Run double minimum search on cpu...");
   for(int32_t i=1; i<INPUT_LENGTH; i++) {
     if (stimuli[i] < exp_res[0]) {
       exp_res[1] = exp_res[0];
@@ -104,9 +103,8 @@ int main(void) {
   // input size
   cgra_input[1] = INPUT_LENGTH-1;
 
-  PRINTF("Run double minimum search on CGRA...\n");
+  PRINTF("Run ...");
   cgra_perf_cnt_enable(&cgra, 1);
-  column_idx;
   // Set CGRA kernel pointers
   column_idx = 0;
   cgra_set_read_ptr(&cgra, (uint32_t) cgra_input, column_idx);
@@ -151,7 +149,7 @@ int main(void) {
   exp_res[2] = 0;
   exp_res[3] = -1;
 
-  PRINTF("Run double maximum search on cpu... ");
+  PRINTF("Run double maximum search on cpu...");
   for(int32_t i=1; i<INPUT_LENGTH; i++) {
     if (stimuli[i] > exp_res[0]) {
       exp_res[1] = exp_res[0];
@@ -172,7 +170,7 @@ int main(void) {
   // input size
   cgra_input[1] = INPUT_LENGTH-1;
 
-  PRINTF("Run double maximum search on CGRA...\n");
+  PRINTF("Run double maximum search on CGRA...");
   cgra_perf_cnt_enable(&cgra, 1);
   // Set CGRA kernel pointers
   column_idx = 0;

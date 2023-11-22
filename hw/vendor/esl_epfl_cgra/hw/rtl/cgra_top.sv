@@ -47,6 +47,7 @@ module cgra_top
   logic [           DP_WIDTH-1:0] rcs_data_rdata_s [0:N_COL-1];
   logic [              N_COL-1:0] rcs_data_gnt_s;
   logic [              N_COL-1:0] rcs_data_rvalid_s;
+  logic [     RC_CONST_WIDTH-1:0] rcs_add_inc_s [0:N_COL-1];
   logic [              N_COL-1:0] data_stall_s ;
   logic [KER_CONF_N_REG_LOG2-1:0] ker_id_req_s;
   logic [              N_COL-1:0] acc_end_s;
@@ -185,6 +186,7 @@ module cgra_top
     .data_ind_o       ( rcs_data_ind_s    ),
     .data_add_o       ( rcs_data_add_s    ),
     .data_wdata_o     ( rcs_data_wdata_s  ),
+    .add_inc_o        ( rcs_add_inc_s     ),
     .rcs_br_req_o     ( rcs_br_req_s      ),
     .rcs_br_add_o     ( rcs_br_add_s      ),
     .rcs_stall_o      ( rcs_stall_s       ),
@@ -200,6 +202,7 @@ module cgra_top
     .rcs_data_ind_i    ( rcs_data_ind_s    ),
     .rcs_data_add_i    ( rcs_data_add_s    ),
     .rcs_data_wdata_i  ( rcs_data_wdata_s  ),
+    .rcs_add_inc_i     ( rcs_add_inc_s     ),
     .rd_ptr_i          ( rd_ptr_s          ),
     .wr_ptr_i          ( wr_ptr_s          ),
     .bus_data_gnt_i    ( tcdm_gnt_i        ),

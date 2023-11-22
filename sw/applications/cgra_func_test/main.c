@@ -19,14 +19,14 @@
 
 // #define DEBUG
 
-// Use PRINTF instead of PRINTF to remove print by default
+// Use PRINTF instead of printf to remove print by default
 #ifdef DEBUG
   #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
 #endif
 
-#define CGRA_IN_LEN 8
+#define CGRA_IN_LEN  8
 #define CGRA_OUT_LEN 5
 
 // one dim slot x n input values (data ptrs, constants, ...)
@@ -156,7 +156,7 @@ int main(void) {
   cgra_input[3][6] = (int32_t)&cgra_res[3][2][0];
   cgra_input[3][7] = (int32_t)&cgra_res[3][3][0];
 
-  printf("Running functionality check on CGRA...");
+  PRINTF("Running functionality check on CGRA...");
   // Check the CGRA can accept a new request
   cgra_wait_ready(&cgra);
   // Enable performance counters
@@ -202,7 +202,7 @@ int main(void) {
   printf("CGRA functionality check finished with %d errors\n", errors);
 
   // Performance counter display
-  printf("CGRA kernel executed: %d\n\r", cgra_perf_cnt_get_kernel(&cgra));
+  PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
   column_idx = 0;
   PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
@@ -216,7 +216,7 @@ int main(void) {
   PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   cgra_perf_cnt_reset(&cgra);
-  printf("CGRA kernel executed (after counter reset): %d\n\r", cgra_perf_cnt_get_kernel(&cgra));
+  PRINTF("CGRA kernel executed (after counter reset): %d\n", cgra_perf_cnt_get_kernel(&cgra));
   column_idx = 0;
   PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));

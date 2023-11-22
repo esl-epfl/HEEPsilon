@@ -10,6 +10,10 @@ package cgra_pkg;
   localparam N_COL      = ${cgra_num_columns};
   localparam N_COL_LOG2 = $clog2(N_COL);
 
+  // Maximum number of columns a kernel can use
+  localparam MAX_COL_REQ      = N_COL;
+  localparam MAX_COL_REQ_LOG2 = $clog2(MAX_COL_REQ);
+
   // CGRA APB REGISTERS
   localparam N_PERIPH_REGS      = 32;
   localparam N_PERIPH_REGS_LOG2 = $clog2(N_PERIPH_REGS);
@@ -121,9 +125,5 @@ package cgra_pkg;
   // Number of column needed (one-hot encoding)
   localparam KER_N_COL_LB     = RCS_IMEM_ADD_HB+1;
   localparam KER_N_COL_HB     = KER_N_COL_LB+N_COL-1;
-
-  // Maximum number of columns a kernel can use
-  localparam MAX_COL_REQ      = N_COL;
-  localparam MAX_COL_REQ_LOG2 = $clog2(MAX_COL_REQ);
 
 endpackage
