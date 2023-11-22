@@ -103,7 +103,7 @@ int main(void) {
   // input size
   cgra_input[1] = INPUT_LENGTH-1;
 
-  PRINTF("Run ...");
+  PRINTF("Run double minimum search on CGRA...");
   cgra_perf_cnt_enable(&cgra, 1);
   // Set CGRA kernel pointers
   column_idx = 0;
