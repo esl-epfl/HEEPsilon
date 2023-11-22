@@ -235,12 +235,8 @@ module cgra_x_heep_top #(
       .xif_mem_result_if(ext_if),
       .xif_result_if(ext_if),
 
-
-      // OK - but weird that the input variable is also called maste, or that in the testharness its slave
       .ext_xbar_master_req_i(heep_slave_req),
       .ext_xbar_master_resp_o(heep_slave_resp),
-
-      // Missing
       .ext_core_instr_req_o(heep_core_instr_req),
       .ext_core_instr_resp_i(heep_core_instr_resp),
       .ext_core_data_req_o(heep_core_data_req),
@@ -253,15 +249,9 @@ module cgra_x_heep_top #(
       .ext_dma_write_ch0_resp_i(heep_dma_write_ch0_resp),
       .ext_dma_addr_ch0_req_o(heep_dma_addr_ch0_req),
       .ext_dma_addr_ch0_resp_i(heep_dma_addr_ch0_resp),
-
-
-
       .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n),
-
-
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
-
       .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch),
       .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack),
       .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso),
