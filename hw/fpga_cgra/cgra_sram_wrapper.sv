@@ -32,7 +32,7 @@ module cgra_sram_wrapper #(
     .addr_i         (addr_i),
     .wdata_i        (wdata_i),
     .be_i           (be_i),
-    .set_retentive_i(set_retentive_i),
+    .set_retentive_ni(set_retentive_i),
     // output ports
     .rdata_o        (rdata_o)
   );
