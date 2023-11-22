@@ -2,6 +2,7 @@
 build
 *_app
 bitstream
+*__pycache__*
 
 # Generated hardware files
 hw/rtl/cgra_pkg.sv
