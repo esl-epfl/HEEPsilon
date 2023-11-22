@@ -54,8 +54,8 @@
 /* --------------------------------------------------------------------------
  *                     Functions declaration
  * --------------------------------------------------------------------------*/
-uint16_t ReverseBits ( uint16_t index, uint16_t numBits );
-uint16_t NumberOfBitsNeeded ( uint16_t powerOfTwo );
+uint16_t ReverseBits (uint16_t index, uint16_t numBits);
+uint16_t NumberOfBitsNeeded (uint16_t powerOfTwo);
 
 /* --------------------------------------------------------------------------
  *                     Global variables
@@ -96,9 +96,9 @@ void handler_irq_cgra(uint32_t id) {
  * --------------------------------------------------------------------------*/
 int main(void) {
 
-  PRINTF("Init CGRA context memory...\n");
+  PRINTF("Init CGRA context memory...");
   cgra_cmem_init(cgra_imem_bitstream, cgra_kmem_bitstream);
-  PRINTF("\rdone\n");
+  PRINTF("done\n");
 
   // Init the PLIC
   plic_Init();
@@ -205,9 +205,10 @@ int main(void) {
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
+  PRINTF("done\n");
 
   // Step 2: complex-valued FFT computation
-  PRINTF("Run a complex FFT of %d points on CGRA...\n", FFT_SIZE);
+  PRINTF("Run a complex FFT of %d points on CGRA...", FFT_SIZE);
 
   // Check the CGRA can accept a new request
   cgra_wait_ready(&cgra);
@@ -270,14 +271,15 @@ int main(void) {
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
+  PRINTF("done\n");
 #endif // CPLX_FFT
 
 #ifdef REAL_FFT
   #error REAL FFT KERNEL DEPRECATED FOR CURRENT CGRA ARCHITECTURE
 #endif // REAL_FFT
 
+int32_t errors=0;
 #ifdef CHECK_ERRORS
-  int32_t errors=0;
   for (int i=0; i<FFT_SIZE; i++) {
     if(RealOut_fft0_fxp[i] != exp_output_real[i] ||
         ImagOut_fft0_fxp[i] != exp_output_imag[i]) {
@@ -301,11 +303,10 @@ int main(void) {
   printf("CGRA FFT computation finished with %d errors\n", errors);
 #endif // CHECK_ERRORS
 
-  return EXIT_SUCCESS;
+  return errors ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
-uint16_t ReverseBits (uint16_t index, uint16_t numBits)
-{
+uint16_t ReverseBits(uint16_t index, uint16_t numBits) {
   uint16_t i, rev;
 
   for (i=rev=0; i<numBits; i++) {
@@ -316,8 +317,7 @@ uint16_t ReverseBits (uint16_t index, uint16_t numBits)
   return rev;
 }
 
-uint16_t NumberOfBitsNeeded (uint16_t powerOfTwo)
-{
+uint16_t NumberOfBitsNeeded(uint16_t powerOfTwo) {
   uint16_t i;
 
   if (powerOfTwo < 2) {

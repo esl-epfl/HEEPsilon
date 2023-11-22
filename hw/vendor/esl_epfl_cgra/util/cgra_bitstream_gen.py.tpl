@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright EPFL contributors.
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
@@ -171,11 +173,11 @@ ker_null_conf = get_bin(0, CGRA_KMEM_WIDTH)
 #####################################################################################
 </%text>\
 
-rcs_imem_file = '../bitsream/cgra_imem.bit'
-ker_kmem_file = '../bitsream/cgra_kmem.bit'
+rcs_imem_file = '../bitstream/cgra_imem.bit'
+ker_kmem_file = '../bitstream/cgra_kmem.bit'
 
-if not os.path.exists('../bitsream'):
-    os.mkdir('../bitsream')
+if not os.path.exists('../bitstream'):
+    os.mkdir('../bitstream')
 
 open(rcs_imem_file, 'w')
 open(ker_kmem_file, 'w')

@@ -17,7 +17,7 @@
   #error The CGRA must have a 4x4 size to run this example
 #endif
 
-#define DEBUG
+// #define DEBUG
 
 // Use PRINTF instead of PRINTF to remove print by default
 #ifdef DEBUG
@@ -26,22 +26,22 @@
   #define PRINTF(...)
 #endif
 
-#define INPUT_LENGTH 8
-#define OUTPUT_LENGTH 5
+#define CGRA_IN_LEN 8
+#define CGRA_OUT_LEN 5
 
 // one dim slot x n input values (data ptrs, constants, ...)
-int32_t cgra_input[CGRA_N_COLS][INPUT_LENGTH] __attribute__ ((aligned (4)));
+int32_t cgra_input[CGRA_N_COLS][CGRA_IN_LEN] __attribute__ ((aligned (4)));
 int8_t cgra_intr_flag;
-int32_t cgra_res[CGRA_N_COLS][CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
+int32_t cgra_res[CGRA_N_COLS][CGRA_N_ROWS][CGRA_OUT_LEN] = {0};
 
-int32_t stimuli[CGRA_N_ROWS][INPUT_LENGTH] = {
+int32_t stimuli[CGRA_N_ROWS][CGRA_IN_LEN] = {
   144, 4, 5, -23463,
   -12, 16, 5, 0,
   1033, 8, 5, 0,
   -199, 128, 5, 1,
 };
 
-int32_t exp_rc_c0[CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
+int32_t exp_rc_c0[CGRA_N_ROWS][CGRA_OUT_LEN] = {0};
 
 // Interrupt controller variables
 void handler_irq_cgra(uint32_t id) {
@@ -156,7 +156,7 @@ int main(void) {
   cgra_input[3][6] = (int32_t)&cgra_res[3][2][0];
   cgra_input[3][7] = (int32_t)&cgra_res[3][3][0];
 
-  printf("Running functionality check on CGRA...\n");
+  printf("Running functionality check on CGRA...");
   // Check the CGRA can accept a new request
   cgra_wait_ready(&cgra);
   // Enable performance counters
@@ -165,19 +165,15 @@ int main(void) {
   // Set CGRA kernel pointers
   column_idx = 0;
   cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[0], column_idx);
-  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[0][0], column_idx);
   // Set CGRA kernel pointers column 1
   column_idx = 1;
   cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[1], column_idx);
-  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[1][0], column_idx);
   // Set CGRA kernel pointers column 2
   column_idx = 2;
   cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[2], column_idx);
-  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[2][0], column_idx);
   // Set CGRA kernel pointers column 3
   column_idx = 3;
   cgra_set_read_ptr(&cgra, (uint32_t) cgra_input[3], column_idx);
-  // cgra_set_write_ptr(&cgra, (uint32_t) cgra_res[3][0], column_idx);
 
   // Launch CGRA kernel
   cgra_set_kernel(&cgra, CGRA_FUNC_TEST);
@@ -187,12 +183,13 @@ int main(void) {
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
+  PRINTF("done\n");
 
   // Check the cgra values are correct
   int32_t errors=0;
   for (int k=0; k<CGRA_N_COLS; k++) {
     for (int i=0; i<CGRA_N_ROWS; i++) {
-      for (int j=0; j<OUTPUT_LENGTH; j++) {
+      for (int j=0; j<CGRA_OUT_LEN; j++) {
         if (cgra_res[k][i][j] != exp_rc_c0[i][j]) {
           PRINTF("[%d][%d][%d]: %d != %d\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
           PRINTF("[%d][%d][%d]: %08x != %08x\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
@@ -233,5 +230,5 @@ int main(void) {
   PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
 
-  return EXIT_SUCCESS;
+  return errors ? EXIT_FAILURE : EXIT_SUCCESS;
 }

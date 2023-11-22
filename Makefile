@@ -24,7 +24,7 @@ include $(HEEP_DIR)Makefile.venv
 
 HEEPSILON_CFG  ?= heepsilon_cfg.hjson
 
-heepsilon_gen:
+heepsilon-gen:
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/hw/rtl --pkg-sv hw/vendor/esl_epfl_cgra/hw/rtl/cgra_pkg.sv.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/hw/rtl --tpl-sv hw/vendor/esl_epfl_cgra/hw/rtl/peripheral_regs.sv.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/util --tpl-sv hw/vendor/esl_epfl_cgra/util/cgra_bitstream_gen.py.tpl
@@ -35,7 +35,7 @@ heepsilon_gen:
 
 # Generates mcu files. First the mcu-gen from X-HEEP is called.
 # This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.
-mcu-gen: heepsilon_gen
+mcu-gen: heepsilon-gen
 	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} MEMORY_BANKS=${MEMORY_BANKS} $(MAKECMDGOALS)
 	cd hw/vendor/esl_epfl_x_heep &&\
 	$(PYTHON) util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
