@@ -26,7 +26,7 @@ string_replaced.append('RUN_OPT = '+ "\n" + \
                        'ifdef RUN_UPF'+ "\n" + \
                        '    RUN_UPF_OPTIONS := -pa' + "\n" + \
                        'endif'+ "\n\n");
-string_replaced.append('EXTRA_OPTIONS ?= $(VSIM_OPTIONS) $(addprefix -g,$(PARAMETERS)) $(addprefix +,$(PLUSARGS)) $(RUN_UPF_OPTIONS)')
+string_replaced.append('EXTRA_OPTIONS ?= $(VSIM_OPTIONS) $(VSIM_USER_OPTIONS) $(addprefix -g,$(PARAMETERS)) $(addprefix +,$(PLUSARGS)) $(RUN_UPF_OPTIONS)')
 
 
 string_toappend = []
@@ -80,8 +80,6 @@ with open("edalize_build_rtl.tcl","r") as f:
 
 # Fix the ocurrences of hw/hw/ inside the edalize_build_rtl.tcl file
 data = data.replace("/hw/hw/","/hw/")
-
-data = data.replace("work ../../../tb","work ../../../hw/tb")
 
 instance = "tb_top/testharness_i/cgra_x_heep_top_i/cgra_top_wrapper_i"
 

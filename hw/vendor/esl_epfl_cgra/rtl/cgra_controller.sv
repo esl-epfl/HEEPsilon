@@ -238,14 +238,11 @@ module cgra_controller
       // RCS configuration
       GLOB_FSM_RCS_CONF:
       begin
-        if (acc_req_i[0] == 1'b1 && rcs_conf_ack[0] == 1'b0) begin
-          rcs_start_s[0] = 1'b1;
-        end else if (acc_req_i[1] == 1'b1 && rcs_conf_ack[1] == 1'b0) begin
-          rcs_start_s[1] = 1'b1;
-        end else if (acc_req_i[2] == 1'b1 && rcs_conf_ack[2] == 1'b0) begin
-          rcs_start_s[2] = 1'b1;
-        end else if (acc_req_i[3] == 1'b1 && rcs_conf_ack[3] == 1'b0) begin
-          rcs_start_s[3] = 1'b1;
+        for (int i=0; i<N_COL; i++) begin
+          if (acc_req_i[i] == 1'b1 && rcs_conf_ack[i] == 1'b0) begin
+              rcs_start_s[i] = 1'b1;
+            break;
+          end
         end
 
         if (all_col_conf_end == 1'b1) begin
@@ -384,8 +381,8 @@ module cgra_controller
   //---------------------------------------------------------------------
 
   // RCS kernel configuration
-  assign rcs_row_n_instr_s  = kmem_rdata_i[   RCS_N_INSTR_HB:RCS_N_INSTR_LB];
-  assign rcs_imem_start_add = kmem_rdata_i[ RCS_IMEM_ADD_HB:RCS_IMEM_ADD_LB];
+  assign rcs_row_n_instr_s  = kmem_rdata_i[  RCS_N_INSTR_HB:RCS_N_INSTR_LB];
+  assign rcs_imem_start_add = kmem_rdata_i[RCS_IMEM_ADD_HB:RCS_IMEM_ADD_LB];
 
   always_comb
   begin

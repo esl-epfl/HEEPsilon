@@ -37,8 +37,9 @@ package cgra_pkg;
   localparam INSTR_WIDTH    = 32;
 
   // CGRA INSTRUCTION MEMORY
-  localparam N_MEM_BANKS      = 5; // 4 INSTRS + 1 KERNEL CONF
-  localparam N_MEM_BANKS_LOG2 = $clog2(N_MEM_BANKS); // 4 INSTRS + 1 KERNEL CONF
+  // 1 bank per row + 1 for the kernel configuration words
+  localparam N_MEM_BANKS      = N_ROW+1;
+  localparam N_MEM_BANKS_LOG2 = $clog2(N_MEM_BANKS);
 
   localparam IMEM_N_LINES      = 128; // per RC
   localparam IMEM_N_LINES_LOG2 = $clog2(IMEM_N_LINES);
@@ -135,7 +136,7 @@ package cgra_pkg;
   localparam KER_N_COL_HB     = KER_N_COL_LB+N_COL-1;
 
   // Maximum number of columns a kernel can use
-  localparam MAX_COL_REQ      = 4;
+  localparam MAX_COL_REQ      = N_COL;
   localparam MAX_COL_REQ_LOG2 = $clog2(MAX_COL_REQ);
 
 endpackage

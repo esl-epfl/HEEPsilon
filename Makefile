@@ -13,6 +13,8 @@ PORT		?= /dev/ttyUSB2
 
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
+# Use more memory banks
+MEMORY_BANKS = 4
 
 # Project options are based on the app to be build (default - hello_world)
 PROJECT  ?= hello_world
@@ -24,7 +26,7 @@ include $(HEEP_DIR)Makefile.venv
 # Generates mcu files. First the mcu-gen from X-HEEP is called.
 # This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.
 mcu-gen:
-	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} $(MAKECMDGOALS)
+	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} MEMORY_BANKS=${MEMORY_BANKS} $(MAKECMDGOALS)
 	cd hw/vendor/esl_epfl_x_heep &&\
 	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
 

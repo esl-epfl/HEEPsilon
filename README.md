@@ -1,230 +1,53 @@
-# Repo folder structure
+<p align="left"><img src="docs/HEEPsilon_logo.png" width="500"></p>
 
-    .
-    ├── hw
-    │   ├── rtl
-    │   └── vendor
-    ├── scripts
-    │   ├── sim
-    │   └── synthesis
-    ├── sw
-    │   ├── applications
-    │   ├── external
-    │   ├── device (hw/vendor/esl_epfl_x_heep/sw/device)
-    │   └── linker (hw/vendor/esl_epfl_x_heep/sw/linker)
-    ├── tb
-    ├── util
-    └── README.md
+HEEPsilon is a versatile computing platform targeting ultra low power processing of biological and environmental signals. It is built over the [X-HEEP](https://github.com/esl-epfl/x-heep) platform and extends it with [openEdgeCGRA](https://github.com/esl-epfl/OpenEdgeCGRA) a design-time resizable and run-time reprogrammable Coarse Grained Reconfigurable Array (CGRA).
+For a brief insight on HEEPsilon please refer to our abstract:
 
+📄 [An Open-Hardware Coarse-Grained Reconfigurable Array for Edge Computing](https://dl.acm.org/doi/10.1145/3587135.3591437).
 
+As an X-HEEP spinoff, HEEPsilon keeps all X-HEEP functionalities, from RTL simulation on Verilator, VCS and Questasim to implementation on the [PYNQ-Z2 FPGA](https://www.xilinx.com/support/university/xup-boards/XUPPYNQ-Z2.html). Our cousin HEEPocrates was recently taped-out in TSMC 65nm process and is currently undertaking tests successfully.
 
-Minimal configuration of a cgra-x-heep
-============================
+In addition to all the tools available for X-HEEP, HEEPsilon is building a toolchain to simplify the C-code→CGRA process.
 
-# Prerequisite
+---
 
-The simulation environment is based on the one from [X-HEEP](https://github.com/esl-epfl/x-heep).
+# Getting started
 
-Follow the prerequisite steps on the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep#prerequisite).
+Due to its modular design, HEEPsilon respects the X-HEEP workflow. As such, you can follow [X-HEEP's getting started](https://x-heep.readthedocs.io/en/latest/How_to/GettingStarted.html) to set up the environment... HOWEVER...
 
-Consider that both the `environment.yml` and `python-requirements.txt` are now located in:
-```bash
-hw/vendor/esl_epfl_x_heep/
-```
-The first steps should be adapted as:
-```bash
-conda env create -f hw/vendor/esl_epfl_x_heep/environment.yml
-conda activate core-v-mini-mcu
-pip3 install --user -r hw/vendor/esl_epfl_x_heep/python-requirements.txt
-```
+Althought the HEEPsilon team will try to keep the latest version of X-HEEP available, changes in the X-HEEP setup might not reflect immediately on this repository.
 
-# Adding external IPs
+👉 For the most accurate set-up instructions please refer to the documentation of the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep).
 
-This repository relies on [vendor](https://docs.opentitan.org/doc/ug/vendor_hw/) to add new IPs.
-In the ./util folder, the vendor.py scripts implements what is described above.
 
-# Compiling with Makefile
+# Behavioural simulations
 
-You can compile the example applications and the platform using the Makefile.
+The CGRA used in HEEPsilon can be simulated with CGRA-instruction accuracy using the [ESL-CGRA simulator](https://github.com/esl-epfl/ESL-CGRA-simulator).
+This allows for fast and easy-to-debug design of kernels for the CGRA. Once you are happy with your design you can compile the assembly and get the bitstream to load into the CGRA.
 
-## Generate core-v-mini-mcu package
+# SAT-MapIt Compiler
 
-First, you have to generate the SystemVerilog package and C header file of the core-v-mini-mcu (x-heep):
+Your kernel is too complex to be mapped manually? Try using the [SAT-MapIt mapper and compiler](https://github.com/CristianTirelli/SAT-MapIt). Properly label your C-code and let SAT-MapIt find an efficient mapping you can test in the simulator and deploy in the CGRA.
 
-```
-make mcu-gen
-```
+# Testing a kernel
 
-To change the default cpu type (i.e., cv32e20), the default bus type (i.e., onetoM) type
-or the memory size (i.e., number of banks):
+Once you have tested your setup with the `cgra_func_test` application you can start trying out different kernels. HEEPsilon provides a set of tools to easily go from C-code to CGRA bitstreams. All kernels are converted into a standard C source and header file pair which you can use with the `kernel_test` application to measure the speed-up of your CGRA implementation as well as see stochastical variations.
 
-```
-make mcu-gen CPU=cv32e40p BUS=NtoM MEMORY_BANKS=16
-```
+# Adding a complex environment to your platform
 
-The last command generates x-heep with the cv32e40p core, with a parallel bus, and 16 memory banks,
-each 32KB, for a total memory of 512KB.
+If you application requires some hardcore input-output management, maybe you want to try out the [X-HEEP FEMU](https://github.com/simone-machetti/x-heep-femu). Connect your PYNQ-Z2 FPGA via SSH and start deploying different hardware versions of X-HEEP or HEEPsilon, test different software applications and interface with the hardware from the comfort of Python scripts or Jupyter notebooks.
 
-## Compiling Software
+# Wanna collaborate?
 
-```
-make app PROJECT=hello_world
-```
+HEEPsilon is a newborn project that already brings together dozens of researchers from 4 universities across Switzerland, Spain and Italy. There is plenty of cool work to be done for and with HEEPsilon, join us!
 
-This will create the executable file to be loaded in your target system.
+Pending work includes:
+* Development of new kernels for the CGRA and validation in real applications.
+* Integration of the different compilation tools into a single workflow.
+* Extracting variable information from the LLVM pass during C-code → CGRA assembly process.
+* Characterizing the CGRA hardware for cycle and energy-accurate simulation.
 
-## Simulating
+# Contact us
 
-This project supports simulation with Verilator, Synopsys VCS, and Siemens Questasim.
-In addition, an instruction-accurate (but not cycle-accurate) simulator in Python is available in the [ESL-CGRA-simulator](https://github.com/esl-epfl/ESL-CGRA-simulator) repository.
+Have some questions? Don't hesitate to contact us: juan.sapriza@epfl.ch
 
-### Compiling for Verilator
-
-To simulate your application with Verilator, first compile the HDL:
-
-```
-make verilator-sim
-```
-
-then, go to your target system built folder
-
-```
-cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator
-```
-
-and type to run your compiled software:
-
-```
-./Vtestharness +firmware=../../../sw/build/main.hex
-```
-
-or execute:
-
-```
-make run-verilator
-```
-
-or to run the CGRA functional test
-
-```
-make run-verilator PROJECT=cgra_func_test
-```
-
-
-### Compiling for VCS
-
-To simulate your application with VCS, first compile the HDL:
-
-```
-make vcs-sim
-```
-
-then, go to your target system built folder
-
-```
-cd ./build/eslepfl_systems_cgra-x-heep_0/sim-vcs
-```
-
-and type to run your compiled software:
-
-```
-./eslepfl_systems_cgra-x-heep_0 +firmware=../../../sw/build/main.hex
-```
-
-### Compiling for Questasim
-
-To simulate your application with Questasim, first set the env variable `MODEL_TECH` to your Questasim bin folder, then compile the HDL:
-
-```
-make questasim-sim
-```
-
-then, go to your target system built folder
-
-```
-cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim/
-```
-
-and type to run your compiled software:
-
-```
-make run PLUSARGS="c firmware=../../../sw/build/main.hex"
-```
-
-or execute:
-
-```
-make run-questasim
-```
-
-or to run the CGRA functional test
-
-```
-make run-questasim PROJECT=cgra_func_test
-```
-
-You can also use vopt for HDL optimized compilation:
-
-```
-make questasim-sim-opt
-```
-
-then go to
-
-```
-cd ./build/eslepfl_systems_cgra-x-heep_0/sim-modelsim/
-```
-and
-
-```
-make run RUN_OPT=1 PLUSARGS="c firmware=../../../sw/build/main.hex"
-```
-
-Questasim version must be >= Questasim 2020.4
-
-## Running on the FPGA
-
-To generate the bitstream run
-```
-make vivado-fpga
-```
-
-The generated bitstream is found in
-```
-build/eslepfl_systems_cgra-x-heep_0/pynq-z2-vivado/eslepfl_systems_cgra-x-heep_0.bit
-```
-
-Load the bitstream into the FPGA using Vivado.
-
-You can build, load and monitor apps calling
-```
-make run-fpga PROJECT=<name_of_your_app>
-```
-and open the serial monitor of your preference to read the UART output.
-
-If you have picocom installed, you can call
-```
-make run-fpga-com PROJECT=<name_of_your_app>
-```
-Note that you might need to modify the serial port adding `PORT=/dev/ttyUSB5` in he previous command (default is set to `/dev/ttyUSB2`).
-
-### UART DPI
-
-To simulate the UART, we use the LowRISC OpenTitan [UART DPI](https://github.com/lowRISC/opentitan/tree/master/hw/dv/dpi/uartdpi).
-Read how to interact with it in the Section "Interact with the simulated UART" [here](https://docs.opentitan.org/doc/ug/getting_started_verilator/).
-The output of the UART DPI module is printed in the `uart0.log` file in the simulation folder.
-
-For example, to see the "hello world!" output of the Verilator simulation:
-
-```
-cd ./build/eslepfl_systems_cgra-x-heep_0/sim-verilator
-./Vtestharness +firmware=../../../sw/build/main.hex
-cat uart0.log
-```
-## Debug
-
-Follow the [Debug](./hw/vendor/esl_epfl_x_heep/Debug.md) guide to debug core-v-mini-mcu.
-
-## Execute From Flash
-
-Follow the [ExecuteFromFlash](./hw/vendor/esl_epfl_x_heep/ExecuteFromFlash.md) guide to execute code directly from the FLASH with modelsim or vcs (verilator cannot simulate the execution from flash).

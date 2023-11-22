@@ -13,8 +13,8 @@ module cgra_top_wrapper
   // Top level clock gating unit enable
   input  logic               cgra_enable_i,
   // AHB Masters
-  output obi_req_t  [MP-1:0] masters_req_o,
-  input  obi_resp_t [MP-1:0] masters_resp_i,
+  output obi_req_t  [4-1:0] masters_req_o,
+  input  obi_resp_t [4-1:0] masters_resp_i,
   // APB interface
   input  reg_req_t           reg_req_i,
   output reg_rsp_t           reg_rsp_o,
@@ -53,45 +53,36 @@ module cgra_top_wrapper
   logic [  IMEM_N_LINES_LOG2-1:0] cm_addr_s;
   logic [        INSTR_WIDTH-1:0] rcs_cmem_rdata_s [0:N_ROW-1];
 
-  // MP 0
-  assign masters_req_o[0].req   = tcdm_req[0];
-  assign masters_req_o[0].addr  = tcdm_add[0];
-  assign masters_req_o[0].we    = ~tcdm_wen[0];
-  assign masters_req_o[0].be    = tcdm_be[0];
-  assign masters_req_o[0].wdata = tcdm_wdata[0];
-  assign tcdm_gnt[0]            = masters_resp_i[0].gnt;
-  assign tcdm_rdata[0]          = masters_resp_i[0].rdata;
-  assign tcdm_r_valid[0]        = masters_resp_i[0].rvalid;
+    generate
+      // One master port per column
+      for (genvar j=0; j<N_COL; j++) begin : master_port_used
+        always_comb
+        begin
+          masters_req_o[j].req   = tcdm_req[j];
+          masters_req_o[j].addr  = tcdm_add[j];
+          masters_req_o[j].we    = ~tcdm_wen[j];
+          masters_req_o[j].be    = tcdm_be[j];
+          masters_req_o[j].wdata = tcdm_wdata[j];
+          tcdm_gnt[j]            = masters_resp_i[j].gnt;
+          tcdm_rdata[j]          = masters_resp_i[j].rdata;
+          tcdm_r_valid[j]        = masters_resp_i[j].rvalid;
+        end
+      end
+    endgenerate
 
-  // MP 1
-  assign masters_req_o[1].req   = tcdm_req[1];
-  assign masters_req_o[1].addr  = tcdm_add[1];
-  assign masters_req_o[1].we    = ~tcdm_wen[1];
-  assign masters_req_o[1].be    = tcdm_be[1];
-  assign masters_req_o[1].wdata = tcdm_wdata[1];
-  assign tcdm_gnt[1]            = masters_resp_i[1].gnt;
-  assign tcdm_rdata[1]          = masters_resp_i[1].rdata;
-  assign tcdm_r_valid[1]        = masters_resp_i[1].rvalid;
-
-  // MP 2
-  assign masters_req_o[2].req   = tcdm_req[2];
-  assign masters_req_o[2].addr  = tcdm_add[2];
-  assign masters_req_o[2].we    = ~tcdm_wen[2];
-  assign masters_req_o[2].be    = tcdm_be[2];
-  assign masters_req_o[2].wdata = tcdm_wdata[2];
-  assign tcdm_gnt[2]            = masters_resp_i[2].gnt;
-  assign tcdm_rdata[2]          = masters_resp_i[2].rdata;
-  assign tcdm_r_valid[2]        = masters_resp_i[2].rvalid;
-
-  // MP 3
-  assign masters_req_o[3].req   = tcdm_req[3];
-  assign masters_req_o[3].addr  = tcdm_add[3];
-  assign masters_req_o[3].we    = ~tcdm_wen[3];
-  assign masters_req_o[3].be    = tcdm_be[3];
-  assign masters_req_o[3].wdata = tcdm_wdata[3];
-  assign tcdm_gnt[3]            = masters_resp_i[3].gnt;
-  assign tcdm_rdata[3]          = masters_resp_i[3].rdata;
-  assign tcdm_r_valid[3]        = masters_resp_i[3].rvalid;
+    generate
+      // Keep heepocrates default setting to 4 master ports and don't use the extra one
+      for (genvar j=N_COL; j<4; j++) begin : master_port_unused
+        always_comb
+        begin
+          masters_req_o[j].req   = '0;
+          masters_req_o[j].addr  = '0;
+          masters_req_o[j].we    = '0;
+          masters_req_o[j].be    = '0;
+          masters_req_o[j].wdata = '0;
+        end
+      end
+    endgenerate
 
   // Context memory slave
   assign slave_resp_o.gnt    = cm_gnt;

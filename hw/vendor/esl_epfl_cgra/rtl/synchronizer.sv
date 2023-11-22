@@ -34,8 +34,8 @@ module synchronizer
   logic                           pending_req_s;
   logic [       N_SLOTS_LOG2-1:0] req_loop_cnt;
   logic [KER_CONF_N_REG_LOG2-1:0] ker_id_req_s;
-  logic [              N_COL-1:0] map_0_ready, map_1_ready, map_2_ready, map_3_ready;
-  logic [              N_COL-1:0] mapping_0, mapping_1, mapping_2, mapping_3;
+  logic [              N_COL-1:0] map_ready [0:N_COL-1];
+  logic [              N_COL-1:0] col_map_sel [0:N_COL-1];
   logic [              N_COL-1:0] col_status_reg;
   logic [              N_COL-1:0] acc_req_reg;
   logic [              N_COL-1:0] acc_req_mapped;
@@ -56,28 +56,24 @@ module synchronizer
   assign ker_col_req_s = conf_word_i[KER_N_COL_HB:KER_N_COL_LB];
 
   // Create all the possible mapping solutions
-  assign mapping_0 = ker_col_req_reg; // direct mapping with conf_word_i, which is stable
+  always_comb begin : col_map_sel_process
+    // First possible mapping is given by ker_col_req_reg
+    col_map_sel[0] = ker_col_req_reg;
+    // The other possible mappings are derived from it.
+    for (int i=1; i<N_COL; i++) begin
+      col_map_sel[i][0] = col_map_sel[i-1][N_COL-1];
+      for (int k=1; k<N_COL; k++) begin
+        col_map_sel[i][k] = col_map_sel[i-1][k-1];
+      end
+    end
+  end
 
-  assign mapping_1[0] = mapping_0[3];
-  assign mapping_1[1] = mapping_0[0];
-  assign mapping_1[2] = mapping_0[1];
-  assign mapping_1[3] = mapping_0[2];
-
-  assign mapping_2[0] = mapping_0[2];
-  assign mapping_2[1] = mapping_0[3];
-  assign mapping_2[2] = mapping_0[0];
-  assign mapping_2[3] = mapping_0[1];
-
-  assign mapping_3[0] = mapping_0[1];
-  assign mapping_3[1] = mapping_0[2];
-  assign mapping_3[2] = mapping_0[3];
-  assign mapping_3[3] = mapping_0[0];
-
-  // Check which mapping is possible
-  assign map_0_ready = ~col_status_reg & mapping_0;
-  assign map_1_ready = ~col_status_reg & mapping_1;
-  assign map_2_ready = ~col_status_reg & mapping_2;
-  assign map_3_ready = ~col_status_reg & mapping_3;
+  // Check which mapping are actually possible
+  always_comb begin : map_ready_process
+    for (int i=0; i<N_COL; i++) begin
+      map_ready[i] = ~col_status_reg & col_map_sel[i];
+    end
+  end
 
   assign acc_req_o     = acc_req_reg;
   assign col_acc_map_o = col_acc_map_reg;
@@ -127,21 +123,12 @@ module synchronizer
       // wait free column(s) to map the acceleration
       SYNC_FSM_FIND_COL:
       begin
-        if (map_0_ready == mapping_0) begin
-          acc_req_mapped   = mapping_0;
-          sync_fsm_n_state = SYNC_FSM_WAIT_ACK;
-        end else if (map_1_ready == mapping_1) begin
-          acc_req_mapped   = mapping_1;
-          sync_fsm_n_state = SYNC_FSM_WAIT_ACK;
-        end else if (map_2_ready == mapping_2) begin
-          acc_req_mapped   = mapping_2;
-          sync_fsm_n_state = SYNC_FSM_WAIT_ACK;
-        end else if (map_3_ready == mapping_3) begin
-          acc_req_mapped   = mapping_3;
-          sync_fsm_n_state = SYNC_FSM_WAIT_ACK;
-        end else begin
-          acc_req_mapped   = '0;
-          sync_fsm_n_state = SYNC_FSM_FIND_COL;
+        for (int i=0; i<N_COL; i++) begin
+          if (map_ready[i] == col_map_sel[i]) begin
+            acc_req_mapped   = col_map_sel[i];
+            sync_fsm_n_state = SYNC_FSM_WAIT_ACK;
+            break;
+          end
         end
       end
 
