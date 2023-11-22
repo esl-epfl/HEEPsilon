@@ -181,7 +181,7 @@ uint32_t check(void)
     printf("Check begins: \n");
     uint32_t errors = 0;
 
-for(int l = 0; l < 2; l ++){
+for(int l = 0; l < N_filter; l ++){
     for(int i = 0; i < row_output; i++){
         for(int j = 0; j < col_output; j++){
             if(outputs[0][0][i][j] != output_from_CGRA[l][i][j]){

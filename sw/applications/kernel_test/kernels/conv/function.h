@@ -1415,7 +1415,7 @@ void conv2D()
   int32_t data;
   for (l = 0; l < N_output; l++)
   {
-    for (k = 0; k < 2; k++)
+    for (k = 0; k < N_filter; k++)
     {
       for (r = 0; r < row_output; r++)
       {

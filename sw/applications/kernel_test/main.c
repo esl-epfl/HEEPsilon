@@ -106,8 +106,7 @@ void main()
 {
     uint8_t kernels_n = sizeof( kernels ) / sizeof( kcom_kernel_t * );
     kcom_kernel_t* kernel;
-    kcom_time_t spent_tot_CGRA = 0;
-    kcom_time_t spent_tot_loading = 0; 
+
     kcom_init();
 
     for( uint8_t ker_idx = 0; ker_idx < kernels_n; ker_idx++ )
@@ -134,6 +133,8 @@ void main()
 
         for( uint16_t it_idx = 0; it_idx < ITERATIONS_PER_KERNEL; it_idx++ )
         {
+                kcom_time_t spent_tot_CGRA = 0;
+    kcom_time_t spent_tot_loading = 0; 
             /* Reset the CGRA performance counters */
             kcom_rstPerfCounter();
 
@@ -146,10 +147,11 @@ void main()
             }
 #endif //REPEAT_FIRST_INPUT
 
-            for(int output_channel = 0; output_channel < 2; output_channel++){
+            for(int output_channel = 0; output_channel < N_filter; output_channel++){
                 for(int input_channel = 0; input_channel < C_input; input_channel++){
                         kernel->config(input_channel,output_channel);
-
+kperf.time.cgra.spent_cy = 0;
+kperf.time.loading_result.spent_cy = 0;
             /* Obtention of dead-zone-time */
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.dead) );
@@ -161,21 +163,22 @@ void main()
             kcom_perfRecordStart(   &(kperf.time.cgra) );
                 kcom_launchKernel( kernel_id );
                 kcom_waitingForIntr();
-                spent_tot_CGRA += kperf.time.cgra.spent_cy;
+                
+                spent_tot_CGRA += kperf.time.cgra.spent_cy - kperf.time.dead.spent_cy;
             // Time is stopped inside the interrupt handler to make it as fast as possible
 
                 kcom_perfRecordIntrSet( &(kperf.time.loading_result));
                 kcom_perfRecordStart(  &(kperf.time.loading_result));
                 kernel->loading_buffer();
                 kcom_perfRecordStop( &(kperf.time.loading_result));
-                spent_tot_loading += kperf.time.loading_result.spent_cy;
+                spent_tot_loading += kperf.time.loading_result.spent_cy - kperf.time.dead.spent_cy;
 
 
                 }
             }
          kperf.time.loading_result.spent_cy =  spent_tot_loading;
          kperf.time.cgra.spent_cy = spent_tot_CGRA;
-
+        
 
 
             /* Software */
