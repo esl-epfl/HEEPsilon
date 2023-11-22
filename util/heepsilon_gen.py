@@ -104,11 +104,30 @@ def main():
 
     cgra_num_columns = int(obj['cgra']['num_columns'])
     cgra_num_rows = int(obj['cgra']['num_rows'])
+    cgra_max_columns = obj['cgra']['max_columns']
+    cgra_rcs_num_instr = int(obj['cgra']['rcs_num_instr'])
+    cgra_cmem_bk_depth = obj['cgra']['cmem_bk_depth']
+    cgra_kmem_depth = obj['cgra']['kmem_depth']
+
+    # Check if value are the default for the CGRA
+    if cgra_max_columns == 'default':
+        cgra_max_columns = cgra_num_columns
+    else:
+        cgra_max_columns = int(cgra_max_columns)
+
+    if cgra_cmem_bk_depth == 'default':
+        cgra_cmem_bk_depth = cgra_max_columns*cgra_rcs_num_instr
+    else:
+        cgra_cmem_bk_depth = int(cgra_cmem_bk_depth)
     
 
     kwargs = {
         "cgra_num_columns"   : cgra_num_columns,
         "cgra_num_rows"      : cgra_num_rows,
+        "cgra_max_columns"   : cgra_max_columns,
+        "cgra_rcs_num_instr" : cgra_rcs_num_instr,
+        "cgra_cmem_bk_depth" : cgra_cmem_bk_depth,
+        "cgra_kmem_depth"    : cgra_kmem_depth
     }
 
     ###########

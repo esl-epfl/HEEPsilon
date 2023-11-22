@@ -101,17 +101,27 @@ def return_indices_of_a(a, b, name = ''):
 CGRA_N_COL = ${cgra_num_columns}
 CGRA_N_ROW = ${cgra_num_rows}
 
-RCS_NUM_CREG      = 32;
+CGRA_MAX_COL = ${cgra_max_columns}
+
+RCS_NUM_CREG      = ${cgra_rcs_num_instr};
 RCS_NUM_CREG_LOG2 = ceil(log(RCS_NUM_CREG,2));
 
-CGRA_IMEM_N_LINE = 128
+CGRA_IMEM_N_LINE = ${cgra_cmem_bk_depth}
 CGRA_IMEM_NL_LOG2 = ceil(log(CGRA_IMEM_N_LINE,2))
 
 # Memory holding the kernel configuration words (KMEM)
 # Max possible number of kernel
-CGRA_KMEM_N_KER = 16
+CGRA_KMEM_N_KER = ${cgra_kmem_depth}
 # Kernel configuration word width
 CGRA_KMEM_WIDTH = CGRA_N_COL + CGRA_IMEM_NL_LOG2 + RCS_NUM_CREG_LOG2
+
+# Check the parameters are in the expected range
+if CGRA_KMEM_WIDTH > 32:
+    print('ERROR: kernel configuration word width > 32 bits')
+if CGRA_IMEM_N_LINE < (CGRA_MAX_COL*RCS_NUM_CREG,2):
+    print('WARNING: context memory cannot hold the maximum kernel size')
+if ${cgra_max_columns} > CGRA_N_COL:
+    print('ERROR: maximum number of columns is larger than the actual number of columns')
 
 <%text>
 #################################################################

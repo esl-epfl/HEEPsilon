@@ -12,11 +12,23 @@
 
 #define CGRA_INTR EXT_INTR_0
 
-#define CGRA_KMEM_SIZE 16
-#define CGRA_IMEM_SIZE 512
+#define CGRA_N_COLS   ${cgra_num_columns}
+#define CGRA_N_ROWS   ${cgra_num_rows}
+#define CGRA_MAX_COLS ${cgra_max_columns}
 
-#define CGRA_N_COLS    ${cgra_num_columns}
-#define CGRA_N_ROWS    ${cgra_num_rows}
+#define CGRA_KMEM_DEPTH     ${cgra_kmem_depth}
+#define CGRA_CMEM_BK_DEPTH  ${cgra_cmem_bk_depth}
+#define CGRA_CMEM_TOT_DEPTH (CGRA_CMEM_BK_DEPTH*CGRA_N_ROWS)
+
+#define CGRA_RCS_NUM_CREG ${cgra_rcs_num_instr}
+
+// Some of these checks are already done during the bitstream generation but better double check them
+#if CGRA_CMEM_TOT_DEPTH < ${cgra_num_rows*cgra_max_columns*cgra_rcs_num_instr}
+  #warning Context memory cannot hold the maximum kernel size
+#endif
+#if CGRA_MAX_COLS > CGRA_N_COLS
+  #error CGRA configuration: more columns than possible can be used
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +37,7 @@ extern "C" {
 /**
  * Write the CGRA bistream to its memory
  */
-void cgra_cmem_init(uint32_t cgra_imem_bistream[], uint32_t cgra_kmem_bitstream[]);
+void cgra_cmem_init(uint32_t cgra_imem_bitstream[], uint32_t cgra_kmem_bitstream[]);
 
 /**
  * Initialization parameters for CGRA peripheral control registers..

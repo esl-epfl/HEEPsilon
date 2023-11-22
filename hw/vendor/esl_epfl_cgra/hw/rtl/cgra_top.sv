@@ -81,7 +81,7 @@ module cgra_top
     if (rst_ni == 1'b0) begin
       cc_count <= 0;
     end else begin
-      if (reg_req_i.valid == 1'b1 && reg_rsp_o.ready == 1'b1 && reg_req_i.addr[N_PERIPH_REGS_LOG2+2-1:2] == CGRA_APB_REG_STATE) begin
+      if (reg_req_i.valid == 1'b1 && reg_rsp_o.ready == 1'b1 && reg_req_i.addr[CGRA_NUM_PERIPH_REG_LOG2+2-1:2] == CGRA_PERIPH_STATUS_REG_OFFSET) begin
         $display("[CGRA] %t : GLOBAL CLOCK-CYCLE COUNTER: %l", $time, cc_count);
       end
       cc_count <= cc_count + 1;
