@@ -10,7 +10,7 @@
 #define CGRA_FTT_CPLX_ID         2
 #define CGRA_FTT_CPLX_FOREVER_ID 3
 
-uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {
+uint32_t cgra_kmem_bitstream[CGRA_KMEM_DEPTH] = {
   0x0,
   0x100a,
   0x316d,
@@ -30,7 +30,7 @@ uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {
 };
 
 
-uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
+uint32_t cgra_cmem_bitstream[CGRA_CMEM_TOT_DEPTH] = {
   0xa90004,
   0xab0004,
   0x0,

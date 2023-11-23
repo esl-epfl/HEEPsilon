@@ -8,8 +8,6 @@
 // Kernel 0 => NULL
 #define DBL_MIN_KER_ID      1
 #define DBL_MAX_KER_ID      2
-// #define MAX_PEAK_KER_ID     3 // DEPRECATED
-// #define MIN_MAX_CIRC_KER_ID 4 // DEPRECATED
 
 uint32_t cgra_kmem_bitstream[CGRA_KMEM_DEPTH] = {
   0x0,
@@ -31,7 +29,7 @@ uint32_t cgra_kmem_bitstream[CGRA_KMEM_DEPTH] = {
 };
 
 
-uint32_t cgra_imem_bitstream[CGRA_CMEM_TOT_DEPTH] = {
+uint32_t cgra_cmem_bitstream[CGRA_CMEM_TOT_DEPTH] = {
   0x0,
   0x0,
   0x0,

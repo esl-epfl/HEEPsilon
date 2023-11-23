@@ -17,10 +17,14 @@
 #define CGRA_MAX_COLS ${cgra_max_columns}
 
 #define CGRA_KMEM_DEPTH     ${cgra_kmem_depth}
-#define CGRA_CMEM_BK_DEPTH  ${cgra_cmem_bk_depth}
-#define CGRA_CMEM_TOT_DEPTH (CGRA_CMEM_BK_DEPTH*CGRA_N_ROWS)
+#define CGRA_KMEM_WIDTH     ${cgra_kmem_width}
 
-#define CGRA_RCS_NUM_CREG ${cgra_rcs_num_instr}
+#define CGRA_CMEM_BK_DEPTH      ${cgra_cmem_bk_depth}
+#define CGRA_CMEM_BK_DEPTH_LOG2 ${cgra_cmem_bk_depth_log2}
+#define CGRA_CMEM_TOT_DEPTH     (CGRA_CMEM_BK_DEPTH*CGRA_N_ROWS)
+
+#define CGRA_RCS_NUM_CREG      ${cgra_rcs_num_instr}
+#define CGRA_RCS_NUM_CREG_LOG2 ${cgra_rcs_num_instr_log2}
 
 // Some of these checks are already done during the bitstream generation but better double check them
 #if CGRA_CMEM_TOT_DEPTH < ${cgra_num_rows*cgra_max_columns*cgra_rcs_num_instr}
@@ -37,7 +41,7 @@ extern "C" {
 /**
  * Write the CGRA bistream to its memory
  */
-void cgra_cmem_init(uint32_t cgra_imem_bitstream[], uint32_t cgra_kmem_bitstream[]);
+void cgra_cmem_init(uint32_t cgra_cmem_bitstream[], uint32_t cgra_kmem_bitstream[]);
 
 /**
  * Initialization parameters for CGRA peripheral control registers..

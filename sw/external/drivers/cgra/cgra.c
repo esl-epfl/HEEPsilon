@@ -10,12 +10,12 @@
 #include "cgra.h"
 #include "cgra_regs.h" // generated
 
-void cgra_cmem_init(uint32_t cgra_imem_bitstream[], uint32_t cgra_kmem_bitstream[])
+void cgra_cmem_init(uint32_t cgra_cmem_bitstream[], uint32_t cgra_kmem_bitstream[])
 {
   int32_t *cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS);
 
   for (int i=0; i<CGRA_CMEM_TOT_DEPTH; i++) {
-    *cgra_cmem_ptr++ = cgra_imem_bistream[i];
+    *cgra_cmem_ptr++ = cgra_cmem_bitstream[i];
   }
 
   for (int i=0; i<CGRA_KMEM_DEPTH; i++) {

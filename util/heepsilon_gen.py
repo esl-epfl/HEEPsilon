@@ -17,7 +17,7 @@ import csv
 from jsonref import JsonRef
 from mako.template import Template
 import collections
-from math import log2
+from math import *
 
 # Compile a regex to trim trailing whitespaces on lines.
 re_trailws = re.compile(r'[ \t\r]+$', re.MULTILINE)
@@ -119,15 +119,25 @@ def main():
         cgra_cmem_bk_depth = cgra_max_columns*cgra_rcs_num_instr
     else:
         cgra_cmem_bk_depth = int(cgra_cmem_bk_depth)
+
+    # Compute the log2 constant of the cmem bank depth for address generation
+    cgra_cmem_bk_depth_log2 = int(ceil(log2(cgra_cmem_bk_depth)))
+    # Same for the number of instruction per RC
+    cgra_rcs_num_instr_log2 = int(ceil(log2(cgra_rcs_num_instr)))
+    # Compute kernel configuration word width
+    cgra_kmem_width = cgra_max_columns + cgra_cmem_bk_depth_log2 + cgra_rcs_num_instr_log2
     
 
     kwargs = {
-        "cgra_num_columns"   : cgra_num_columns,
-        "cgra_num_rows"      : cgra_num_rows,
-        "cgra_max_columns"   : cgra_max_columns,
-        "cgra_rcs_num_instr" : cgra_rcs_num_instr,
-        "cgra_cmem_bk_depth" : cgra_cmem_bk_depth,
-        "cgra_kmem_depth"    : cgra_kmem_depth
+        "cgra_num_columns"        : cgra_num_columns,
+        "cgra_num_rows"           : cgra_num_rows,
+        "cgra_max_columns"        : cgra_max_columns,
+        "cgra_rcs_num_instr"      : cgra_rcs_num_instr,
+        "cgra_rcs_num_instr_log2" : cgra_rcs_num_instr_log2,
+        "cgra_kmem_depth"         : cgra_kmem_depth,
+        "cgra_kmem_width"         : cgra_kmem_width,
+        "cgra_cmem_bk_depth"      : cgra_cmem_bk_depth,
+        "cgra_cmem_bk_depth_log2" : cgra_cmem_bk_depth_log2
     }
 
     ###########

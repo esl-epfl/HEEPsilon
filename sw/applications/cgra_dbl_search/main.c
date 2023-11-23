@@ -43,7 +43,7 @@ void handler_irq_cgra(uint32_t id) {
 int main(void) {
 
   PRINTF("Init CGRA context memory...");
-  cgra_cmem_init(cgra_imem_bitstream, cgra_kmem_bitstream);
+  cgra_cmem_init(cgra_cmem_bitstream, cgra_kmem_bitstream);
   PRINTF("done\n");
 
   // Init the PLIC
