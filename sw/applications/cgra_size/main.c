@@ -55,8 +55,8 @@ int main(void) {
   uint32_t num_instr = 5;
   // The maximum number of columns are used and the kernel always starts at address 0
   // First create the one-hot encoding for the number of columns used
-  uint32_t onehot_max_cols = 0
-  for (int i=0; i<CGRA_MAX_COLS*CGRA_N_ROWS; i++) {
+  uint32_t onehot_max_cols = 0;
+  for (int i=0; i<CGRA_MAX_COLS; i++) {
     onehot_max_cols = onehot_max_cols << 1 + 1;
   }
   kmem_conf_word = num_instr + (uint32_t) onehot_max_cols << (CGRA_CMEM_BK_DEPTH_LOG2+CGRA_RCS_NUM_CREG_LOG2);
