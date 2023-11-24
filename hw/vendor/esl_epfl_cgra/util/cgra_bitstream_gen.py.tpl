@@ -118,7 +118,7 @@ CGRA_KMEM_WIDTH = CGRA_MAX_COL + CGRA_CMEM_BK_DEPTH_LOG2 + RCS_NUM_CREG_LOG2
 # Check the parameters are in the expected range
 if CGRA_KMEM_WIDTH > 32:
     print('ERROR: kernel configuration word width > 32 bits')
-if CGRA_CMEM_BK_DEPTH < (CGRA_MAX_COL*RCS_NUM_CREG,2):
+if CGRA_CMEM_BK_DEPTH < (CGRA_MAX_COL*RCS_NUM_CREG):
     print('WARNING: context memory cannot hold the maximum kernel size')
 if ${cgra_max_columns} > CGRA_N_COL:
     print('ERROR: maximum number of columns is larger than the actual number of columns')
