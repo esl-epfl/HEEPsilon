@@ -27,6 +27,16 @@ filesets:
     - hw/vendor/esl_epfl_x_heep/hw/system/pad_ring.sv
     file_type: systemVerilogSource
 
+
+  ext_bus:
+    depend:
+    - x-heep::packages
+    files:
+    - hw/vendor/esl_epfl_x_heep/tb/ext_bus.sv
+    - hw/vendor/esl_epfl_x_heep/tb/ext_xbar.sv
+    file_type: systemVerilogSource
+
+
   tb-harness:
     files:
     - tb/tb_util.svh: {is_include_file: true}
@@ -125,7 +135,7 @@ filesets:
   netlist-fpga:
     files:
     - build/openhwgroup.org_systems_core-v-mini-mcu_0/nexys-a7-100t-vivado/core_v_mini_mcu_xiling_postsynth.v
-    file_type: verilogSource  
+    file_type: verilogSource
 
 parameters:
   COREV_PULP:
@@ -185,7 +195,7 @@ targets:
     - tool_vcs? (systemverilog_only_simjtag)
     - tool_modelsim? (cypress_flash)
     - tool_vcs? (cypress_flash)
-
+    - ext_bus
     - tool_modelsim? (pre_build_remote_bitbang)
     - tool_modelsim? (pre_build_uartdpi)
     - tool_modelsim? (pre_patch_modelsim_Makefile)
@@ -256,10 +266,11 @@ targets:
     description: TUL Pynq-Z2 Board
     filesets_append:
     - x_heep_system
-    - files_rtl_generic # Already added by default? 
+    - files_rtl_generic # Already added by default?
     - rtl-fpga
     - ip-fpga
     - xdc-fpga-pynq-z2
+    - ext_bus
     parameters:
     - COREV_PULP=0
     - SYNTHESIS=true

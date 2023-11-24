@@ -98,7 +98,15 @@ static uint32_t z1 = RANDOM_SEED, \
                 z4 = RANDOM_SEED;
 
 // Controlling a pin
-static gpio_t  gpio;
+static gpio_cfg_t pin_cfg_new_vcd = {
+        .pin = PIN_TO_NEW_VCD,
+        .mode = GpioModeOutPushPull
+    };
+
+static gpio_cfg_t pin_cfg_ctrl_vcd = {
+    .pin = PIN_TO_NEW_VCD,
+    .mode = PIN_TO_CTRL_VCD
+};
 
 // Timer
 static rv_timer_t          timer;
@@ -117,11 +125,18 @@ static kcom_time_diff_t     *cgraPerf;
 /**                                                                        **/
 /****************************************************************************/
 
+// Interrupt controller variables
+void handler_irq_cgra(uint32_t id) {
+    kcom_perfRecordStop( cgraPerf );
+    cgra_intr_flag = 1;
+}
+
 void plic_interrupt_init() {
     // Init the PLIC
     plic_Init();
     plic_irq_set_priority(CGRA_INTR, 1);
     plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
+    plic_assign_external_irq_handler( CGRA_INTR, (void *) &handler_irq_cgra);
 
     // Enable interrupt on processor side
     // Enable global interrupt for machine-level interrupts
@@ -130,14 +145,6 @@ void plic_interrupt_init() {
     const uint32_t mask = 1 << 11;//IRQ_EXT_ENABLE_OFFSET;
     CSR_SET_BITS(CSR_REG_MIE, mask);
     cgra_intr_flag = 0;
-}
-
-// Interrupt controller variables
-void handler_irq_ext(uint32_t id) {
-  if( id == CGRA_INTR) {
-    kcom_perfRecordStop( cgraPerf );
-    cgra_intr_flag = 1;
-  }
 }
 
 /* MISCELANEOUS */
@@ -225,7 +232,7 @@ void kcom_populateRun( kcom_run_t *run, kcom_perf_t *perf, uint32_t it_idx )
 #endif //MEASURE_RATIO
 
 #if PRINT_ITERATION_VALUES
-    PRINTF("i%d\tSW:%d\tCG:%d\n",it_idx, (run[ it_idx ]).sw, (run[ it_idx ]).cgra );
+    PRINTF("i%d\tSW:%d\tCG:%d\n\r",it_idx, (run[ it_idx ]).sw, (run[ it_idx ]).cgra );
 #endif //PRINT_ITERATION_VALUES
 #endif //ENABLE_TIME_MEASURE
 }
@@ -345,54 +352,54 @@ void kcom_printPerf( kcom_perf_t *perf )
     {
         PRINTF(" ");
     }
-    PRINTF("*\n");
+    PRINTF("*\n\r");
 #endif
 
 #if PRINT_COLUMN_STATS
-    PRINTF("\n===========\n COLUMN STATS BELOW \n===========\n");
-    PRINTF("Col\tAct\tStl\n");
+    PRINTF("\n\r===========\n\r COLUMN STATS BELOW \n\r===========\n\r");
+    PRINTF("Col\tAct\tStl\n\r");
     for(int8_t col_idx = 0 ; col_idx < CGRA_MAX_COLS ; col_idx++)
     {
-        PRINTF("%01d\t%03d\t%03d\n", col_idx, perf->cols[col_idx].cyc_act, perf->cols[col_idx].cyc_stl );
+        PRINTF("%01d\t%03d\t%03d\n\r", col_idx, perf->cols[col_idx].cyc_act, perf->cols[col_idx].cyc_stl );
     }
-    PRINTF("Max:\t%03d\t%03d\n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl );
+    PRINTF("Max:\t%03d\t%03d\n\r", perf->cols_max.cyc_act, perf->cols_max.cyc_stl );
 #endif //PRINT_COLUMN_STATS
 
 #if PRINT_LATEX
 #if PRINT_TABBED
-    PRINTF("\n===========\n LATEX VERSION BELOW \n===========\n");
+    PRINTF("\n\r===========\n\r LATEX VERSION BELOW \n\r===========\n\r");
 #endif // PRINT_TABBED
-    PRINTF("\\begin{table}[h!] \n");
-    PRINTF("\t\\centering \n");
-    PRINTF("\t\\caption{\\small Some table caption} \n");
-    PRINTF("\t\\begin{tabular}{lll} \n");
-    PRINTF("\t\t\\toprule \n");
+    PRINTF("\\begin{table}[h!] \n\r");
+    PRINTF("\t\\centering \n\r");
+    PRINTF("\t\\caption{\\small Some table caption} \n\r");
+    PRINTF("\t\\begin{tabular}{lll} \n\r");
+    PRINTF("\t\t\\toprule \n\r");
 
-    PRINTF("\t\t\\textbf{Parameter}&\\textbf{Value}&\\textbf{Unit}\\\\\n");
+    PRINTF("\t\t\\textbf{Parameter}&\\textbf{Value}&\\textbf{Unit}\\\\\n\r");
 
-    PRINTF("\t\t\\midrule \n");
-    PRINTF("\t\tActive&%03d&cycles\\\\\n", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
-    PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
+    PRINTF("\t\t\\midrule \n\r");
+    PRINTF("\t\tActive&%03d&cycles\\\\\n\r", perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
+    PRINTF("\t\tAct/Stl&%d.%01d\\%%&- \\\\\n\r", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
 #if ENABLE_TIME_MEASURE
-    PRINTF("\t\tSoftware&%d&sec\\\\\n",  perf->time.sw.spent_cy );
-    PRINTF("\t\tCGRA&%d&sec\\\\\n", perf->time.cgra.spent_cy );
+    PRINTF("\t\tSoftware&%d&sec\\\\\n\r",  perf->time.sw.spent_cy );
+    PRINTF("\t\tCGRA&%d&sec\\\\\n\r", perf->time.cgra.spent_cy );
 #endif //ENABLE_TIME_MEASURE
 
-    PRINTF("\t\t\\bottomrule \n");
-	PRINTF("\t\\end{tabular} \n");
-    PRINTF("\\end{table} \n");
+    PRINTF("\t\t\\bottomrule \n\r");
+	PRINTF("\t\\end{tabular} \n\r");
+    PRINTF("\\end{table} \n\r");
 #endif //PRINT_LATEX
 
 #if PRINT_TABBED
 #if PRINT_LATEX
-    PRINTF("\n===========\n TABBED VERSION BELOW \n===========\n");
+    PRINTF("\n\r===========\n\r TABBED VERSION BELOW \n\r===========\n\r");
 #endif //PRINT_LATEX
-    PRINTF("Param\tValue\tUnit \n");
-    PRINTF("Total\t%d+%d=%03d\tcycles \n", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
-    PRINTF("Act/Stl\t%d.%01d\t%% \n", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
-    PRINTF("Sw\t%d\tcy\n",  perf->time.sw.spent_cy );
-    PRINTF("CGRA\t%d\tcy\n", perf->time.cgra.spent_cy );
-    PRINTF("Active\t%d\tcy\n", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
+    PRINTF("Param\tValue\tUnit \n\r");
+    PRINTF("Total\t%d+%d=%03d\tcycles \n\r", perf->cols_max.cyc_act, perf->cols_max.cyc_stl,perf->cols_max.cyc_act + perf->cols_max.cyc_stl );
+    PRINTF("Act/Stl\t%d.%01d\t%% \n\r", perf->cyc_ratio / 10, perf->cyc_ratio % 10  );
+    PRINTF("Sw\t%d\tcy\n\r",  perf->time.sw.spent_cy );
+    PRINTF("CGRA\t%d\tcy\n\r", perf->time.cgra.spent_cy );
+    PRINTF("Active\t%d\tcy\n\r", perf->time.cgra.spent_cy * ( 1000 - perf->cyc_ratio )/1000 );
 #endif // PRINT_TABBED
 
 }
@@ -400,33 +407,33 @@ void kcom_printPerf( kcom_perf_t *perf )
 void kcom_printKernelStats( kcom_stats_t *stats  )
 {
 #if ENABLE_TIME_MEASURE
-    // PRINTF("\n===================\n %s \n", stats->name);
-    // PRINTF("PARA\tAVG(cy)\tDEV\n");
+    // PRINTF("\n\r===================\n\r %s \n\r", stats->name);
+    // PRINTF("PARA\tAVG(cy)\tDEV\n\r");
 #if MEASURE_DEVIATION
 #if EXECUTE_SOFTWARE
-    PRINTF("SOFT\t%d\t%0d.%01d\n", stats->avg.sw, stats->stdev.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.sw%CGRA_STAT_PERCENT_MULTIPLIER );
+    PRINTF("SOFT\t%d\t%0d.%01d\n\r", stats->avg.sw, stats->stdev.sw/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.sw%CGRA_STAT_PERCENT_MULTIPLIER );
 #endif //EXECUTE_SOFTWARE
-    PRINTF("CONF\t%d\t%0d.%01d\n", stats->avg.conf, stats->stdev.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.conf%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("REPO\t%d\t%0d.%01d\n", stats->avg.repo, stats->stdev.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.repo%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("CGRA\t%d\t%0d.%01d\n", stats->avg.cgra, stats->stdev.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CONF\t%d\t%0d.%01d\n\r", stats->avg.conf, stats->stdev.conf/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.conf%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("REPO\t%d\t%0d.%01d\n\r", stats->avg.repo, stats->stdev.repo/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.repo%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CGRA\t%d\t%0d.%01d\n\r", stats->avg.cgra, stats->stdev.cgra/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cgra%CGRA_STAT_PERCENT_MULTIPLIER);
 #if MEASURE_RATIO
-    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
-    PRINTF("CG/S\t%0d%%\t-\n",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
+    PRINTF("St/A\t%0d.%01d%%\t%0d.%01d\n\r", stats->avg.cyc_ratio/10,stats->avg.cyc_ratio%10, stats->stdev.cyc_ratio/CGRA_STAT_PERCENT_MULTIPLIER,stats->stdev.cyc_ratio%CGRA_STAT_PERCENT_MULTIPLIER);
+    PRINTF("CG/S\t%0d%%\t-\n\r",(stats->avg.cgra*CGRA_STAT_PERCENT_MULTIPLIER/stats->avg.sw));
 #endif //MEASURE_RATIO
 #else
 #if EXECUTE_SOFTWARE
-    PRINTF("SOFT\t%d\n", stats->avg.sw );
+    PRINTF("SOFT\t%d\n\r", stats->avg.sw );
 #endif //EXECUTE_SOFTWARE
-    PRINTF("CONF\t%d\n", stats->avg.conf );
-    PRINTF("REPO\t%d\n", stats->avg.repo );
-    PRINTF("CGRA\t%d\n", stats->avg.cgra );
+    PRINTF("CONF\t%d\n\r", stats->avg.conf );
+    PRINTF("REPO\t%d\n\r", stats->avg.repo );
+    PRINTF("CGRA\t%d\n\r", stats->avg.cgra );
 #endif
 #endif //ENABLE_TIME_MEASURE
 }
 
 void kcom_printSummary( kcom_stats_t *stats  )
 {
-    PRINTF("E\t%d\n", stats->errors );
+    PRINTF("E\t%d\n\r", stats->errors );
 }
 
 
@@ -436,7 +443,7 @@ void kcom_init()
 {
     pinInit();
     timerInit();
-    plic_interrupt_init( CGRA_INTR );
+    plic_interrupt_init();
 }
 
 void kcom_load( kcom_kernel_t *ker )
@@ -482,12 +489,12 @@ __attribute__((optimize("O0"))) void kcom_waitingForIntr()
 
 inline __attribute__((always_inline)) void pinHigh( uint8_t pin )
 {
-    gpio_write(&gpio, pin, true );
+    gpio_write(pin, true );
 }
 
 inline __attribute__((always_inline)) void pinLow( uint8_t pin )
 {
-    gpio_write(&gpio, pin, false );
+    gpio_write(pin, false );
 }
 
 void pinInit()
@@ -497,16 +504,8 @@ void pinInit()
     gpio_params_t gpio_params;
     pad_control_t pad_control;
 
-    pad_control.base_addr = mmio_region_from_addr((uintptr_t)PAD_CONTROL_START_ADDRESS);
-    gpio_params.base_addr = mmio_region_from_addr((uintptr_t)GPIO_START_ADDRESS);
-
-    gpio_init(gpio_params, &gpio);
-
-    gpio_write(&gpio, PIN_TO_NEW_VCD, false);
-    gpio_write(&gpio, PIN_TO_CTRL_VCD, false);
-
-    gpio_output_set_enabled(&gpio, PIN_TO_NEW_VCD, true);
-    gpio_output_set_enabled(&gpio, PIN_TO_CTRL_VCD, true);
+    gpio_config (pin_cfg_ctrl_vcd);
+    gpio_config (pin_cfg_new_vcd);
 
     pad_control_set_mux(&pad_control, (ptrdiff_t)(PAD_CONTROL_PAD_MUX_I2C_SDA_REG_OFFSET), 1);
 #endif

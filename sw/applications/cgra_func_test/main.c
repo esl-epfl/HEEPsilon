@@ -39,22 +39,21 @@ int32_t stimuli[CGRA_N_ROWS][INPUT_LENGTH] = {
 int32_t exp_rc_c0[CGRA_N_ROWS][OUTPUT_LENGTH] = {0};
 
 // Interrupt controller variables
-void handler_irq_ext(uint32_t id) {
-  if( id == CGRA_INTR) {
+void handler_irq_cgra(uint32_t id) {
     cgra_intr_flag = 1;
-  }
 }
 
 int main(void) {
 
-  PRINTF("Init CGRA context memory...\n");
+  PRINTF("Init CGRA context memory...\n\r");
   cgra_cmem_init(cgra_imem_bitstream, cgra_kmem_bitstream);
-  PRINTF("\rdone\n");
+  PRINTF("\rdone\n\r");
 
   // Init the PLIC
   plic_Init();
   plic_irq_set_priority(CGRA_INTR, 1);
   plic_irq_set_enabled(CGRA_INTR, kPlicToggleEnabled);
+  plic_assign_external_irq_handler( CGRA_INTR, (void *) &handler_irq_cgra);
 
   // Enable interrupt on processor side
   // Enable global interrupt for machine-level interrupts
@@ -152,7 +151,7 @@ int main(void) {
   cgra_input[3][cgra_slot][6] = (int32_t)&cgra_res[3][2][0];
   cgra_input[3][cgra_slot][7] = (int32_t)&cgra_res[3][3][0];
 
-  printf("Run functionality check on CGRA...\n");
+  printf("Run functionality check on CGRA...\n\r");
   cgra_perf_cnt_enable(&cgra, 1);
   int8_t column_idx;
   // Set CGRA kernel pointers
@@ -187,44 +186,44 @@ int main(void) {
     for (int i=0; i<CGRA_N_ROWS; i++) {
       for (int j=0; j<OUTPUT_LENGTH; j++) {
         if (cgra_res[k][i][j] != exp_rc_c0[i][j]) {
-          printf("[%d][%d][%d]: %d != %d\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
-          printf("[%d][%d][%d]: %08x != %08x\n", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
+          printf("[%d][%d][%d]: %d != %d\n\r", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
+          printf("[%d][%d][%d]: %08x != %08x\n\r", k, i, j, cgra_res[k][i][j], exp_rc_c0[i][j]);
           errors++;
         }
       }
     }
   }
 
-  printf("CGRA functionality check finished with %d errors\n", errors);
+  printf("CGRA functionality check finished with %d errors\n\r", errors);
 
   // Performance counter display
-  printf("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
+  printf("CGRA kernel executed: %d\n\r", cgra_perf_cnt_get_kernel(&cgra));
   column_idx = 0;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   column_idx = 1;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   column_idx = 2;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   column_idx = 3;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   cgra_perf_cnt_reset(&cgra);
-  printf("CGRA kernel executed (after counter reset): %d\n", cgra_perf_cnt_get_kernel(&cgra));
+  printf("CGRA kernel executed (after counter reset): %d\n\r", cgra_perf_cnt_get_kernel(&cgra));
   column_idx = 0;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   column_idx = 1;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   column_idx = 2;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
   column_idx = 3;
-  PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  PRINTF("CGRA column %d active cycles: %d\n\r", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
+  PRINTF("CGRA column %d stall cycles : %d\n\r", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
 
   return EXIT_SUCCESS;
 }

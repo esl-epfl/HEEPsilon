@@ -76,12 +76,12 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = {
-        &conv_kernel,
+        // &conv_kernel,
         // &reve_kernel,
         // &bitc_kernel,
         // &sqrt_kernel,
         // &gsm_kernel,
-        // &strs_kernel,
+        &strs_kernel,
         // &sha_kernel,
         // &sha2_kernel,
         // Add all other kernels here
@@ -121,7 +121,7 @@ void main()
         kernel->kmem[ kernel_id ] = kernel->kmem[1]; // By default the kernels come located with id = 1.
         // The kernel = 1 is kept, so we can always take it from there.
 
-        PRINTF(" %s\n", stats.name );
+        PRINTF(" %s\n\r", stats.name );
 
         /* CGRA load */
 #if ANALYZE_EVERYTHING
