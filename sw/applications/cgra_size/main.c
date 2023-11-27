@@ -33,8 +33,12 @@ int32_t cgra_res[CGRA_N_ROWS][CGRA_MAX_COLS] = { 0 };
 
 uint32_t cgra_kmem_bitstream[CGRA_KMEM_DEPTH] = { 0 };
 uint32_t cgra_cmem_bitstream[CGRA_CMEM_TOT_DEPTH] = { 0 };
-// List of instructions used to generate the bistream
+
+// First add the number of instructions
+// 1 LWD + 2 DATA MVT + 1 SDW + 1 EXIT
 #define INSTR_PER_RC 5
+
+// List of instructions used to generate the bitstream
 uint32_t instr_list[INSTR_PER_RC] = {
   0x00a80004, // lwd  self
   0x40080000, // mv   self, rct
@@ -58,16 +62,13 @@ int main(void) {
   // Generate the bitstream on file to match the specific CGRA size
   // num_cols + cmem_bk_address + num_instr (per RC)
   uint32_t kmem_conf_word = 0;
-  // First add the number of instructions
-  // 1 LWD + 2 DATA MVT + 1 SDW + 1 EXIT
-  uint32_t num_instr = 5;
   // The maximum number of columns are used and the kernel always starts at address 0
   // First create the one-hot encoding for the number of columns used
   uint32_t onehot_max_cols = 0;
   for (int i=0; i<CGRA_MAX_COLS; i++) {
     onehot_max_cols = (onehot_max_cols << 1) + 1;
   }
-  kmem_conf_word = num_instr | ((uint32_t) (onehot_max_cols << (CGRA_CMEM_BK_DEPTH_LOG2+CGRA_RCS_NUM_CREG_LOG2)));
+  kmem_conf_word = (INSTR_PER_RC-1) | ((uint32_t) (onehot_max_cols << (CGRA_CMEM_BK_DEPTH_LOG2+CGRA_RCS_NUM_CREG_LOG2)));
 
   cgra_kmem_bitstream[1] = kmem_conf_word;
 
