@@ -10,11 +10,6 @@
 #include "cgra_x_heep.h"
 #include "cgra.h"
 
-// This application only works with a 4x4 CGRA
-#if CGRA_N_COLS != 4 | CGRA_N_ROWS != 4
-  #error The CGRA must have a 4x4 size to run this example
-#endif
-
 // #define DEBUG
 
 // Use PRINTF instead of printf to remove print by default
