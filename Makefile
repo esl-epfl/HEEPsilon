@@ -28,7 +28,7 @@ heepsilon-gen:
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/hw/rtl --pkg-sv hw/vendor/esl_epfl_cgra/hw/rtl/cgra_pkg.sv.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/hw/rtl --tpl-sv hw/vendor/esl_epfl_cgra/hw/rtl/peripheral_regs.sv.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/util --tpl-sv hw/vendor/esl_epfl_cgra/util/cgra_bitstream_gen.py.tpl
-	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/rtl --pkg-sv hw/rtl/cgra_x_heep_pkg.sv.tpl
+	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/rtl --pkg-sv hw/rtl/heepsilon_pkg.sv.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir sw/external/drivers/cgra --header-c sw/external/drivers/cgra/cgra.h.tpl
 	$(PYTHON) util/heepsilon_gen.py --cfg $(HEEPSILON_CFG) --outdir hw/vendor/esl_epfl_cgra/data --pkg-sv hw/vendor/esl_epfl_cgra/data/cgra_regs.hjson.tpl
 	bash -c "cd hw/vendor/esl_epfl_cgra/data; source cgra_reg_gen.sh; cd ../../../.."

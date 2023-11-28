@@ -2,7 +2,7 @@
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-module cgra_x_heep_top #(
+module heepsilon_top #(
     parameter COREV_PULP = 0,
     parameter FPU        = 0,
     parameter ZFINX      = 0,
@@ -49,17 +49,17 @@ module cgra_x_heep_top #(
 
   import obi_pkg::*;
   import reg_pkg::*;
-  import cgra_x_heep_pkg::*;
+  import heepsilon_pkg::*;
 
   // External xbar master/slave and peripheral ports
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
   reg_rsp_t ext_periph_slave_resp;
-  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_req;
-  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_req;
-  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_resp;
-  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_resp;
+  obi_req_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_req;
+  obi_req_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_req;
+  obi_resp_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_resp;
+  obi_resp_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_resp;
   obi_req_t heep_core_instr_req;
   obi_resp_t heep_core_instr_resp;
   obi_req_t heep_core_data_req;
@@ -262,4 +262,4 @@ module cgra_x_heep_top #(
       .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive)
   );
 
-endmodule  // cgra_x_heep_pkg
+endmodule  // heepsilon_pkg

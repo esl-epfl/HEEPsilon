@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "cgra_x_heep.h"
+#include "heepsilon.h"
 #include "core_v_mini_mcu.h"
 #include "cgra.h"
 #include "cgra_regs.h" // generated

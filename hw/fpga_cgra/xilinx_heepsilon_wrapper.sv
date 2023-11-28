@@ -2,7 +2,7 @@
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-module xilinx_cgra_x_heep_wrapper
+module xilinx_heepsilon_wrapper
   import obi_pkg::*;
   import reg_pkg::*;
 #(
@@ -89,11 +89,11 @@ module xilinx_cgra_x_heep_wrapper
       .clk_out1_0(clk_gen)
   );
 
-  cgra_x_heep_top #(
+  heepsilon_top #(
         .COREV_PULP (0),
         .FPU        (0),
         .ZFINX (0)
-      ) cgra_x_heep_top_i (
+      ) heepsilon_top_i (
         .clk_i(clk_gen),
         .rst_ni(rst_n),
         .boot_select_i,

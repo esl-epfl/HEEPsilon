@@ -14,7 +14,7 @@
 #include "core_v_mini_mcu.h"
 #include "rv_plic.h"
 #include "rv_plic_regs.h"
-#include "cgra_x_heep.h"
+#include "heepsilon.h"
 #include "cgra.h"
 
 #define DEBUG
