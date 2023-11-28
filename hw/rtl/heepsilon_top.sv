@@ -81,21 +81,21 @@ module heepsilon_top #(
   logic cgra_int;
   logic cgra_enable;
   logic cgra_logic_rst_n;
-  logic cgra_ram_banks_set_retentive;
+  logic cgra_ram_banks_set_retentive_n;
 
   // External subsystems
   logic external_subsystem_rst_n;
-  logic external_ram_banks_set_retentive;
+  logic external_ram_banks_set_retentive_n;
   /* verilator lint_off unused */
   logic external_subsystem_clkgate_en_n;
-  logic external_subsystem_powergate_switch;
-  logic external_subsystem_powergate_switch_ack;
-  logic external_subsystem_powergate_iso;
+  logic external_subsystem_powergate_switch_n;
+  logic external_subsystem_powergate_switch_ack_n;
+  logic external_subsystem_powergate_iso_n;
 
   // CGRA logic clock gating unit enable (always-on in this case)
-  assign cgra_enable                  = 1'b1;
-  assign cgra_logic_rst_n             = external_subsystem_rst_n;
-  assign cgra_ram_banks_set_retentive = external_ram_banks_set_retentive;
+  assign cgra_enable                    = 1'b1;
+  assign cgra_logic_rst_n               = external_subsystem_rst_n;
+  assign cgra_ram_banks_set_retentive_n = external_ram_banks_set_retentive_n;
 
   always_comb begin
     // All interrupt lines set to zero by default
@@ -152,7 +152,7 @@ module heepsilon_top #(
       .reg_rsp_o(ext_periph_slave_resp),
       .slave_req_i(ext_xbar_slave_req),
       .slave_resp_o(ext_xbar_slave_resp),
-      .cmem_set_retentive_i(cgra_ram_banks_set_retentive),
+      .cmem_set_retentive_ni(cgra_ram_banks_set_retentive_n),
       .cgra_int_o(cgra_int)
   );
 
@@ -254,12 +254,12 @@ module heepsilon_top #(
       .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n),
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
-      .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch),
-      .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack),
-      .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso),
+      .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch_n),
+      .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack_n),
+      .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso_n),
 
       .external_subsystem_rst_no(external_subsystem_rst_n),
-      .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive)
+      .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive_n)
   );
 
 endmodule  // heepsilon_pkg

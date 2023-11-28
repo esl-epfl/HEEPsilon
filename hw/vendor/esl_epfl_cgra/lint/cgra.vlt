@@ -29,7 +29,7 @@ lint_off -rule UNOPTFLAT -file "*esl_epfl_cgra/sim/cgra_clock_gate.sv" -match "S
 lint_off -rule UNUSED -file "*esl_epfl_cgra/hw/rtl/context_memory_decoder.sv" -match "Signal is not used: 'cm_be_i'"
 
 // Signal is not used by the sim wrapper for sram but can be used with a memory macro that enable retention
-lint_off -rule UNUSED -file "*esl_epfl_cgra/sim/cgra_sram_wrapper.sv" -match "Signal is not used: 'set_retentive_i'"
+lint_off -rule UNUSED -file "*esl_epfl_cgra/sim/cgra_sram_wrapper.sv" -match "Signal is not used: 'set_retentive_ni'"
 
 // There are 2 unused registers for now
 lint_off -rule UNUSED -file "*esl_epfl_cgra/hw/rtl/peripheral_regs.sv" -match "Bits of signal are not used: 'reg2hw'[63:0]"

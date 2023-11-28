@@ -55,7 +55,7 @@ module testharness #(
   wire spi_sck;
 
   // External subsystems
-  logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_n;
+  // logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_n;
   logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_ack_n;
 //   logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_n;
 //   logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_n;
@@ -113,7 +113,7 @@ module testharness #(
     tb_cpu_subsystem_powergate_switch_ack_n[0] <= heepsilon_top_i.x_heep_system_i.cpu_subsystem_powergate_switch_n;
     tb_peripheral_subsystem_powergate_switch_ack_n[0] <= heepsilon_top_i.x_heep_system_i.peripheral_subsystem_powergate_switch_n;
     tb_memory_subsystem_banks_powergate_switch_ack_n[0] <= heepsilon_top_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_n;
-    tb_external_subsystem_powergate_switch_ack_n[0] <= external_subsystem_powergate_switch_n;
+    tb_external_subsystem_powergate_switch_ack_n[0] <= heepsilon_top_i.external_subsystem_powergate_switch_n;
     for (int i = 0; i < SWITCH_ACK_LATENCY; i++) begin
       tb_memory_subsystem_banks_powergate_switch_ack_n[i+1] <= tb_memory_subsystem_banks_powergate_switch_ack_n[i];
       tb_cpu_subsystem_powergate_switch_ack_n[i+1] <= tb_cpu_subsystem_powergate_switch_ack_n[i];
@@ -137,7 +137,7 @@ module testharness #(
     heepsilon_top_i.x_heep_system_i.cpu_subsystem_powergate_switch_ack_n = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
     heepsilon_top_i.x_heep_system_i.peripheral_subsystem_powergate_switch_ack_n = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
     heepsilon_top_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
-    external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
+    heepsilon_top_i.external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
 `endif
   end
 
