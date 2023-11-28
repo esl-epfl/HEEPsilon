@@ -7,14 +7,18 @@
 
 .PHONY: clean help
 
+ROOT_DIR    := $(realpath .)
 TARGET 		?= sim
 FPGA_BOARD 	?= pynq-z2
 PORT		?= /dev/ttyUSB2
 
+MCU_CFG  	?= $(ROOT_DIR)/heepsilon_mcu_cfg.hjson
+
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 # Use more memory banks
-MEMORY_BANKS = 4
+MEMORY_BANKS ?= 2
+MEMORY_BANKS_IL ?= 4
 
 # Project options are based on the app to be build (default - hello_world)
 PROJECT  ?= hello_world
@@ -26,9 +30,9 @@ include $(HEEP_DIR)Makefile.venv
 # Generates mcu files. First the mcu-gen from X-HEEP is called.
 # This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from CGRA-X-HEEP, not the one from X-HEEP.
 mcu-gen:
-	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} MEMORY_BANKS=${MEMORY_BANKS} $(MAKECMDGOALS)
+	$(MAKE) -f $(XHEEP_MAKE) MCU_CFG=${MCU_CFG} EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} MEMORY_BANKS=${MEMORY_BANKS} MEMORY_BANKS_IL=$(MEMORY_BANKS_IL) BUS=NtoM $(MAKECMDGOALS)
 	cd hw/vendor/esl_epfl_x_heep &&\
-	python util/mcu_gen.py --cfg mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
+	python util/mcu_gen.py --cfg $(MCU_CFG) --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --bus NtoM --memorybanks $(MEMORY_BANKS) --memorybanks_il $(MEMORY_BANKS_IL) --tpl-sv ../../../tb/tb_util.svh.tpl
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
 ## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
