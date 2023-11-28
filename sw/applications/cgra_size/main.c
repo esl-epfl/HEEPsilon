@@ -10,7 +10,7 @@
 #include "cgra_x_heep.h"
 #include "cgra.h"
 
-// #define DEBUG
+#define DEBUG
 
 // Use PRINTF instead of printf to remove print by default
 #ifdef DEBUG
@@ -168,7 +168,7 @@ int main(void) {
     }
   }
 
-  // printf("CGRA functionality check finished with %d errors\n", errors);
+  printf("CGRA functionality check finished with %d errors\n", errors);
 
   // // Performance counter display
   // PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
