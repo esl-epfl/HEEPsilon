@@ -6,9 +6,9 @@ package cgra_pkg;
 
   // CGRA GRID CONFIGURATION
   localparam N_ROW      = ${cgra_num_rows};
-  localparam N_ROW_LOG2 = $clog2(N_ROW);
+  localparam N_ROW_LOG2 = N_ROW == 1 ? 1 : $clog2(N_ROW);
   localparam N_COL      = ${cgra_num_columns};
-  localparam N_COL_LOG2 = $clog2(N_COL);
+  localparam N_COL_LOG2 = N_COL == 1 ? 1 : $clog2(N_COL);
 
   // Maximum number of columns a kernel can use
   localparam MAX_COL_REQ      = ${cgra_max_columns};
