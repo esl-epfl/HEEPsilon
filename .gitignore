@@ -13,7 +13,7 @@ build
 *.dump
 
 # ignore automatically generated files
-hw/rtl/cgra_x_heep_pkg.sv
+hw/rtl/heepsilon_pkg.sv
 tb/tb_util.svh
 sw/external/drivers/cgra/cgra.h
 

@@ -115,10 +115,10 @@ module heepsilon_top #(
       .EXT_XBAR_NMASTER(CGRA_XBAR_NMASTER),
       .EXT_XBAR_NSLAVE (1)
   ) ext_bus_i (
-      .clk_i                    (clk_i),
-      .rst_ni                   (rst_ni),
-      .addr_map_i               (EXT_XBAR_ADDR_RULES),
-      .default_idx_i            ('0),
+      .clk_i        (clk_i),
+      .rst_ni       (rst_ni),
+      .addr_map_i   (EXT_XBAR_ADDR_RULES),
+      .default_idx_i('0),
 
       .heep_core_instr_req_i    (heep_core_instr_req),
       .heep_core_instr_resp_o   (heep_core_instr_resp),
@@ -133,12 +133,12 @@ module heepsilon_top #(
       .heep_dma_addr_ch0_req_i  (heep_dma_addr_ch0_req),
       .heep_dma_addr_ch0_resp_o (heep_dma_addr_ch0_resp),
 
-      .ext_master_req_i         (ext_master_req),
-      .ext_master_resp_o        (ext_master_resp),
-      .heep_slave_req_o         (heep_slave_req),
-      .heep_slave_resp_i        (heep_slave_resp),
-      .ext_slave_req_o          (ext_xbar_slave_req),
-      .ext_slave_resp_i         (ext_xbar_slave_resp)
+      .ext_master_req_i (ext_master_req),
+      .ext_master_resp_o(ext_master_resp),
+      .heep_slave_req_o (heep_slave_req),
+      .heep_slave_resp_i(heep_slave_resp),
+      .ext_slave_req_o  (ext_xbar_slave_req),
+      .ext_slave_resp_i (ext_xbar_slave_resp)
   );
 
   cgra_top_wrapper cgra_top_wrapper_i (
