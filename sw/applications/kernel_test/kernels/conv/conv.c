@@ -155,17 +155,11 @@ if(input_channel == 0){
 }
     for(int i = 0; i < row_output; i++){
         for(int j = 0; j < col_output; j++){
-            buffer[i][j] = cgra_output[3][i*col_output + j];
+           output_from_CGRA[output_channel][i][j] += cgra_output[3][i*col_output + j];
         }
     }
     
-        for(int i = 0; i < row_output; i++){
-            for(int j = 0; j < col_output; j++){
-                output_from_CGRA[output_channel][i][j] += buffer[i][j];
-                
-                
-        }
-    }
+
 
 }
 
@@ -184,14 +178,14 @@ uint32_t check(void)
 for(int l = 0; l < N_filter; l ++){
     for(int i = 0; i < row_output; i++){
         for(int j = 0; j < col_output; j++){
-            if(outputs[0][0][i][j] != output_from_CGRA[l][i][j]){
+            if(outputs[0][l][i][j] != output_from_CGRA[l][i][j]){
                 errors++;
                 printf("Error at %d %d\n", i, j);
-                printf("Expected %d, got %d\n", outputs[0][0][i][j], output_from_CGRA[l][i][j]);
+                printf("Expected %d, got %d\n", outputs[0][l][i][j], output_from_CGRA[l][i][j]);
             }
         }
     }
-    printf("For Filter %d there are no errors. \n", l);
+ 
 }
     if(errors == 0){
         printf("No errors\n");
