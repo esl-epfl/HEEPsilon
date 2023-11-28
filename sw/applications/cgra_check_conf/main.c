@@ -17,7 +17,7 @@
 #include "heepsilon.h"
 #include "cgra.h"
 
-#define DEBUG
+// #define DEBUG
 
 // Use PRINTF instead of printf to remove print by default
 #ifdef DEBUG
@@ -139,7 +139,7 @@ int main(void) {
   }
   exp_res[0][0] = stimuli[CGRA_N_ROWS-1][CGRA_MAX_COLS-1];
 
-  PRINTF("Running configuration check on CGRA...");
+  PRINTF("Running configuration check on %dx%d CGRA...", CGRA_N_ROWS, CGRA_N_COLS);
 
   // Check the CGRA can accept a new request
   cgra_wait_ready(&cgra);
@@ -174,7 +174,7 @@ int main(void) {
     }
   }
 
-  printf("CGRA configuration check finished with %d errors\n", errors);
+  PRINTF("CGRA configuration check finished with %d errors\n", errors);
 
   return errors ? EXIT_FAILURE : EXIT_SUCCESS;
 }
