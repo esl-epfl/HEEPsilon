@@ -33,6 +33,8 @@ module testharness #(
 
   localparam SWITCH_ACK_LATENCY = 15;
 
+  localparam EXT_DOMAINS_RND = core_v_mini_mcu_pkg::EXTERNAL_DOMAINS == 0 ? 1 : core_v_mini_mcu_pkg::EXTERNAL_DOMAINS;
+
   wire uart_rx;
   wire uart_tx;
   logic sim_jtag_enable = (JTAG_DPI == 1);
@@ -53,8 +55,12 @@ module testharness #(
   wire spi_sck;
 
   // External subsystems
-  logic external_subsystem_powergate_switch;
-  logic external_subsystem_powergate_switch_ack;
+  logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_n;
+  logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_ack_n;
+//   logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_n;
+//   logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_n;
+//   logic [EXT_DOMAINS_RND-1:0] external_ram_banks_set_retentive_n;
+//   logic [EXT_DOMAINS_RND-1:0] external_subsystem_clkgate_en_n;
 
   heepsilon_top #(
       .COREV_PULP(COREV_PULP),
@@ -93,9 +99,8 @@ module testharness #(
   );
 
   //pretending to be SWITCH CELLs that delay by SWITCH_ACK_LATENCY cycles the ACK signal
-  logic
-      tb_cpu_subsystem_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1],
-      tb_peripheral_subsystem_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1];
+  logic tb_cpu_subsystem_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1];
+  logic tb_peripheral_subsystem_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1];
   logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0] tb_memory_subsystem_banks_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1];
   logic [EXT_DOMAINS_RND-1:0] tb_external_subsystem_powergate_switch_ack_n[SWITCH_ACK_LATENCY+1];
 

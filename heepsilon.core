@@ -4,8 +4,8 @@ CAPI=2:
 # Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 # SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-name: eslepfl:systems:cgra-x-heep
-description: CGRA X-HEEP Top.
+name: eslepfl:systems:heepsilon
+description: HEEPsilon (X-HEEP + CGRA) Top.
 
 filesets:
   files_rtl_generic:
