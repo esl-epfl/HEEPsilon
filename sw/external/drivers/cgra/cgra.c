@@ -12,12 +12,17 @@
 
 void cgra_cmem_init(uint32_t cgra_cmem_bitstream[], uint32_t cgra_kmem_bitstream[])
 {
-  int32_t *cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS);
+  int32_t *cgra_cmem_ptr;// = (int32_t*) (CGRA_START_ADDRESS);
 
-  for (int i=0; i<CGRA_CMEM_TOT_DEPTH; i++) {
-    *cgra_cmem_ptr++ = cgra_cmem_bitstream[i];
+  for (int i=0; i<CGRA_N_ROWS; i++) {
+    // Update the pointer to the nexkt memory bank
+    cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS) + i*((uint32_t)1<<CGRA_CMEM_BK_DEPTH_LOG2);
+    for (int j=0; j<CGRA_CMEM_BK_DEPTH; j++) {
+      *cgra_cmem_ptr++ = cgra_cmem_bitstream[j+i*CGRA_CMEM_BK_DEPTH];
+    }
   }
 
+  cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS) + CGRA_N_ROWS*((uint32_t)1<<CGRA_CMEM_BK_DEPTH_LOG2);
   for (int i=0; i<CGRA_KMEM_DEPTH; i++) {
     *cgra_cmem_ptr++ = cgra_kmem_bitstream[i];
   }

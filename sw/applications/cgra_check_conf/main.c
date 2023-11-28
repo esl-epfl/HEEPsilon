@@ -1,3 +1,10 @@
+// This application works with any reasonable CGRA size.
+// It does a simple check by using the maximum number of columns.
+// Each RC loads a data, move it around and store a data back.
+// It is not an extensive test but it checks basic features,
+// so if it gives no error the system should work properly
+// with this CGRA configuration.
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -35,10 +42,10 @@ uint32_t cgra_cmem_bitstream[CGRA_CMEM_TOT_DEPTH] = { 0 };
 
 // List of instructions used to generate the bitstream
 uint32_t instr_list[INSTR_PER_RC] = {
-  0x00a80004, // lwd  self
+  0x00a80000 + (4*CGRA_MAX_COLS), // lwd  self (address offset equals stimuli array 2nd dimension)
   0x40080000, // mv   self, rct
   0x20080000, // mv   self, rcl
-  0x10b00004, // swd  self
+  0x10b00000 + (4*CGRA_MAX_COLS), // swd  self (address offset equals stimuli array 2nd dimension)
   0x00000000  // nop
 };
   
@@ -55,7 +62,6 @@ void handler_irq_ext(uint32_t id) {
 int main(void) {
 
   // Generate the bitstream on file to match the specific CGRA size
-  // num_cols + cmem_bk_address + num_instr (per RC)
   uint32_t kmem_conf_word = 0;
   // The maximum number of columns are used and the kernel always starts at address 0
   // First create the one-hot encoding for the number of columns used
@@ -63,7 +69,8 @@ int main(void) {
   for (int i=0; i<CGRA_MAX_COLS; i++) {
     onehot_max_cols = (onehot_max_cols << 1) + 1;
   }
-  kmem_conf_word = (INSTR_PER_RC-1) | ((uint32_t) (onehot_max_cols << (CGRA_CMEM_BK_DEPTH_LOG2+CGRA_RCS_NUM_CREG_LOG2)));
+  // num_cols + cmem_bk_address (0) + num_instr (per RC)
+  kmem_conf_word = ((uint32_t) (onehot_max_cols << (CGRA_CMEM_BK_DEPTH_LOG2+CGRA_RCS_NUM_CREG_LOG2))) | (uint32_t)(INSTR_PER_RC-1);
 
   cgra_kmem_bitstream[1] = kmem_conf_word;
 
@@ -161,8 +168,8 @@ int main(void) {
   for (int i=0; i<CGRA_N_ROWS; i++) {
     for (int j=0; j<CGRA_MAX_COLS; j++) {
       if (cgra_res[i][j] != exp_res[i][j]) {
-        printf("[%d][%d]: %d != %d\n", i, j, cgra_res[i][j], exp_res[i][j]);
-        printf("[%d][%d]: %08x != %08x\n", i, j, cgra_res[i][j], exp_res[i][j]);
+        PRINTF("[%d][%d]: %d != %d\n", i, j, cgra_res[i][j], exp_res[i][j]);
+        PRINTF("[%d][%d]: %08x != %08x\n", i, j, cgra_res[i][j], exp_res[i][j]);
         errors++;
       }
     }
