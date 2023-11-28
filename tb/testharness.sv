@@ -6,8 +6,8 @@ module testharness #(
     parameter COREV_PULP                  = 0,
     parameter FPU                         = 0,
     parameter ZFINX                       = 0,
+    parameter X_EXT                       = 0,
     parameter JTAG_DPI                    = 0,
-    parameter USE_EXTERNAL_DEVICE_EXAMPLE = 1,
     parameter CLK_FREQUENCY               = 'd100_000  //KHz
 ) (
     inout logic clk_i,
@@ -58,7 +58,8 @@ module testharness #(
   cgra_x_heep_top #(
       .COREV_PULP(COREV_PULP),
       .FPU(FPU),
-      .ZFINX(ZFINX)
+      .ZFINX(ZFINX),
+      .X_EXT(X_EXT)
   ) cgra_x_heep_top_i (
       .clk_i,
       .rst_ni,

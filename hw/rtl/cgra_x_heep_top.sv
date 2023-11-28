@@ -5,7 +5,8 @@
 module cgra_x_heep_top #(
     parameter COREV_PULP = 0,
     parameter FPU        = 0,
-    parameter ZFINX      = 0
+    parameter ZFINX      = 0,
+    parameter X_EXT      = 0
 ) (
     inout logic clk_i,
     inout logic rst_ni,
@@ -162,6 +163,7 @@ module cgra_x_heep_top #(
       .COREV_PULP(COREV_PULP),
       .FPU(FPU),
       .ZFINX(ZFINX),
+      .X_EXT(X_EXT),
       .EXT_XBAR_NMASTER(CGRA_XBAR_NMASTER)
   ) x_heep_system_i (
       .clk_i,
