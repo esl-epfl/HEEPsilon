@@ -57,10 +57,10 @@ module testharness #(
   // External subsystems
   // logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_n;
   logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_switch_ack_n;
-//   logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_n;
-//   logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_n;
-//   logic [EXT_DOMAINS_RND-1:0] external_ram_banks_set_retentive_n;
-//   logic [EXT_DOMAINS_RND-1:0] external_subsystem_clkgate_en_n;
+  //   logic [EXT_DOMAINS_RND-1:0] external_subsystem_powergate_iso_n;
+  //   logic [EXT_DOMAINS_RND-1:0] external_subsystem_rst_n;
+  //   logic [EXT_DOMAINS_RND-1:0] external_ram_banks_set_retentive_n;
+  //   logic [EXT_DOMAINS_RND-1:0] external_subsystem_clkgate_en_n;
 
   heepsilon_top #(
       .COREV_PULP(COREV_PULP),
@@ -140,49 +140,6 @@ module testharness #(
     heepsilon_top_i.external_subsystem_powergate_switch_ack_n = delayed_tb_external_subsystem_powergate_switch_ack_n;
 `endif
   end
-
-  //   //pretending to be SWITCH CELLs that delay by SWITCH_ACK_LATENCY cycles the ACK signal
-  //   logic
-  //       tb_cpu_subsystem_powergate_switch_ack[SWITCH_ACK_LATENCY+1],
-  //       tb_peripheral_subsystem_powergate_switch_ack[SWITCH_ACK_LATENCY+1];
-  //   logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0] tb_memory_subsystem_banks_powergate_switch_ack[SWITCH_ACK_LATENCY+1];
-  //   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] tb_external_subsystem_powergate_switch_ack[SWITCH_ACK_LATENCY+1];
-  //   logic delayed_tb_cpu_subsystem_powergate_switch_ack;
-  //   logic delayed_tb_peripheral_subsystem_powergate_switch_ack;
-  //   logic [core_v_mini_mcu_pkg::NUM_BANKS-1:0] delayed_tb_memory_subsystem_banks_powergate_switch_ack;
-  //   logic [core_v_mini_mcu_pkg::EXTERNAL_DOMAINS-1:0] delayed_tb_external_subsystem_powergate_switch_ack;
-
-  //   always_ff @(negedge clk_i) begin
-  //     tb_cpu_subsystem_powergate_switch_ack[0] <= heepsilon_top_i.x_heep_system_i.cpu_subsystem_powergate_switch_n;
-  //     tb_peripheral_subsystem_powergate_switch_ack[0] <= heepsilon_top_i.x_heep_system_i.peripheral_subsystem_powergate_switch_n;
-  //     tb_memory_subsystem_banks_powergate_switch_ack[0] <= heepsilon_top_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_n;
-  //     tb_external_subsystem_powergate_switch_ack[0] <= heepsilon_top_i.external_subsystem_powergate_switch;
-  //     for (int i = 0; i < SWITCH_ACK_LATENCY; i++) begin
-  //       tb_memory_subsystem_banks_powergate_switch_ack[i+1] <= tb_memory_subsystem_banks_powergate_switch_ack[i];
-  //       tb_cpu_subsystem_powergate_switch_ack[i+1] <= tb_cpu_subsystem_powergate_switch_ack[i];
-  //       tb_peripheral_subsystem_powergate_switch_ack[i+1] <= tb_peripheral_subsystem_powergate_switch_ack[i];
-  //       tb_external_subsystem_powergate_switch_ack[i+1] <= tb_external_subsystem_powergate_switch_ack[i];
-  //     end
-  //   end
-
-  //   assign delayed_tb_cpu_subsystem_powergate_switch_ack = tb_cpu_subsystem_powergate_switch_ack[SWITCH_ACK_LATENCY];
-  //   assign delayed_tb_peripheral_subsystem_powergate_switch_ack = tb_peripheral_subsystem_powergate_switch_ack[SWITCH_ACK_LATENCY];
-  //   assign delayed_tb_memory_subsystem_banks_powergate_switch_ack = tb_memory_subsystem_banks_powergate_switch_ack[SWITCH_ACK_LATENCY];
-  //   assign delayed_tb_external_subsystem_powergate_switch_ack = tb_external_subsystem_powergate_switch_ack[SWITCH_ACK_LATENCY];
-
-  //   always_comb begin
-  // `ifndef VERILATOR
-  //     force heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.cpu_subsystem_powergate_switch_ack_ni = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
-  //     force heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.peripheral_subsystem_powergate_switch_ack_ni = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
-  //     force heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.memory_subsystem_banks_powergate_switch_ack_ni = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
-  //     force heepsilon_top_i.external_subsystem_powergate_switch_ack = delayed_tb_external_subsystem_powergate_switch_ack;
-  // `else
-  //     heepsilon_top_i.x_heep_system_i.cpu_subsystem_powergate_switch_ack_n = delayed_tb_cpu_subsystem_powergate_switch_ack_n;
-  //     heepsilon_top_i.x_heep_system_i.peripheral_subsystem_powergate_switch_ack_n = delayed_tb_peripheral_subsystem_powergate_switch_ack_n;
-  //     heepsilon_top_i.x_heep_system_i.memory_subsystem_banks_powergate_switch_ack_n = delayed_tb_memory_subsystem_banks_powergate_switch_ack_n;
-  //     heepsilon_top_i.external_subsystem_powergate_switch_ack = delayed_tb_external_subsystem_powergate_switch_ack;
-  // `endif
-  //   end
 
   uartdpi #(
       .BAUD('d256000),

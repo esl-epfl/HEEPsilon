@@ -139,7 +139,7 @@ int main(void) {
   }
   exp_res[0][0] = stimuli[CGRA_N_ROWS-1][CGRA_MAX_COLS-1];
 
-  PRINTF("Running check on CGRA...");
+  PRINTF("Running configuration check on CGRA...");
 
   // Check the CGRA can accept a new request
   cgra_wait_ready(&cgra);
@@ -174,36 +174,7 @@ int main(void) {
     }
   }
 
-  printf("CGRA functionality check finished with %d errors\n", errors);
-
-  // // Performance counter display
-  // PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
-  // column_idx = 0;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // column_idx = 1;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // column_idx = 2;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // column_idx = 3;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // cgra_perf_cnt_reset(&cgra);
-  // PRINTF("CGRA kernel executed (after counter reset): %d\n", cgra_perf_cnt_get_kernel(&cgra));
-  // column_idx = 0;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // column_idx = 1;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // column_idx = 2;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
-  // column_idx = 3;
-  // PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
-  // PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
+  printf("CGRA configuration check finished with %d errors\n", errors);
 
   return errors ? EXIT_FAILURE : EXIT_SUCCESS;
 }
