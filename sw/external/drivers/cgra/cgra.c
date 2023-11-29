@@ -5,59 +5,49 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "cgra_x_heep.h"
+#include "heepsilon.h"
 #include "core_v_mini_mcu.h"
 #include "cgra.h"
 #include "cgra_regs.h" // generated
 
-void cgra_cmem_init(uint32_t cgra_imem_bistream[], uint32_t cgra_kem_bitstream[])
+void cgra_cmem_init(uint32_t cgra_cmem_bitstream[], uint32_t cgra_kmem_bitstream[])
 {
-  int32_t *cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS);
+  int32_t *cgra_cmem_ptr;// = (int32_t*) (CGRA_START_ADDRESS);
 
-  for (int i=0; i<CGRA_IMEM_SIZE; i++) {
-    *cgra_cmem_ptr++ = cgra_imem_bistream[i];
+  for (int i=0; i<CGRA_N_ROWS; i++) {
+    // Update the pointer to the nexkt memory bank
+    cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS) + i*((uint32_t)1<<CGRA_CMEM_BK_DEPTH_LOG2);
+    for (int j=0; j<CGRA_CMEM_BK_DEPTH; j++) {
+      *cgra_cmem_ptr++ = cgra_cmem_bitstream[j+i*CGRA_CMEM_BK_DEPTH];
+    }
   }
 
-  for (int i=0; i<CGRA_KMEM_SIZE; i++) {
-    *cgra_cmem_ptr++ = cgra_kem_bitstream[i];
-  }
-}
-
-void cgra_set_read_ptr(const cgra_t *cgra, uint8_t slot_id, uint32_t read_ptr, uint8_t column) {
-  if (slot_id == 0) {
-    mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT0_PTR_IN_C0_REG_OFFSET+0x8*column), read_ptr);
-  } else if (slot_id == 1) {
-    mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT1_PTR_IN_C0_REG_OFFSET+0x8*column), read_ptr);
+  cgra_cmem_ptr = (int32_t*) (CGRA_START_ADDRESS) + CGRA_N_ROWS*((uint32_t)1<<CGRA_CMEM_BK_DEPTH_LOG2);
+  for (int i=0; i<CGRA_KMEM_DEPTH; i++) {
+    *cgra_cmem_ptr++ = cgra_kmem_bitstream[i];
   }
 }
 
-void cgra_set_write_ptr(const cgra_t *cgra, uint8_t slot_id, uint32_t write_ptr, uint8_t column) {
-  if (slot_id == 0) {
-    mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT0_PTR_OUT_C0_REG_OFFSET+0x8*column), write_ptr);
-  } else if (slot_id == 1) {
-    mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT1_PTR_OUT_C0_REG_OFFSET+0x8*column), write_ptr);
-  }
+void cgra_set_read_ptr(const cgra_t *cgra, uint32_t read_ptr, uint8_t column_idx) {
+  // Each column has 2 pointers so increment the address by 0x8 (i.e., 2 x 32 bit addresses) multiply by the column index
+  mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_PTR_IN_COL_0_REG_OFFSET+0x8*column_idx), read_ptr);
 }
 
-uint32_t cgra_get_slot(const cgra_t *cgra) {
-  uint32_t slot0, slot1;
+void cgra_set_write_ptr(const cgra_t *cgra, uint32_t write_ptr, uint8_t column_idx) {
+  // Each column has 2 pointers so increment the address by 0x8 (i.e., 2 x 32 bit addresses) multiply by the column index
+  mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_PTR_OUT_COL_0_REG_OFFSET+0x8*column_idx), write_ptr);
+}
 
-  // Wait until one slot is available
+void cgra_wait_ready(const cgra_t *cgra) {
+  uint32_t cgra_req_free;
+  // Wait until the CGRA can accept a new request
   do {
-    slot0 = mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT0_KER_ID_REG_OFFSET));
-    slot1 = mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT0_KER_ID_REG_OFFSET));
-  } while (slot0 == 1 && slot1 == 1);
-  // return the available slot
-  return slot0 == 0 ? 0 : 1;
+    cgra_req_free = mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_KERNEL_ID_REG_OFFSET));
+  } while (cgra_req_free != 0);
 }
 
-void cgra_set_kernel(const cgra_t *cgra, uint8_t slot_id, uint32_t kernel_id) {
-  // Only slot 0 and 1 work for now
-  if (slot_id == 0) {
-    mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT0_KER_ID_REG_OFFSET), kernel_id);
-  } else if (slot_id == 1) {
-    mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_SLOT1_KER_ID_REG_OFFSET), kernel_id);
-  }
+void cgra_set_kernel(const cgra_t *cgra, uint32_t kernel_id) {
+  mmio_region_write32(cgra->base_addr, (ptrdiff_t)(CGRA_KERNEL_ID_REG_OFFSET), kernel_id);
 }
 
 void cgra_perf_cnt_enable(const cgra_t *cgra, bool enable) {
@@ -73,11 +63,11 @@ uint32_t cgra_perf_cnt_get_kernel(const cgra_t *cgra) {
 }
 
 uint32_t cgra_perf_cnt_get_col_active(const cgra_t *cgra, uint8_t column_idx) {
-  return mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_PERF_CNT_C0_ACTIVE_CYCLES_REG_OFFSET+column_idx*0x8));
+  return mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_PERF_CNT_COL_0_ACTIVE_CYCLES_REG_OFFSET+column_idx*0x8));
 }
 
 uint32_t cgra_perf_cnt_get_col_stall(const cgra_t *cgra, uint8_t column_idx) {
-  return mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_PERF_CNT_C0_STALL_CYCLES_REG_OFFSET+column_idx*0x8));
+  return mmio_region_read32(cgra->base_addr, (ptrdiff_t)(CGRA_PERF_CNT_COL_0_STALL_CYCLES_REG_OFFSET+column_idx*0x8));
 }
 
 uint32_t cgra_get_status(const cgra_t *cgra) {

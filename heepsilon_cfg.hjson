@@ -1,0 +1,32 @@
+// Copyright 2020 ETH Zurich and University of Bologna.
+// Solderpad Hardware License, Version 0.51, see LICENSE for details.
+// SPDX-License-Identifier: SHL-0.51
+// Derived from Occamy: https://github.com/pulp-platform/snitch/blob/master/hw/system/occamy/src/occamy_cfg.hjson
+// Peripherals configuration for core-v-mini-mcu.
+{
+    cgra: {
+        // Main impact: more columns equals more master ports connected to the bus
+        // There is a maximum limit because of the kernel configuration size fixed to the bus width of 32 bits
+        // This limit can be increased but manual changes are required
+        // Maximum number of columns: 32-log2(rcs_num_instr)-log2(max_columns*rcs_num_instr)
+        // Default settings enable: 32-log2(32)-log2(4*32) = 20 columns
+        num_columns: 4
+        // Main impact: more rows equals to more context memory banks (i.e., one per row)
+        // There should be no limitation compared to the number of rows compared to columns
+        num_rows: 4
+        // It is possible to limit the maximum number of columns a kernel can use (this saves a bit of resources)
+        // The default value should be the same than num_columns, put an number to change it
+        max_columns: default
+        // Number of instructions each RC can contain (usually a power of 2)
+        rcs_num_instr: 32
+        // Context memory bank depth
+        // This parameter is by default set to max_columns*rcs_num_instr
+        // The default depth correspond to a minimum required in case a kernel uses max_columns and rcs_num_instr instructions per RC
+        // The depth can be increased in case more kernels need to be stored inside the context memory
+        cmem_bk_depth: default
+        // This value fixes the maximum number of kernel configuration words that can be stores
+        // It does not mean that the context memory can holds that many kernels, it depends on the size of each kernel
+        // You probably don't need to change this value
+        kmem_depth: 16
+    },
+}

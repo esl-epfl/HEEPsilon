@@ -17,7 +17,7 @@ Due to its modular design, HEEPsilon respects the X-HEEP workflow. As such, you 
 
 Althought the HEEPsilon team will try to keep the latest version of X-HEEP available, changes in the X-HEEP setup might not reflect immediately on this repository.
 
-👉 For the most accurate set-up instructions please refer to the documentation of the [vendorized X-HEEP](https://github.com/esl-epfl/cgra_x_heep/tree/main/hw/vendor/esl_epfl_x_heep).
+👉 For the most accurate set-up instructions please refer to the documentation of the [vendorized X-HEEP](https://github.com/esl-epfl/heepsilon/tree/main/hw/vendor/esl_epfl_x_heep).
 
 
 # Behavioural simulations

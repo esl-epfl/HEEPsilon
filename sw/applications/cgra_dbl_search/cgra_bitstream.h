@@ -8,10 +8,8 @@
 // Kernel 0 => NULL
 #define DBL_MIN_KER_ID      1
 #define DBL_MAX_KER_ID      2
-// #define MAX_PEAK_KER_ID     3 // DEPRECATED
-// #define MIN_MAX_CIRC_KER_ID 4 // DEPRECATED
 
-uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {
+uint32_t cgra_kmem_bitstream[CGRA_KMEM_DEPTH] = {
   0x0,
   0x100d,
   0x11cd,
@@ -31,7 +29,7 @@ uint32_t cgra_kmem_bitstream[CGRA_KMEM_SIZE] = {
 };
 
 
-uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
+uint32_t cgra_cmem_bitstream[CGRA_CMEM_TOT_DEPTH] = {
   0x0,
   0x0,
   0x0,
@@ -44,7 +42,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x0,
   0x0,
-  0x60b00000,
+  0x60b00004,
   0xc80000,
   0x0,
   0x0,
@@ -58,7 +56,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x0,
   0x0,
-  0x60b00000,
+  0x60b00004,
   0xc80000,
   0x0,
   0x0,
@@ -160,7 +158,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x0,
   0x0,
-  0xad0000,
+  0xad0004,
   0x0,
   0x8b90000,
   0x8a0d0004,
@@ -170,11 +168,11 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x90090000,
   0x0,
-  0x60b00000,
+  0x60b00004,
   0x0,
   0x0,
   0x0,
-  0xad0000,
+  0xad0004,
   0x0,
   0x8b90000,
   0x8a0d0004,
@@ -184,7 +182,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x90090000,
   0x0,
-  0x60b00000,
+  0x60b00004,
   0x0,
   0x0,
   0x0,
@@ -299,7 +297,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x70090000,
   0x0,
   0x0,
-  0x60b00000,
+  0x60b00004,
   0x0,
   0x0,
   0xaa1907ff,
@@ -313,7 +311,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x70090000,
   0x0,
   0x0,
-  0x60b00000,
+  0x60b00004,
   0x0,
   0x0,
   0x0,
@@ -417,7 +415,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x0,
   0xa0091fff,
-  0xaf0000,
+  0xaf0004,
   0x0,
   0x8a0d0001,
   0x0,
@@ -431,7 +429,7 @@ uint32_t cgra_imem_bitstream[CGRA_IMEM_SIZE] = {
   0x0,
   0x60b00000,
   0xa0091fff,
-  0xaf0000,
+  0xaf0004,
   0x0,
   0x8a0d0001,
   0x0,

@@ -4,4 +4,4 @@
 
 `verilator_config
 
-lint_off -rule UNUSED -file "*hw/rtl/cgra_x_heep_top.sv" -match "Signal is not used: 'external_subsystem_powergate_iso'*"
+lint_off -rule UNUSED -file "*hw/rtl/heepsilon_top.sv" -match "Signal is not used: 'external_subsystem_powergate_iso'*"

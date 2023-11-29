@@ -4,6 +4,7 @@ build
 *.log
 *.do
 .venv/
+*__pycache__*
 # sw files
 *.map
 *.hex
@@ -12,7 +13,10 @@ build
 *.dump
 
 # ignore automatically generated files
+hw/rtl/heepsilon_pkg.sv
 tb/tb_util.svh
+sw/external/drivers/cgra/cgra.h
+
 *.vscode*
 *vivado*
 *__pycache__*

@@ -39,7 +39,7 @@
 #include <stdio.h>
 
 #include "cgra.h"
-#include "cgra_x_heep.h"
+#include "heepsilon.h"
 
 #include "hart.h"
 #include <limits.h>
