@@ -92,7 +92,7 @@ run-fpga-com:
 	$(MAKE) app PROJECT=$(PROJECT) LINKER=flash_load TARGET=pynq-z2
 	( cd hw/vendor/esl_epfl_x_heep/sw/vendor/yosyshq_icestorm/iceprog && make clean && make all ) ;\
 	$(MAKE) flash-prog ;\
-	picocom -b 115200 -r -l --imap lfcrlf $(PORT)
+	picocom -b 9600 -r -l --imap lfcrlf $(PORT)
 
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
