@@ -52,9 +52,8 @@ task tb_loadHEX;
       stimuli[i+3], stimuli[i+2], stimuli[i+1], stimuli[i]
     };
 
-    wait (heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.debug_subsystem_i.dm_obi_top_i.master_gnt_i);
-
-    @(posedge heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.clk_i);
+    while(!heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.debug_subsystem_i.dm_obi_top_i.master_gnt_i)
+      @(posedge heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.clk_i);
 
     #1;
     force heepsilon_top_i.x_heep_system_i.core_v_mini_mcu_i.debug_subsystem_i.dm_obi_top_i.master_req_o = 1'b0;
@@ -74,13 +73,22 @@ task tb_loadHEX;
 `else
 
   stimuli_counter = 0;
-% for bank in range(ram_numbanks):
+% for bank in range(ram_numbanks_cont):
   for (i = 0; i < NumBytes / NumBanks; i = i + 4) begin
     tb_writetoSram${bank}(i / 4, stimuli[stimuli_counter+3], stimuli[stimuli_counter+2],
                    stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
     stimuli_counter = stimuli_counter + 4;
   end
 % endfor
+% if ram_numbanks_il != 0:
+  for (i = 0; i < NumBytes / NumBanks; i = i + 4) begin
+% for bank in range(ram_numbanks_il):
+    tb_writetoSram${int(ram_numbanks_cont) + bank}(i / 4, stimuli[stimuli_counter+3], stimuli[stimuli_counter+2],
+                    stimuli[stimuli_counter+1], stimuli[stimuli_counter]);
+    stimuli_counter = stimuli_counter + 4;
+% endfor
+  end
+% endif
 
 `endif
 
