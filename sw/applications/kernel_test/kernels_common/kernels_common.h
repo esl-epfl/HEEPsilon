@@ -83,7 +83,7 @@
 #define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
 #define PIN_TO_NEW_VCD          21
 
-#define ITERATIONS_PER_KERNEL   2
+#define ITERATIONS_PER_KERNEL   10
 #define PERF_PLOT_SCALE_DOWN    5
 
 
@@ -95,7 +95,7 @@
 #define KERNEL_NAME_LENGTH_MAX          20
 #define RANDOM_SEED                     12346
 
-#define CGRA_ACCESS_FLAT_COST_CYCLES    80  // Measured in Questasim, do not change
+#define CGRA_ACCESS_FLAT_COST_CYCLES    190  // Measured in Questasim, do not change
 
 /* Macros */
 
