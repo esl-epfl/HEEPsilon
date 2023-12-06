@@ -47,7 +47,7 @@
 #define CGRA_COLS       4
 #define IN_VAR_DEPTH    6
 #define OUT_VAR_DEPTH   1
-#define TRANSPOSE 0
+#define TRANSPOSE 1
 
 
 
