@@ -165,7 +165,7 @@ kperf.time.loading_result.spent_cy = 0;
                 kcom_waitingForIntr();
                 
                 spent_tot_CGRA += kperf.time.cgra.spent_cy - kperf.time.dead.spent_cy;
-                printf("%d \n", spent_tot_CGRA);
+                //printf("%d \n", spent_tot_CGRA);
             // Time is stopped inside the interrupt handler to make it as fast as possible
 
                 kcom_perfRecordIntrSet( &(kperf.time.loading_result));
