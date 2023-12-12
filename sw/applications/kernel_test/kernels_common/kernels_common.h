@@ -61,7 +61,7 @@
 #define PRINT_TABBED            0
 #define PRINT_PLOT              0
 #define PRINT_RESULTS           0
-#define PRINT_CGRA_RESULTS      0
+#define PRINT_CGRA_RESULTS      1
 
 #define REPEAT_FIRST_INPUT      1
 
@@ -83,7 +83,7 @@
 #define PIN_TO_CTRL_VCD         20   // In sync w/ hardware, do not change
 #define PIN_TO_NEW_VCD          21
 
-#define ITERATIONS_PER_KERNEL   10
+#define ITERATIONS_PER_KERNEL   2
 #define PERF_PLOT_SCALE_DOWN    5
 
 
@@ -106,7 +106,7 @@
 #endif //ENABLE_PRINTF
 #if ENABLE_DEBUG_PRINTF
     #define PRINTDBG(fmt, ...)  printf(fmt, ## __VA_ARGS__)
-    #define PRINTLINE()         printf("%d\n\r", __LINE__)
+    #define PRINTLINE()         printf("%d\n", __LINE__)
 #else
     #define PRINTDBG(...)
     #define PRINTLINE()
@@ -140,8 +140,10 @@ typedef struct
     uint8_t     col_n;
     uint8_t     in_n;
     uint8_t     out_n;
-    void        ( *config ) (void);
+    void        ( *im2col ) (int output_channel, int out_row, int out_col);
+    void        ( *config )   (void);
     void        ( *func )   (void);
+    void        ( *loading_buffer )  (int output_channel, int out_row, int out_col);
     uint32_t    ( *check )  (void);
     int8_t      name[ KERNEL_NAME_LENGTH_MAX ];
 } kcom_kernel_t;
@@ -166,6 +168,8 @@ typedef struct
     kcom_time_diff_t    cgra;
     kcom_time_diff_t    load;
     kcom_time_diff_t    conf;
+    kcom_time_diff_t    loading_result; 
+    kcom_time_diff_t    im2col;
     kcom_time_diff_t    dead;
 } kcom_timing_t;
 
@@ -185,6 +189,8 @@ typedef struct
     kcom_param_t conf;
     kcom_param_t cgra;
     kcom_param_t repo;
+    kcom_param_t loading_result;
+    kcom_param_t im2col;
 #if MEASURE_RATIO
     kcom_param_t repo_conf;
     kcom_param_t cyc_ratio;
