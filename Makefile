@@ -17,7 +17,7 @@ MCU_CFG  	?= $(ROOT_DIR)/heepsilon_mcu_cfg.hjson
 # 1 external domain for the CGRA
 EXTERNAL_DOMAINS = 1
 # Use more memory banks
-MEMORY_BANKS ?= 4
+MEMORY_BANKS ?= 2
 MEMORY_BANKS_IL ?= 4
 CPU ?= cv32e20
 
