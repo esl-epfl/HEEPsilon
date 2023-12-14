@@ -8,9 +8,9 @@ ENTRY(_start)
 MEMORY
 {
     FLASH (rx)      : ORIGIN = 0x${flash_mem_start_address}, LENGTH = 0x${flash_mem_size_address}
-    RAM (xrw)       : ORIGIN = 0x${'{:08X}'.format(int(ram_start_address,16))}, LENGTH =  ${hex(int(linker_onchip_data_size_address,16)+int(linker_onchip_code_size_address,16))}
+    RAM (xrwai)       : ORIGIN = 0x${'{:08X}'.format(int(ram_start_address,16))}, LENGTH =  ${hex(int(linker_onchip_data_size_address,16)+int(linker_onchip_code_size_address,16))}
     % if ram_numbanks_cont > 1 and ram_numbanks_il > 0:
-    ram_il (rwx) : ORIGIN = 0x${linker_onchip_il_start_address}, LENGTH = 0x${linker_onchip_il_size_address}
+    ram_il (rwxai) : ORIGIN = 0x${linker_onchip_il_start_address}, LENGTH = 0x${linker_onchip_il_size_address}
     % endif
 }
 

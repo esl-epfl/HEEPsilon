@@ -1,0 +1,1444 @@
+Archive member included to satisfy reference by file (symbol)
+
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+                              /tmp/ccR0vRYO.o (atexit)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+                              /tmp/ccR0vRYO.o (exit)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+                              /tmp/ccR0vRYO.o (__libc_fini_array)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o) (_global_impure_ptr)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+                              /tmp/ccR0vRYO.o (__libc_init_array)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memset.o)
+                              /tmp/ccR0vRYO.o (memset)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+                              /tmp/cccXl14O.o (puts)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+                              /tmp/ccUEQkjQ.o (symbol from plugin) (errno)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o) (__swbuf_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o) (__swsetup_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o) (__register_exitproc)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o) (__call_exitprocs)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o) (_fflush_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o) (__sinit)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o) (_fwalk)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o) (__smakebuf_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o) (_free_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o) (_malloc_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o) (_sbrk_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o) (__sread)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o) (_write_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o) (_close_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o) (_fstat_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o) (_isatty_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o) (_lseek_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o) (__malloc_lock)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o) (_read_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memcpy-asm.o)
+                              CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj (memcpy)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+                              CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj (printf)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o) (_vfprintf_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o) (__sfvwrite_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o) (memchr)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memmove.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o) (memmove)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o) (_realloc_r)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o) (_printf_i)
+/home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+                              /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o) (_malloc_usable_size_r)
+/home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+                              /tmp/ccQ32cAF.ltrans0.ltrans.o (__divdi3)
+/home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+                              /tmp/ccQ32cAF.ltrans0.ltrans.o (__moddi3)
+/home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+                              /tmp/ccQ32cAF.ltrans0.ltrans.o (__udivdi3)
+/home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+                              /tmp/ccQ32cAF.ltrans0.ltrans.o (__umoddi3)
+/home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+                              /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o) (__clz_tab)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000040000000 0x0000000001000000 xr
+RAM              0x0000000000000000 0x0000000000010000 axrwl
+ram_il           0x0000000000010000 0x0000000000020000 axrwl
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /tmp/ccR0vRYO.o
+LOAD /tmp/cccXl14O.o
+LOAD /tmp/cclR7hiQ.o
+LOAD /tmp/ccQ32cAF.ltrans0.ltrans.o
+LOAD /tmp/ccDQYrbI.debug.temp.o
+LOAD /tmp/cch3cyuF.debug.temp.o
+LOAD /tmp/ccUmdSIE.debug.temp.o
+LOAD /tmp/ccoBmZsE.debug.temp.o
+LOAD /tmp/ccE1QqDE.debug.temp.o
+LOAD /tmp/ccK7pwiI.debug.temp.o
+LOAD /tmp/ccy4t6yH.debug.temp.o
+LOAD /tmp/ccJiJQcI.debug.temp.o
+LOAD /tmp/ccr0VLCF.debug.temp.o
+LOAD /tmp/ccoRI0VF.debug.temp.o
+LOAD /tmp/cclm0BSF.debug.temp.o
+LOAD /tmp/ccb3lGlF.debug.temp.o
+LOAD /tmp/ccnKHdKE.debug.temp.o
+LOAD /tmp/ccXulxzI.debug.temp.o
+LOAD /tmp/ccJXES6E.debug.temp.o
+LOAD /tmp/ccdcDwfE.debug.temp.o
+LOAD /tmp/ccjPGFMH.debug.temp.o
+LOAD /tmp/ccIXJ2SG.debug.temp.o
+LOAD /tmp/ccBxwMyE.debug.temp.o
+LOAD /tmp/ccDx8IrG.debug.temp.o
+LOAD /tmp/ccbUDi7F.debug.temp.o
+LOAD /tmp/ccJnV41G.debug.temp.o
+LOAD /tmp/ccjWNGEH.debug.temp.o
+LOAD /tmp/ccYlqQbI.debug.temp.o
+LOAD /tmp/ccXyjADE.debug.temp.o
+LOAD /tmp/cckCA5vF.debug.temp.o
+LOAD /tmp/cc97hz2E.debug.temp.o
+LOAD /tmp/ccdPFhpF.debug.temp.o
+LOAD /tmp/ccrUXovQ.o
+LOAD /tmp/ccdrPTGP.o
+LOAD /tmp/cccoTsnQ.o
+LOAD /tmp/cc9kGo8N.o
+LOAD /tmp/cclzHvvQ.o
+LOAD /tmp/cck1APWP.o
+LOAD /tmp/cchWpjZO.o
+LOAD /tmp/ccc3JLZR.o
+LOAD /tmp/cci2xh3N.o
+LOAD /tmp/ccbb8NpO.o
+LOAD /tmp/ccuSOPjS.o
+LOAD /tmp/cc1MVIAS.o
+LOAD /tmp/ccOFR5VR.o
+LOAD /tmp/cci9l3zS.o
+LOAD /tmp/ccrQ7quR.o
+LOAD /tmp/ccYrAIRO.o
+LOAD /tmp/ccUEcniR.o
+LOAD /tmp/cc0YNDfP.o
+LOAD /tmp/ccP9pZIP.o
+LOAD /tmp/ccH1FgPO.o
+LOAD /tmp/ccAYdAuS.o
+LOAD /tmp/ccHBXW7Q.o
+LOAD /tmp/ccD1dEWN.o
+LOAD /tmp/cckYHewS.o
+LOAD /tmp/ccXEVtiO.o
+LOAD /tmp/ccUEQkjQ.o
+LOAD /tmp/cczBFiKR.o
+LOAD /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a
+LOAD /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libm_nano.a
+LOAD /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a
+LOAD CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+                0x0000000000000180                PROVIDE (__boot_address = 0x180)
+                0x0000000000000800                __stack_size = DEFINED (__stack_size)?__stack_size:0x800
+                [!provide]                        PROVIDE (__stack_size = __stack_size)
+                0x0000000000000800                __heap_size = DEFINED (__heap_size)?__heap_size:0x800
+
+.vectors        0x0000000000000000      0x104 load address 0x0000000040000000
+                0x0000000000000000                PROVIDE (__vector_start = .)
+ *(.vectors)
+ .vectors       0x0000000000000000      0x104 /tmp/cccXl14O.o
+                0x0000000000000104                __VECTORS_AT = .
+
+.fill           0x0000000000000104       0x7c load address 0x0000000040000104
+ FILL mask 0xdeadbeef
+                0x000000000000017f                . = ((ORIGIN (RAM) + __boot_address) - 0x1)
+ *fill*         0x0000000000000104       0x7b deadbeef
+                0x000000000000017f        0x1 BYTE 0xee
+
+.init           0x0000000000000180      0x16a load address 0x0000000040000180
+ *(SORT_NONE(.init))
+ *(.text.start)
+ .text.start    0x0000000000000180      0x16a /tmp/ccR0vRYO.o
+                0x0000000000000180                _start
+                0x00000000000002e4                _init
+                0x00000000000002e8                _fini
+
+.text           0x00000000000002ec     0x47c8 load address 0x00000000400002ec
+                0x00000000000002ec                . = ALIGN (0x4)
+ *(.text)
+ .text          0x00000000000002ec        0x0 /tmp/ccR0vRYO.o
+ .text          0x00000000000002ec        0x0 /tmp/cccXl14O.o
+ .text          0x00000000000002ec        0x0 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text          0x00000000000002ec        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+ .text          0x00000000000002ec        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+ .text          0x00000000000002ec        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+ .text          0x00000000000002ec        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+ .text          0x00000000000002ec        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+ .text          0x00000000000002ec       0x10 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memset.o)
+                0x00000000000002ec                memset
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+ .text          0x00000000000002fc        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+ .text          0x00000000000002fc       0x16 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memcpy-asm.o)
+                0x00000000000002fc                memcpy
+ .text          0x0000000000000312        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+ .text          0x0000000000000312        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ .text          0x0000000000000312        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+ .text          0x0000000000000312        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+ .text          0x0000000000000312       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memmove.o)
+                0x0000000000000312                memmove
+ .text          0x0000000000000338        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+ .text          0x0000000000000338        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .text          0x0000000000000338        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+ .text          0x0000000000000338      0x39a /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+                0x0000000000000338                __divdi3
+ .text          0x00000000000006d2      0x376 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+                0x00000000000006d2                __moddi3
+ .text          0x0000000000000a48      0x35a /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+                0x0000000000000a48                __udivdi3
+ .text          0x0000000000000da2      0x31a /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+                0x0000000000000da2                __umoddi3
+ .text          0x00000000000010bc        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .text          0x00000000000010bc        0x0 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+ *(.text*)
+ .text.vecs     0x00000000000010bc       0x8c /tmp/cccXl14O.o
+ .text.kcom_waitingForIntr
+                0x0000000000001148       0x3e /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001148                kcom_waitingForIntr
+ .text.dma_is_ready
+                0x0000000000001186       0x22 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.dma_intr_handler_trans_done
+                0x00000000000011a8        0xe /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.dma_intr_handler_window_done
+                0x00000000000011b6        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.dma_window_ratio_warning_threshold
+                0x00000000000011c2       0x10 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_timer_1
+                0x00000000000011d2        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_timer_2
+                0x00000000000011de        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_timer_3
+                0x00000000000011ea        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_spi
+                0x00000000000011f6        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_spi_flash
+                0x0000000000001202        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_0
+                0x000000000000120e        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_1
+                0x000000000000121a        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_2
+                0x0000000000001226        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_3
+                0x0000000000001232        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_4
+                0x000000000000123e        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_5
+                0x000000000000124a        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_6
+                0x0000000000001256        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_gpio_7
+                0x0000000000001262        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.gpio_handler_irq_dummy
+                0x000000000000126e       0x12 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_irq_i2c
+                0x0000000000001280       0x12 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_irq_i2s
+                0x0000000000001292       0x14 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_irq_dummy
+                0x00000000000012a6       0x12 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_irq_spi
+                0x00000000000012b8       0x14 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_irq_uart
+                0x00000000000012cc       0x14 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.config   0x00000000000012e0       0x42 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.software
+                0x0000000000001322       0x5a /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_irq_gpio
+                0x000000000000137c        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.rv_timer_counter_read.constprop.0.isra.0
+                0x0000000000001380       0x28 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.print_exc_msg
+                0x00000000000013a8       0x20 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_instr_acc_fault
+                0x00000000000013c8       0x18 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.handler_lsu_fault
+                0x00000000000013e0       0x18 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.check    0x00000000000013f8       0x60 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.kcom_resetRand
+                0x0000000000001458        0x2 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001458                kcom_resetRand
+ .text.kcom_subtractDead
+                0x000000000000145a        0x8 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000145a                kcom_subtractDead
+ .text.kcom_newVCDfile
+                0x0000000000001462        0x2 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001462                kcom_newVCDfile
+ .text.kcom_perfRecordStart
+                0x0000000000001464       0x1a /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001464                kcom_perfRecordStart
+ .text.kcom_perfRecordStop
+                0x000000000000147e       0x20 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000147e                kcom_perfRecordStop
+ .text.kcom_perfRecordIntrSet
+                0x000000000000149e        0x8 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000149e                kcom_perfRecordIntrSet
+ .text.kcom_populateRun
+                0x00000000000014a6       0x26 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x00000000000014a6                kcom_populateRun
+ .text.kcom_extractConfTime
+                0x00000000000014cc       0x48 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x00000000000014cc                kcom_extractConfTime
+ .text.kcom_getKernelStats
+                0x0000000000001514       0x8e /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001514                kcom_getKernelStats
+ .text.kcom_getPerf
+                0x00000000000015a2       0x54 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x00000000000015a2                kcom_getPerf
+ .text.kcom_printKernelStats
+                0x00000000000015f6       0x9a /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x00000000000015f6                kcom_printKernelStats
+ .text.kcom_printSummary
+                0x0000000000001690        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001690                kcom_printSummary
+ .text.kcom_init
+                0x000000000000169c      0x290 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000169c                kcom_init
+ .text.kcom_load
+                0x000000000000192c       0xd0 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000192c                kcom_load
+ .text.kcom_rstPerfCounter
+                0x00000000000019fc        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x00000000000019fc                kcom_rstPerfCounter
+ .text.kcom_launchKernel
+                0x0000000000001a08       0x22 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001a08                kcom_launchKernel
+ *fill*         0x0000000000001a2a        0x2 
+ .text.handler_irq_external
+                0x0000000000001a2c       0x70 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001a2c                handler_irq_external
+ .text.handler_irq_dma
+                0x0000000000001a9c        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .text.fic_irq_dma
+                0x0000000000001aa0        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000001aac        0x0 
+ .text.handler_irq_fast_dma
+                0x0000000000001aac       0x54 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001aac                handler_irq_fast_dma
+ *fill*         0x0000000000001b00        0x0 
+ .text.handler_irq_fast_timer_1
+                0x0000000000001b00       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001b00                handler_irq_fast_timer_1
+ *fill*         0x0000000000001b56        0x2 
+ .text.handler_irq_fast_timer_2
+                0x0000000000001b58       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001b58                handler_irq_fast_timer_2
+ *fill*         0x0000000000001bae        0x2 
+ .text.handler_irq_fast_timer_3
+                0x0000000000001bb0       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001bb0                handler_irq_fast_timer_3
+ *fill*         0x0000000000001c06        0x2 
+ .text.handler_irq_fast_spi
+                0x0000000000001c08       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001c08                handler_irq_fast_spi
+ *fill*         0x0000000000001c5e        0x2 
+ .text.handler_irq_fast_spi_flash
+                0x0000000000001c60       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001c60                handler_irq_fast_spi_flash
+ *fill*         0x0000000000001cb6        0x2 
+ .text.handler_irq_fast_gpio_0
+                0x0000000000001cb8       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001cb8                handler_irq_fast_gpio_0
+ *fill*         0x0000000000001d0e        0x2 
+ .text.handler_irq_fast_gpio_1
+                0x0000000000001d10       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001d10                handler_irq_fast_gpio_1
+ *fill*         0x0000000000001d66        0x2 
+ .text.handler_irq_fast_gpio_2
+                0x0000000000001d68       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001d68                handler_irq_fast_gpio_2
+ *fill*         0x0000000000001dbe        0x2 
+ .text.handler_irq_fast_gpio_3
+                0x0000000000001dc0       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001dc0                handler_irq_fast_gpio_3
+ *fill*         0x0000000000001e16        0x2 
+ .text.handler_irq_fast_gpio_4
+                0x0000000000001e18       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001e18                handler_irq_fast_gpio_4
+ *fill*         0x0000000000001e6e        0x2 
+ .text.handler_irq_fast_gpio_5
+                0x0000000000001e70       0x5a /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001e70                handler_irq_fast_gpio_5
+ *fill*         0x0000000000001eca        0x2 
+ .text.handler_irq_fast_gpio_6
+                0x0000000000001ecc       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001ecc                handler_irq_fast_gpio_6
+ *fill*         0x0000000000001f22        0x2 
+ .text.handler_irq_fast_gpio_7
+                0x0000000000001f24       0x56 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001f24                handler_irq_fast_gpio_7
+ *fill*         0x0000000000001f7a        0x2 
+ .text.handler_exception
+                0x0000000000001f7c       0x74 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001f7c                handler_exception
+ *fill*         0x0000000000001ff0        0x0 
+ .text.handler_irq_software
+                0x0000000000001ff0       0x2e /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000001ff0                handler_irq_software
+ *fill*         0x000000000000201e        0x2 
+ .text.handler_irq_timer
+                0x0000000000002020       0x2e /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000002020                handler_irq_timer
+ .text.init     0x000000000000204e        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000204e                init
+ .text._close   0x0000000000002052        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000002052                _close
+ .text._exit    0x0000000000002056       0x10 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000002056                _exit
+ .text._fstat   0x0000000000002066        0x8 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000002066                _fstat
+ .text._isatty  0x000000000000206e        0x8 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000206e                _isatty
+ .text._lseek   0x0000000000002076        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000002076                _lseek
+ .text._read    0x000000000000207a        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000207a                _read
+ .text._write   0x000000000000207e       0xa4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x000000000000207e                _write
+ .text._sbrk    0x0000000000002122       0x30 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000002122                _sbrk
+ .text.atexit   0x0000000000002152        0xa /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+                0x0000000000002152                atexit
+ .text.exit     0x000000000000215c       0x24 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+                0x000000000000215c                exit
+ .text.__libc_fini_array
+                0x0000000000002180       0x32 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+                0x0000000000002180                __libc_fini_array
+ .text.__libc_init_array
+                0x00000000000021b2       0x56 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+                0x00000000000021b2                __libc_init_array
+ .text._puts_r  0x0000000000002208       0xd8 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+                0x0000000000002208                _puts_r
+ .text.puts     0x00000000000022e0        0xa /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+                0x00000000000022e0                puts
+ .text.cleanup_glue
+                0x00000000000022ea       0x22 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+                0x00000000000022ea                cleanup_glue
+ .text._reclaim_reent
+                0x000000000000230c       0xd6 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+                0x000000000000230c                _reclaim_reent
+ .text.__swbuf_r
+                0x00000000000023e2       0xba /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+                0x00000000000023e2                __swbuf_r
+ .text.__swbuf  0x000000000000249c        0xc /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+                0x000000000000249c                __swbuf
+ .text.__swsetup_r
+                0x00000000000024a8      0x104 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+                0x00000000000024a8                __swsetup_r
+ .text.__register_exitproc
+                0x00000000000025ac       0x80 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+                0x00000000000025ac                __register_exitproc
+ .text.__call_exitprocs
+                0x000000000000262c       0xc6 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+                0x000000000000262c                __call_exitprocs
+ .text.__sflush_r
+                0x00000000000026f2      0x146 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+                0x00000000000026f2                __sflush_r
+ .text._fflush_r
+                0x0000000000002838       0x5e /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+                0x0000000000002838                _fflush_r
+ .text.fflush   0x0000000000002896       0x1a /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+                0x0000000000002896                fflush
+ .text.__fp_lock
+                0x00000000000028b0        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .text.std      0x00000000000028b4       0x62 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .text._cleanup_r
+                0x0000000000002916        0x8 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002916                _cleanup_r
+ .text.__fp_unlock
+                0x000000000000291e        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .text.__sfmoreglue
+                0x0000000000002922       0x46 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002922                __sfmoreglue
+ .text._cleanup
+                0x0000000000002968        0x8 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002968                _cleanup
+ .text.__sinit  0x0000000000002970       0x66 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002970                __sinit
+ .text.__sfp    0x00000000000029d6       0x9c /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x00000000000029d6                __sfp
+ .text.__sfp_lock_acquire
+                0x0000000000002a72        0x2 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002a72                __sfp_lock_acquire
+ .text.__sfp_lock_release
+                0x0000000000002a74        0x2 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002a74                __sfp_lock_release
+ .text.__sinit_lock_acquire
+                0x0000000000002a76        0x2 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002a76                __sinit_lock_acquire
+ .text.__sinit_lock_release
+                0x0000000000002a78        0x2 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002a78                __sinit_lock_release
+ .text.__fp_lock_all
+                0x0000000000002a7a        0xe /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002a7a                __fp_lock_all
+ .text.__fp_unlock_all
+                0x0000000000002a88        0xe /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x0000000000002a88                __fp_unlock_all
+ .text._fwalk   0x0000000000002a96       0x62 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+                0x0000000000002a96                _fwalk
+ .text._fwalk_reent
+                0x0000000000002af8       0x6a /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+                0x0000000000002af8                _fwalk_reent
+ .text.__swhatbuf_r
+                0x0000000000002b62       0x5c /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+                0x0000000000002b62                __swhatbuf_r
+ .text.__smakebuf_r
+                0x0000000000002bbe       0x9a /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+                0x0000000000002bbe                __smakebuf_r
+ .text._free_r  0x0000000000002c58       0xa0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+                0x0000000000002c58                _free_r
+ .text._malloc_r
+                0x0000000000002cf8       0xd8 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+                0x0000000000002cf8                _malloc_r
+ .text._sbrk_r  0x0000000000002dd0       0x2e /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+                0x0000000000002dd0                _sbrk_r
+ .text.__sread  0x0000000000002dfe       0x30 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+                0x0000000000002dfe                __sread
+ .text.__seofread
+                0x0000000000002e2e        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+                0x0000000000002e2e                __seofread
+ .text.__swrite
+                0x0000000000002e32       0x4e /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+                0x0000000000002e32                __swrite
+ .text.__sseek  0x0000000000002e80       0x36 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+                0x0000000000002e80                __sseek
+ .text.__sclose
+                0x0000000000002eb6        0x6 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+                0x0000000000002eb6                __sclose
+ .text._write_r
+                0x0000000000002ebc       0x32 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+                0x0000000000002ebc                _write_r
+ .text._close_r
+                0x0000000000002eee       0x2e /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+                0x0000000000002eee                _close_r
+ .text._fstat_r
+                0x0000000000002f1c       0x30 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+                0x0000000000002f1c                _fstat_r
+ .text._isatty_r
+                0x0000000000002f4c       0x2e /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+                0x0000000000002f4c                _isatty_r
+ .text._lseek_r
+                0x0000000000002f7a       0x32 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+                0x0000000000002f7a                _lseek_r
+ .text.__malloc_lock
+                0x0000000000002fac        0x2 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+                0x0000000000002fac                __malloc_lock
+ .text.__malloc_unlock
+                0x0000000000002fae        0x2 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+                0x0000000000002fae                __malloc_unlock
+ .text._read_r  0x0000000000002fb0       0x32 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+                0x0000000000002fb0                _read_r
+ .text._printf_r
+                0x0000000000002fe2       0x38 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+                0x0000000000002fe2                _printf_r
+                0x0000000000002fe2                _iprintf_r
+ .text.printf   0x000000000000301a       0x3c /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+                0x000000000000301a                printf
+                0x000000000000301a                iprintf
+ .text.__sfputc_r
+                0x0000000000003056       0x2a /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ .text.__sfputs_r
+                0x0000000000003080       0x42 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x0000000000003080                __sfputs_r
+ .text.__sprint_r
+                0x00000000000030c2       0x22 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x00000000000030c2                __sprint_r
+ .text._vfprintf_r
+                0x00000000000030e4      0x292 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x00000000000030e4                _vfiprintf_r
+                0x00000000000030e4                _vfprintf_r
+ .text.vfprintf
+                0x0000000000003376        0xe /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x0000000000003376                vfiprintf
+                0x0000000000003376                vfprintf
+ .text.__sfvwrite_r
+                0x0000000000003384      0x2d4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+                0x0000000000003384                __sfvwrite_r
+ .text.memchr   0x0000000000003658       0x1a /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+                0x0000000000003658                memchr
+ .text._realloc_r
+                0x0000000000003672       0x7c /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+                0x0000000000003672                _realloc_r
+ .text._printf_common
+                0x00000000000036ee      0x110 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x00000000000036ee                _printf_common
+ .text._printf_i
+                0x00000000000037fe      0x25a /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x00000000000037fe                _printf_i
+ .text._malloc_usable_size_r
+                0x0000000000003a58       0x14 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+                0x0000000000003a58                _malloc_usable_size_r
+ .text.startup  0x0000000000003a6c      0x17a CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+                0x0000000000003a6c                main
+ *(.rodata)
+ .rodata        0x0000000000003be6       0xb5 /tmp/cccXl14O.o
+ *fill*         0x0000000000003c9b        0x1 
+ .rodata        0x0000000000003c9c      0x100 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+                0x0000000000003c9c                __clz_tab
+ .rodata        0x0000000000003d9c       0x16 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+ *(.rodata*)
+ *fill*         0x0000000000003db2        0x2 
+ .rodata.print_exc_msg.str1.4
+                0x0000000000003db4       0x19 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000003dcd        0x3 
+ .rodata.handler_instr_acc_fault.str1.4
+                0x0000000000003dd0       0x35 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000003e05        0x3 
+ .rodata.handler_lsu_fault.str1.4
+                0x0000000000003e08       0x31 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000003e39        0x3 
+ .rodata.check.str1.4
+                0x0000000000003e3c       0x38 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.kcom_printKernelStats.str1.4
+                0x0000000000003e74       0x80 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.kcom_printSummary.str1.4
+                0x0000000000003ef4        0x6 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000003efa        0x2 
+ .rodata.handler_exception.str1.4
+                0x0000000000003efc       0x95 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000003f91        0x3 
+ .rodata.handler_exception
+                0x0000000000003f94       0x30 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.handler_irq_software.str1.4
+                0x0000000000003fc4       0x18 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.handler_irq_timer.str1.4
+                0x0000000000003fdc       0x15 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x0000000000003ff1        0x3 
+ .rodata.In_Img
+                0x0000000000003ff4       0xe4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.cgra_imem_conv
+                0x00000000000040d8      0x800 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.filter
+                0x00000000000048d8       0x24 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.inputs
+                0x00000000000048fc       0xc0 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .rodata.__sf_fake_stderr
+                0x00000000000049bc       0x20 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x00000000000049bc                __sf_fake_stderr
+ .rodata.__sf_fake_stdin
+                0x00000000000049dc       0x20 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x00000000000049dc                __sf_fake_stdin
+ .rodata.__sf_fake_stdout
+                0x00000000000049fc       0x20 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+                0x00000000000049fc                __sf_fake_stdout
+ .rodata._vfprintf_r.str1.4
+                0x0000000000004a1c       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ *fill*         0x0000000000004a2f        0x1 
+ .rodata._printf_i.str1.4
+                0x0000000000004a30       0x25 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ *fill*         0x0000000000004a55        0x3 
+ .rodata._printf_i
+                0x0000000000004a58       0x58 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ *(.srodata)
+ *(.srodata*)
+ .srodata._global_impure_ptr
+                0x0000000000004ab0        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+                0x0000000000004ab0                _global_impure_ptr
+                0x0000000000004ab4                . = ALIGN (0x4)
+                0x0000000000004ab4                _etext = .
+
+.eh_frame       0x0000000000004ab4       0x64 load address 0x0000000040004ab4
+ .eh_frame      0x0000000000004ab4       0x28 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .eh_frame      0x0000000000004adc       0x14 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+                                         0x28 (size before relaxing)
+ .eh_frame      0x0000000000004af0       0x14 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+                                         0x28 (size before relaxing)
+ .eh_frame      0x0000000000004b04       0x14 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+                                         0x28 (size before relaxing)
+
+.rela.dyn       0x0000000000004b18        0x0 load address 0x0000000040004b18
+ .rela.text.start
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .rela.text.__libc_fini_array
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .rela.text.__libc_init_array
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .rela.text.__register_exitproc
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .rela.text._sbrk
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .rela.sdata.brk
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .rela.text._vfprintf_r
+                0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+
+.data           0x0000000000004b18       0xe0 load address 0x0000000040004b18
+                0x0000000000004b18                . = ALIGN (0x4)
+                0x0000000040004b18                _sidata = LOADADDR (.data)
+                0x0000000000004b18                _sdata = .
+                0x0000000000004b18                _ram_start = .
+                0x0000000000004b18                . = ALIGN (0x4)
+                0x0000000000004b18                __DATA_BEGIN__ = .
+ *(.data)
+ .data          0x0000000000004b18        0x0 /tmp/ccR0vRYO.o
+ .data          0x0000000000004b18        0x0 /tmp/cccXl14O.o
+ .data          0x0000000000004b18        0x0 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memset.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memcpy-asm.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memmove.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .data          0x0000000000004b18        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .data          0x0000000000004b18        0x0 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+ *(.data*)
+ .data.cgra_kmem_conv
+                0x0000000000004b18       0x40 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .data.conv_kernel
+                0x0000000000004b58       0x34 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x0000000000004b58                conv_kernel
+ .data.impure_data
+                0x0000000000004b8c       0x60 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+                0x0000000000004bec                __SDATA_BEGIN__ = .
+ *(.sdata)
+ *(.sdata*)
+ .sdata.brk     0x0000000000004bec        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .sdata._impure_ptr
+                0x0000000000004bf0        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+                0x0000000000004bf0                _impure_ptr
+ .sdata.__atexit_dummy
+                0x0000000000004bf4        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+                0x0000000000004bf4                __atexit_dummy
+                0x0000000000004bf8                . = ALIGN (0x4)
+                0x0000000000004bf8                _edata = .
+
+.power_manager  0x0000000000005000      0x100 load address 0x0000000040005000
+                [!provide]                        PROVIDE (__power_manager_start = .)
+                0x0000000000005100                . = (. + 0x100)
+ *fill*         0x0000000000005000      0x100 
+
+.bss            0x0000000000005100      0x2f0 load address 0x0000000040004bf8
+                0x0000000000005100                . = ALIGN (0x4)
+                0x0000000000005100                __bss_start = .
+ *(.bss)
+ .bss           0x0000000000005100        0x0 /tmp/ccR0vRYO.o
+ .bss           0x0000000000005100        0x0 /tmp/cccXl14O.o
+ .bss           0x0000000000005100        0x0 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memset.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memcpy-asm.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memmove.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .bss           0x0000000000005100        0x0 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .bss           0x0000000000005100       0xec CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+ *(.bss*)
+ .bss.dma_cb    0x00000000000051ec        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .bss.handlers  0x00000000000051f8      0x100 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .bss.outSW     0x00000000000052f8       0x38 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .bss.timer     0x0000000000005330        0xc /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .bss._global_atexit0
+                0x000000000000533c       0x8c /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+ *(.sbss)
+ *(.sbss*)
+ .sbss.cgra_intr_flag
+                0x00000000000053c8        0x1 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x00000000000053c9        0x3 
+ .sbss.cgra     0x00000000000053cc        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .sbss.cgra_slot
+                0x00000000000053d0        0x1 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ *fill*         0x00000000000053d1        0x3 
+ .sbss.freq_hz  0x00000000000053d4        0x4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .sbss.out.0    0x00000000000053d8        0x8 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .sbss.errno    0x00000000000053e0        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+                0x00000000000053e0                errno
+ .sbss._global_atexit
+                0x00000000000053e4        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+                0x00000000000053e4                _global_atexit
+ .sbss.__malloc_free_list
+                0x00000000000053e8        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+                0x00000000000053e8                __malloc_free_list
+ .sbss.__malloc_sbrk_start
+                0x00000000000053ec        0x4 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+                0x00000000000053ec                __malloc_sbrk_start
+ *(COMMON)
+                0x00000000000053f0                . = ALIGN (0x4)
+                0x00000000000053f0                __bss_end = .
+                0x00000000000053f0                __BSS_END__ = .
+                0x0000000000005318                __global_pointer$ = MIN ((__SDATA_BEGIN__ + 0x800), MAX ((__DATA_BEGIN__ + 0x800), (__BSS_END__ - 0x800)))
+
+.heap           0x00000000000053f0      0x800 load address 0x0000000040004bf8
+                0x00000000000053f0                PROVIDE (__heap_start = .)
+                0x0000000000000800                . = __heap_size
+ *fill*         0x00000000000053f0      0x800 
+                0x0000000000005bf0                PROVIDE (__heap_end = .)
+
+.stack          0x0000000000005bf0      0x800 load address 0x0000000040004c00
+                [!provide]                        PROVIDE (__stack_start = .)
+                0x0000000000000800                . = __stack_size
+ *fill*         0x0000000000005bf0      0x800 
+                0x00000000000063f0                PROVIDE (_sp = .)
+                [!provide]                        PROVIDE (__stack_end = .)
+                [!provide]                        PROVIDE (__freertos_irq_stack_top = .)
+
+.data_interleaved
+                0x0000000000010000      0x2f4 load address 0x0000000040004bf8
+                0x0000000000010000                . = ALIGN (0x4)
+ *(.xheep_data_interleaved)
+ .xheep_data_interleaved
+                0x0000000000010000      0x2f4 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                0x00000000000102f4                . = ALIGN (0x4)
+OUTPUT(main.elf elf32-littleriscv)
+
+.riscv.attributes
+                0x0000000000000000       0x2a
+ .riscv.attributes
+                0x0000000000000000       0x28 /tmp/ccR0vRYO.o
+ .riscv.attributes
+                0x0000000000000028       0x28 /tmp/cccXl14O.o
+ .riscv.attributes
+                0x0000000000000050       0x2a /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .riscv.attributes
+                0x000000000000007a       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+ .riscv.attributes
+                0x00000000000000a0       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+ .riscv.attributes
+                0x00000000000000c6       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+ .riscv.attributes
+                0x00000000000000ec       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+ .riscv.attributes
+                0x0000000000000112       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+ .riscv.attributes
+                0x0000000000000138       0x24 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memset.o)
+ .riscv.attributes
+                0x000000000000015c       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+ .riscv.attributes
+                0x0000000000000182       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+ .riscv.attributes
+                0x00000000000001a8       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+ .riscv.attributes
+                0x00000000000001ce       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+ .riscv.attributes
+                0x00000000000001f4       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+ .riscv.attributes
+                0x000000000000021a       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+ .riscv.attributes
+                0x0000000000000240       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+ .riscv.attributes
+                0x0000000000000266       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .riscv.attributes
+                0x000000000000028c       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+ .riscv.attributes
+                0x00000000000002b2       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+ .riscv.attributes
+                0x00000000000002d8       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+ .riscv.attributes
+                0x00000000000002fe       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+ .riscv.attributes
+                0x0000000000000324       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+ .riscv.attributes
+                0x000000000000034a       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+ .riscv.attributes
+                0x0000000000000370       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+ .riscv.attributes
+                0x0000000000000396       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+ .riscv.attributes
+                0x00000000000003bc       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+ .riscv.attributes
+                0x00000000000003e2       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+ .riscv.attributes
+                0x0000000000000408       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+ .riscv.attributes
+                0x000000000000042e       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+ .riscv.attributes
+                0x0000000000000454       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+ .riscv.attributes
+                0x000000000000047a       0x24 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memcpy-asm.o)
+ .riscv.attributes
+                0x000000000000049e       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+ .riscv.attributes
+                0x00000000000004c4       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ .riscv.attributes
+                0x00000000000004ea       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+ .riscv.attributes
+                0x0000000000000510       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+ .riscv.attributes
+                0x0000000000000536       0x24 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memmove.o)
+ .riscv.attributes
+                0x000000000000055a       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+ .riscv.attributes
+                0x0000000000000580       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .riscv.attributes
+                0x00000000000005a6       0x26 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+ .riscv.attributes
+                0x00000000000005cc       0x26 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .riscv.attributes
+                0x00000000000005f2       0x26 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .riscv.attributes
+                0x0000000000000618       0x26 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .riscv.attributes
+                0x000000000000063e       0x26 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .riscv.attributes
+                0x0000000000000664       0x26 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .riscv.attributes
+                0x000000000000068a       0x26 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.comment        0x0000000000000000       0x12
+ .comment       0x0000000000000000       0x13 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .comment       0x0000000000000000       0x13 /tmp/ccDQYrbI.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cch3cyuF.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccUmdSIE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccoBmZsE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccE1QqDE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccK7pwiI.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccy4t6yH.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccJiJQcI.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccr0VLCF.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccoRI0VF.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cclm0BSF.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccb3lGlF.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccnKHdKE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccXulxzI.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccJXES6E.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccdcDwfE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccjPGFMH.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccIXJ2SG.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccBxwMyE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccDx8IrG.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccbUDi7F.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccJnV41G.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccjWNGEH.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccYlqQbI.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccXyjADE.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cckCA5vF.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/cc97hz2E.debug.temp.o
+ .comment       0x0000000000000000       0x13 /tmp/ccdPFhpF.debug.temp.o
+ .comment       0x0000000000000000       0x12 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-atexit.o)
+                                         0x13 (size before relaxing)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-exit.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fini.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-impure.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-init.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-puts.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-reent.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wbuf.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-wsetup.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__atexit.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-__call_atexit.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fflush.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-findfp.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fwalk.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-makebuf.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-freer.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-mallocr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-sbrkr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-stdio.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-writer.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-closer.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fstatr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-isattyr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-lseekr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-mlock.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-readr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-printf.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-fvwrite.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-memchr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-reallocr.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/riscv32-unknown-elf/lib/libc_nano.a(lib_a-nano-msizer.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .comment       0x0000000000000012       0x13 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .comment       0x0000000000000012       0x13 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_line     0x0000000000000000     0x5530
+ .debug_line    0x0000000000000000      0x2d2 /tmp/ccR0vRYO.o
+ .debug_line    0x00000000000002d2      0x289 /tmp/cccXl14O.o
+ .debug_line    0x000000000000055b     0x236e /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_line    0x00000000000028c9       0x56 /tmp/ccDQYrbI.debug.temp.o
+ .debug_line    0x000000000000291f       0x5f /tmp/cch3cyuF.debug.temp.o
+ .debug_line    0x000000000000297e       0x5f /tmp/ccUmdSIE.debug.temp.o
+ .debug_line    0x00000000000029dd       0x5f /tmp/ccoBmZsE.debug.temp.o
+ .debug_line    0x0000000000002a3c       0x5f /tmp/ccE1QqDE.debug.temp.o
+ .debug_line    0x0000000000002a9b       0x5f /tmp/ccK7pwiI.debug.temp.o
+ .debug_line    0x0000000000002afa       0x5f /tmp/ccy4t6yH.debug.temp.o
+ .debug_line    0x0000000000002b59       0x5f /tmp/ccJiJQcI.debug.temp.o
+ .debug_line    0x0000000000002bb8       0x87 /tmp/ccr0VLCF.debug.temp.o
+ .debug_line    0x0000000000002c3f       0x43 /tmp/ccoRI0VF.debug.temp.o
+ .debug_line    0x0000000000002c82       0x51 /tmp/cclm0BSF.debug.temp.o
+ .debug_line    0x0000000000002cd3       0x5b /tmp/ccb3lGlF.debug.temp.o
+ .debug_line    0x0000000000002d2e       0x56 /tmp/ccnKHdKE.debug.temp.o
+ .debug_line    0x0000000000002d84       0x56 /tmp/ccXulxzI.debug.temp.o
+ .debug_line    0x0000000000002dda       0x56 /tmp/ccJXES6E.debug.temp.o
+ .debug_line    0x0000000000002e30       0x5f /tmp/ccdcDwfE.debug.temp.o
+ .debug_line    0x0000000000002e8f       0x56 /tmp/ccjPGFMH.debug.temp.o
+ .debug_line    0x0000000000002ee5       0x5a /tmp/ccIXJ2SG.debug.temp.o
+ .debug_line    0x0000000000002f3f       0x5f /tmp/ccBxwMyE.debug.temp.o
+ .debug_line    0x0000000000002f9e       0xa3 /tmp/ccDx8IrG.debug.temp.o
+ .debug_line    0x0000000000003041       0x5f /tmp/ccbUDi7F.debug.temp.o
+ .debug_line    0x00000000000030a0       0x5a /tmp/ccJnV41G.debug.temp.o
+ .debug_line    0x00000000000030fa       0x5f /tmp/ccjWNGEH.debug.temp.o
+ .debug_line    0x0000000000003159       0x68 /tmp/ccYlqQbI.debug.temp.o
+ .debug_line    0x00000000000031c1       0x4d /tmp/ccXyjADE.debug.temp.o
+ .debug_line    0x000000000000320e       0x3a /tmp/cckCA5vF.debug.temp.o
+ .debug_line    0x0000000000003248       0x9d /tmp/cc97hz2E.debug.temp.o
+ .debug_line    0x00000000000032e5       0x5a /tmp/ccdPFhpF.debug.temp.o
+ .debug_line    0x000000000000333f      0x7ca /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .debug_line    0x0000000000003b09      0x862 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_line    0x000000000000436b      0x727 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x0000000000004a92      0x7a1 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_line    0x0000000000005233       0x3f /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .debug_line    0x0000000000005272      0x2be CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_line_str
+                0x0000000000000000     0x1bad
+ .debug_line_str
+                0x0000000000000000       0x69 /tmp/ccR0vRYO.o
+                                         0xd2 (size before relaxing)
+ .debug_line_str
+                0x0000000000000069        0xa /tmp/cccXl14O.o
+                                         0xd8 (size before relaxing)
+ .debug_line_str
+                0x0000000000000073      0x40a /tmp/ccQ32cAF.ltrans0.ltrans.o
+                                        0x5b9 (size before relaxing)
+ .debug_line_str
+                0x000000000000047d      0x154 /tmp/ccDQYrbI.debug.temp.o
+                                        0x233 (size before relaxing)
+ .debug_line_str
+                0x00000000000005d1       0x66 /tmp/cch3cyuF.debug.temp.o
+                                        0x25a (size before relaxing)
+ .debug_line_str
+                0x0000000000000637      0x13b /tmp/ccUmdSIE.debug.temp.o
+                                        0x254 (size before relaxing)
+ .debug_line_str
+                0x0000000000000772      0x163 /tmp/ccoBmZsE.debug.temp.o
+                                        0x284 (size before relaxing)
+ .debug_line_str
+                0x00000000000008d5      0x13b /tmp/ccE1QqDE.debug.temp.o
+                                        0x254 (size before relaxing)
+ .debug_line_str
+                0x0000000000000a10      0x140 /tmp/ccK7pwiI.debug.temp.o
+                                        0x25a (size before relaxing)
+ .debug_line_str
+                0x0000000000000b50      0x140 /tmp/ccy4t6yH.debug.temp.o
+                                        0x25a (size before relaxing)
+ .debug_line_str
+                0x0000000000000c90      0x159 /tmp/ccJiJQcI.debug.temp.o
+                                        0x278 (size before relaxing)
+ .debug_line_str
+                0x0000000000000de9       0xa0 /tmp/ccr0VLCF.debug.temp.o
+                                        0x408 (size before relaxing)
+ .debug_line_str
+                0x0000000000000e89       0x54 /tmp/ccoRI0VF.debug.temp.o
+                                        0x160 (size before relaxing)
+ .debug_line_str
+                0x0000000000000edd       0xaa /tmp/cclm0BSF.debug.temp.o
+                                        0x1b4 (size before relaxing)
+ .debug_line_str
+                0x0000000000000f87       0x50 /tmp/ccb3lGlF.debug.temp.o
+                                        0x1c2 (size before relaxing)
+ .debug_line_str
+                0x0000000000000fd7       0x71 /tmp/ccnKHdKE.debug.temp.o
+                                        0x1cb (size before relaxing)
+ .debug_line_str
+                0x0000000000001048       0x96 /tmp/ccXulxzI.debug.temp.o
+                                        0x20e (size before relaxing)
+ .debug_line_str
+                0x00000000000010de       0x67 /tmp/ccJXES6E.debug.temp.o
+                                        0x1d2 (size before relaxing)
+ .debug_line_str
+                0x0000000000001145       0x5c /tmp/ccdcDwfE.debug.temp.o
+                                        0x214 (size before relaxing)
+ .debug_line_str
+                0x00000000000011a1       0xba /tmp/ccjPGFMH.debug.temp.o
+                                        0x1cc (size before relaxing)
+ .debug_line_str
+                0x000000000000125b       0xcc /tmp/ccIXJ2SG.debug.temp.o
+                                        0x231 (size before relaxing)
+ .debug_line_str
+                0x0000000000001327       0xd4 /tmp/ccBxwMyE.debug.temp.o
+                                        0x246 (size before relaxing)
+ .debug_line_str
+                0x00000000000013fb       0xed /tmp/ccDx8IrG.debug.temp.o
+                                        0x4a7 (size before relaxing)
+ .debug_line_str
+                0x00000000000014e8       0x60 /tmp/ccbUDi7F.debug.temp.o
+                                        0x22d (size before relaxing)
+ .debug_line_str
+                0x0000000000001548       0x60 /tmp/ccJnV41G.debug.temp.o
+                                        0x222 (size before relaxing)
+ .debug_line_str
+                0x00000000000015a8       0x60 /tmp/ccjWNGEH.debug.temp.o
+                                        0x22d (size before relaxing)
+ .debug_line_str
+                0x0000000000001608       0x58 /tmp/ccYlqQbI.debug.temp.o
+                                        0x26d (size before relaxing)
+ .debug_line_str
+                0x0000000000001660       0x60 /tmp/ccXyjADE.debug.temp.o
+                                        0x179 (size before relaxing)
+ .debug_line_str
+                0x00000000000016c0       0x53 /tmp/cckCA5vF.debug.temp.o
+                                         0xff (size before relaxing)
+ .debug_line_str
+                0x0000000000001713      0x113 /tmp/cc97hz2E.debug.temp.o
+                                        0x34c (size before relaxing)
+ .debug_line_str
+                0x0000000000001826       0x56 /tmp/ccdPFhpF.debug.temp.o
+                                        0x20a (size before relaxing)
+ .debug_line_str
+                0x000000000000187c       0xa2 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+                                        0x128 (size before relaxing)
+ .debug_line_str
+                0x000000000000191e      0x128 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_line_str
+                0x000000000000191e      0x128 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_line_str
+                0x000000000000191e      0x128 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_line_str
+                0x000000000000191e      0x128 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .debug_line_str
+                0x000000000000191e      0x28f CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+                                        0x351 (size before relaxing)
+
+.debug_info     0x0000000000000000     0xd90d
+ .debug_info    0x0000000000000000       0x25 /tmp/ccR0vRYO.o
+ .debug_info    0x0000000000000025       0x23 /tmp/cccXl14O.o
+ .debug_info    0x0000000000000048     0x22e9 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_info    0x0000000000002331      0x27b /tmp/ccDQYrbI.debug.temp.o
+                0x0000000000002331                bitcount.c.0de1a9cf
+ .debug_info    0x00000000000025ac      0x466 /tmp/cch3cyuF.debug.temp.o
+                0x00000000000025ac                conv.c.6cebfd83
+ .debug_info    0x0000000000002a12      0x32d /tmp/ccUmdSIE.debug.temp.o
+                0x0000000000002a12                gsm.c.e55cd217
+ .debug_info    0x0000000000002d3f      0x31c /tmp/ccoBmZsE.debug.temp.o
+                0x0000000000002d3f                reversebits.c.170f21be
+ .debug_info    0x000000000000305b      0x322 /tmp/ccE1QqDE.debug.temp.o
+                0x000000000000305b                sha.c.d4559122
+ .debug_info    0x000000000000337d      0x36c /tmp/ccK7pwiI.debug.temp.o
+                0x000000000000337d                sha2.c.257f05e0
+ .debug_info    0x00000000000036e9      0x314 /tmp/ccy4t6yH.debug.temp.o
+                0x00000000000036e9                sqrt.c.a67aecb0
+ .debug_info    0x00000000000039fd      0x376 /tmp/ccJiJQcI.debug.temp.o
+                0x00000000000039fd                strsearch.c.8728f1aa
+ .debug_info    0x0000000000003d73      0xc48 /tmp/ccr0VLCF.debug.temp.o
+                0x0000000000003d73                kernels_common.c.07011d30
+ .debug_info    0x00000000000049bb      0x230 /tmp/ccoRI0VF.debug.temp.o
+                0x00000000000049bb                bitfield.c.89f93467
+ .debug_info    0x0000000000004beb      0x14c /tmp/cclm0BSF.debug.temp.o
+                0x0000000000004beb                memory.c.461344ef
+ .debug_info    0x0000000000004d37      0x695 /tmp/ccb3lGlF.debug.temp.o
+                0x0000000000004d37                mmio.c.800ba981
+ .debug_info    0x00000000000053cc      0x792 /tmp/ccnKHdKE.debug.temp.o
+                0x00000000000053cc                dma.c.0aa44a2c
+ .debug_info    0x0000000000005b5e      0x346 /tmp/ccXulxzI.debug.temp.o
+                0x0000000000005b5e                fast_intr_ctrl.c.4726ed63
+ .debug_info    0x0000000000005ea4      0x896 /tmp/ccJXES6E.debug.temp.o
+                0x0000000000005ea4                gpio.c.e821b417
+ .debug_info    0x000000000000673a      0xb72 /tmp/ccdcDwfE.debug.temp.o
+                0x000000000000673a                i2c.c.9cbbf783
+ .debug_info    0x00000000000072ac      0x38a /tmp/ccjPGFMH.debug.temp.o
+                0x00000000000072ac                i2s.c.9f909a9d
+ .debug_info    0x0000000000007636      0x1ee /tmp/ccIXJ2SG.debug.temp.o
+                0x0000000000007636                pad_control.c.c162b143
+ .debug_info    0x0000000000007824      0x929 /tmp/ccBxwMyE.debug.temp.o
+                0x0000000000007824                power_manager.c.4e78f6a1
+ .debug_info    0x000000000000814d      0x8fb /tmp/ccDx8IrG.debug.temp.o
+                0x000000000000814d                rv_plic.c.3fd3dc88
+ .debug_info    0x0000000000008a48      0x8c0 /tmp/ccbUDi7F.debug.temp.o
+                0x0000000000008a48                rv_timer.c.2669026b
+ .debug_info    0x0000000000009308      0x246 /tmp/ccJnV41G.debug.temp.o
+                0x0000000000009308                soc_ctrl.c.7b55327d
+ .debug_info    0x000000000000954e      0x629 /tmp/ccjWNGEH.debug.temp.o
+                0x000000000000954e                spi_host.c.a9ab0663
+ .debug_info    0x0000000000009b77      0x520 /tmp/ccYlqQbI.debug.temp.o
+                0x0000000000009b77                uart.c.2ba16268
+ .debug_info    0x000000000000a097      0x24c /tmp/ccXyjADE.debug.temp.o
+                0x000000000000a097                handler.c.04ab6b1c
+ .debug_info    0x000000000000a2e3       0x32 /tmp/cckCA5vF.debug.temp.o
+                0x000000000000a2e3                init.c.ad148d44
+ .debug_info    0x000000000000a315      0xb52 /tmp/cc97hz2E.debug.temp.o
+                0x000000000000a315                syscalls.c.09d9958a
+ .debug_info    0x000000000000ae67      0x341 /tmp/ccdPFhpF.debug.temp.o
+                0x000000000000ae67                cgra.c.a9ff3f83
+ .debug_info    0x000000000000b1a8      0x793 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .debug_info    0x000000000000b93b      0x7e4 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_info    0x000000000000c11f      0x761 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x000000000000c880      0x7b5 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_info    0x000000000000d035       0xd8 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .debug_info    0x000000000000d10d      0x800 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_abbrev   0x0000000000000000     0x3318
+ .debug_abbrev  0x0000000000000000       0x14 /tmp/ccR0vRYO.o
+ .debug_abbrev  0x0000000000000014       0x12 /tmp/cccXl14O.o
+ .debug_abbrev  0x0000000000000026      0x1db /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_abbrev  0x0000000000000201      0x14e /tmp/ccDQYrbI.debug.temp.o
+ .debug_abbrev  0x000000000000034f      0x178 /tmp/cch3cyuF.debug.temp.o
+ .debug_abbrev  0x00000000000004c7      0x1b1 /tmp/ccUmdSIE.debug.temp.o
+ .debug_abbrev  0x0000000000000678      0x195 /tmp/ccoBmZsE.debug.temp.o
+ .debug_abbrev  0x000000000000080d      0x1a2 /tmp/ccE1QqDE.debug.temp.o
+ .debug_abbrev  0x00000000000009af      0x1b0 /tmp/ccK7pwiI.debug.temp.o
+ .debug_abbrev  0x0000000000000b5f      0x193 /tmp/ccy4t6yH.debug.temp.o
+ .debug_abbrev  0x0000000000000cf2      0x1a3 /tmp/ccJiJQcI.debug.temp.o
+ .debug_abbrev  0x0000000000000e95      0x296 /tmp/ccr0VLCF.debug.temp.o
+ .debug_abbrev  0x000000000000112b       0xb8 /tmp/ccoRI0VF.debug.temp.o
+ .debug_abbrev  0x00000000000011e3       0xc8 /tmp/cclm0BSF.debug.temp.o
+ .debug_abbrev  0x00000000000012ab      0x160 /tmp/ccb3lGlF.debug.temp.o
+ .debug_abbrev  0x000000000000140b      0x1c5 /tmp/ccnKHdKE.debug.temp.o
+ .debug_abbrev  0x00000000000015d0      0x10e /tmp/ccXulxzI.debug.temp.o
+ .debug_abbrev  0x00000000000016de      0x1eb /tmp/ccJXES6E.debug.temp.o
+ .debug_abbrev  0x00000000000018c9      0x209 /tmp/ccdcDwfE.debug.temp.o
+ .debug_abbrev  0x0000000000001ad2      0x13d /tmp/ccjPGFMH.debug.temp.o
+ .debug_abbrev  0x0000000000001c0f       0xbc /tmp/ccIXJ2SG.debug.temp.o
+ .debug_abbrev  0x0000000000001ccb      0x180 /tmp/ccBxwMyE.debug.temp.o
+ .debug_abbrev  0x0000000000001e4b      0x274 /tmp/ccDx8IrG.debug.temp.o
+ .debug_abbrev  0x00000000000020bf      0x1a0 /tmp/ccbUDi7F.debug.temp.o
+ .debug_abbrev  0x000000000000225f       0xbc /tmp/ccJnV41G.debug.temp.o
+ .debug_abbrev  0x000000000000231b      0x12b /tmp/ccjWNGEH.debug.temp.o
+ .debug_abbrev  0x0000000000002446      0x13c /tmp/ccYlqQbI.debug.temp.o
+ .debug_abbrev  0x0000000000002582      0x105 /tmp/ccXyjADE.debug.temp.o
+ .debug_abbrev  0x0000000000002687       0x2c /tmp/cckCA5vF.debug.temp.o
+ .debug_abbrev  0x00000000000026b3      0x25d /tmp/cc97hz2E.debug.temp.o
+ .debug_abbrev  0x0000000000002910       0xe9 /tmp/ccdPFhpF.debug.temp.o
+ .debug_abbrev  0x00000000000029f9      0x1bf /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .debug_abbrev  0x0000000000002bb8      0x1ca /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_abbrev  0x0000000000002d82      0x1a6 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x0000000000002f28      0x1bb /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_abbrev  0x00000000000030e3       0x70 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .debug_abbrev  0x0000000000003153      0x1c5 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_aranges  0x0000000000000000      0x2f8
+ .debug_aranges
+                0x0000000000000000       0x20 /tmp/ccR0vRYO.o
+ .debug_aranges
+                0x0000000000000020       0x28 /tmp/cccXl14O.o
+ .debug_aranges
+                0x0000000000000048      0x1f8 /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_aranges
+                0x0000000000000240       0x20 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .debug_aranges
+                0x0000000000000260       0x20 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_aranges
+                0x0000000000000280       0x20 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_aranges
+                0x00000000000002a0       0x20 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_aranges
+                0x00000000000002c0       0x18 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+ .debug_aranges
+                0x00000000000002d8       0x20 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_str      0x0000000000000000     0x442f
+ .debug_str     0x0000000000000000       0x6c /tmp/ccR0vRYO.o
+ .debug_str     0x000000000000006c        0xa /tmp/cccXl14O.o
+                                         0x6f (size before relaxing)
+ .debug_str     0x0000000000000076      0x153 /tmp/ccQ32cAF.ltrans0.ltrans.o
+                                        0x17d (size before relaxing)
+ .debug_str     0x00000000000001c9       0xf3 /tmp/ccDQYrbI.debug.temp.o
+                                        0x211 (size before relaxing)
+ .debug_str     0x00000000000002bc       0xbe /tmp/cch3cyuF.debug.temp.o
+                                        0x2a2 (size before relaxing)
+ .debug_str     0x000000000000037a       0x43 /tmp/ccUmdSIE.debug.temp.o
+                                        0x223 (size before relaxing)
+ .debug_str     0x00000000000003bd       0x3e /tmp/ccoBmZsE.debug.temp.o
+                                        0x25c (size before relaxing)
+ .debug_str     0x00000000000003fb       0x59 /tmp/ccE1QqDE.debug.temp.o
+                                        0x223 (size before relaxing)
+ .debug_str     0x0000000000000454       0x2a /tmp/ccK7pwiI.debug.temp.o
+                                        0x226 (size before relaxing)
+ .debug_str     0x000000000000047e       0x71 /tmp/ccy4t6yH.debug.temp.o
+                                        0x255 (size before relaxing)
+ .debug_str     0x00000000000004ef       0x88 /tmp/ccJiJQcI.debug.temp.o
+                                        0x296 (size before relaxing)
+ .debug_str     0x0000000000000577      0x567 /tmp/ccr0VLCF.debug.temp.o
+                                        0x981 (size before relaxing)
+ .debug_str     0x0000000000000ade      0x149 /tmp/ccoRI0VF.debug.temp.o
+                                        0x27d (size before relaxing)
+ .debug_str     0x0000000000000c27       0x25 /tmp/cclm0BSF.debug.temp.o
+                                        0x14b (size before relaxing)
+ .debug_str     0x0000000000000c4c      0x273 /tmp/ccb3lGlF.debug.temp.o
+                                        0x4aa (size before relaxing)
+ .debug_str     0x0000000000000ebf      0x71c /tmp/ccnKHdKE.debug.temp.o
+                                        0x8b1 (size before relaxing)
+ .debug_str     0x00000000000015db      0x3f4 /tmp/ccXulxzI.debug.temp.o
+                                        0x5d8 (size before relaxing)
+ .debug_str     0x00000000000019cf      0x6bd /tmp/ccJXES6E.debug.temp.o
+                                        0x84c (size before relaxing)
+ .debug_str     0x000000000000208c      0x7aa /tmp/ccdcDwfE.debug.temp.o
+                                        0xa79 (size before relaxing)
+ .debug_str     0x0000000000002836      0x21d /tmp/ccjPGFMH.debug.temp.o
+                                        0x42c (size before relaxing)
+ .debug_str     0x0000000000002a53       0xa3 /tmp/ccIXJ2SG.debug.temp.o
+                                        0x223 (size before relaxing)
+ .debug_str     0x0000000000002af6      0x4ad /tmp/ccBxwMyE.debug.temp.o
+                                        0x73d (size before relaxing)
+ .debug_str     0x0000000000002fa3      0x549 /tmp/ccDx8IrG.debug.temp.o
+                                        0x814 (size before relaxing)
+ .debug_str     0x00000000000034ec      0x176 /tmp/ccbUDi7F.debug.temp.o
+                                        0x732 (size before relaxing)
+ .debug_str     0x0000000000003662       0x88 /tmp/ccJnV41G.debug.temp.o
+                                        0x261 (size before relaxing)
+ .debug_str     0x00000000000036ea      0x1f0 /tmp/ccjWNGEH.debug.temp.o
+                                        0x486 (size before relaxing)
+ .debug_str     0x00000000000038da      0x151 /tmp/ccYlqQbI.debug.temp.o
+                                        0x3db (size before relaxing)
+ .debug_str     0x0000000000003a2b      0x132 /tmp/ccXyjADE.debug.temp.o
+                                        0x266 (size before relaxing)
+ .debug_str     0x0000000000003b5d      0x132 /tmp/cckCA5vF.debug.temp.o
+                                         0x7d (size before relaxing)
+ .debug_str     0x0000000000003b5d      0x2b5 /tmp/cc97hz2E.debug.temp.o
+                                        0x776 (size before relaxing)
+ .debug_str     0x0000000000003e12       0x83 /tmp/ccdPFhpF.debug.temp.o
+                                        0x2f5 (size before relaxing)
+ .debug_str     0x0000000000003e95      0x193 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+                                        0x248 (size before relaxing)
+ .debug_str     0x0000000000004028        0x9 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+                                        0x248 (size before relaxing)
+ .debug_str     0x0000000000004031      0x249 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x0000000000004031      0x249 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_str     0x0000000000004031       0xb1 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_clz.o)
+                                        0x196 (size before relaxing)
+ .debug_str     0x00000000000040e2      0x34d CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+                                        0x3f8 (size before relaxing)
+
+.debug_rnglists
+                0x0000000000000000      0xbfd
+ .debug_rnglists
+                0x0000000000000000       0x1b /tmp/cccXl14O.o
+ .debug_rnglists
+                0x000000000000001b      0x7fd /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_rnglists
+                0x0000000000000818       0xf6 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .debug_rnglists
+                0x000000000000090e       0xbf /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_rnglists
+                0x00000000000009cd      0x111 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_rnglists
+                0x0000000000000ade       0xd1 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_rnglists
+                0x0000000000000baf       0x4e CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_loclists
+                0x0000000000000000     0x3c0c
+ .debug_loclists
+                0x0000000000000000     0x18aa /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_loclists
+                0x00000000000018aa      0x88e /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_divdi3.o)
+ .debug_loclists
+                0x0000000000002138      0x793 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_moddi3.o)
+ .debug_loclists
+                0x00000000000028cb      0xa99 /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_udivdi3.o)
+ .debug_loclists
+                0x0000000000003364      0x86a /home/ncarpent/tools/riscv/lib/gcc/riscv32-unknown-elf/11.1.0/libgcc.a(_umoddi3.o)
+ .debug_loclists
+                0x0000000000003bce       0x3e CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
+
+.debug_frame    0x0000000000000000      0xcac
+ .debug_frame   0x0000000000000000      0xc4c /tmp/ccQ32cAF.ltrans0.ltrans.o
+ .debug_frame   0x0000000000000c4c       0x60 CMakeFiles/main.elf.dir/home/ncarpent/Desktop/GitHub/davide/nicolo/HEEPsilon/sw/applications/kernel_test/main.c.obj
