@@ -335,11 +335,12 @@ SECTIONS
    PROVIDE(__freertos_irq_stack_top = .);
   } >ram1
 
-% if ram_numbanks_cont > 1 and ram_numbanks_il > 0:
-  .data_interleaved :
+.data_interleaved :
   {
+    . = ALIGN(4);
+    *(.xheep_data_interleaved)
+    . = ALIGN(4);
   } >ram_il
-% endif
 
   /* Stabs debugging sections.  */
   .stab          0 : { *(.stab) }
