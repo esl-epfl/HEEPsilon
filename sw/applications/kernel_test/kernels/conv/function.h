@@ -73,8 +73,7 @@ static Pixel In_Img[IMG_DIM + FILT_DIM]        = {
 4,5,6,
 4,5,6,
 5,6,7 };
-
-static int32_t inputs[batch_size][C_inputs][H_inputs][W_inputs]=
+static int32_t input[batch_size][C_inputs][H_inputs][W_inputs]=
 {
 {{
 {0,1,2},
@@ -103,6 +102,9 @@ static int32_t  filter[N_filters][C_filter][H_filter][W_filter]=
        {3, 3, 3}
     }}};
 
+int __attribute__((section(".xheep_data_interleaved"))) input_interleaved[batch_size][C_inputs][H_inputs][W_inputs];
+ int32_t __attribute__((section(".xheep_data_interleaved"))) filter_interleaved[N_filters][C_filter][H_filter][W_filter];
+
 
 static int32_t outputs[N_outputs][channels_outputs][H_outputs][W_outputs];
 void conv ( Pixel * Out_Img )
@@ -111,6 +113,18 @@ void conv ( Pixel * Out_Img )
   int32_t S;
   int32_t coeff;
   int32_t data;
+
+  for(int i = 0; i < H_inputs; i++){
+    for(int j = 0; j < W_inputs; j++){
+        input_interleaved[0][0][i][j]=input[0][0][i][j];
+    }
+}
+
+for(int i = 0; i < H_filter;i++){
+    for(int j = 0; j < W_filter; j++){
+        filter_interleaved[0][0][i][j]=filter[0][0][i][j];
+    }
+}
   for (l = 0; l < N_outputs; l++)
   {
     for (k = 0; k < N_filters; k++)
@@ -126,16 +140,17 @@ void conv ( Pixel * Out_Img )
             {
               for (j = -FILT_HALF_y; j <= FILT_HALF_y; j++)
               {
-                coeff = filter[k][w][i + FILT_HALF_x][j + FILT_HALF_y];
+                coeff = filter_interleaved[k][w][i + FILT_HALF_x][j + FILT_HALF_y];
 
-                data = inputs[l][w][r + i + FILT_HALF_x][c + j + FILT_HALF_y];
+                data = input_interleaved[l][w][r + i + FILT_HALF_x][c + j + FILT_HALF_y];
 
                 S += coeff * data;
               }
             }
           }
           Out_Img[r]= S;
-          
+          printf("Out_Img[%d] = %d \n",r, S);
+          for(int j=0;j<10000;j++) asm volatile("nop");
         }
       }
     }

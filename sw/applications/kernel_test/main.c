@@ -160,7 +160,7 @@ void main()
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
-                //kernel->func();
+                kernel->func();
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStop(    &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
