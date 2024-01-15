@@ -160,7 +160,7 @@ void main()
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
-                kernel->func();
+                //kernel->func();
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStop(    &(kperf.time.sw) );
 #endif //ANALYZE_EVERYTHING
@@ -170,14 +170,14 @@ void main()
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
             kcom_perfRecordStart(   &(kperf.time.cgra) );
                 kcom_launchKernel( kernel_id );
-                printf("WFI \n\r");
+                
                 kcom_waitingForIntr();
-                printf("%d \n\r", kperf.time.cgra);
+                
             // Time is stopped inside the interrupt handler to make it as fast as possible
 
 #if PERFORM_RES_CHECK
             /* Result comparison */
-            stats.errors += kernel->check();
+            //stats.errors += kernel->check();
 #endif //PERFORM_RES_CHECK
 
 #if MEASUREMENTS

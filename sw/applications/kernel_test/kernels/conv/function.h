@@ -149,7 +149,7 @@ for(int i = 0; i < H_filter;i++){
             }
           }
           Out_Img[r]= S;
-          printf("Out_Img[%d] = %d \n",r, S);
+          
           for(int j=0;j<10000;j++) asm volatile("nop");
         }
       }
