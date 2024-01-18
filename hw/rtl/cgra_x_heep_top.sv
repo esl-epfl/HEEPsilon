@@ -1,7 +1,7 @@
 // Copyright 2022 EPFL
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
-
+/* verilator lint_off UNDRIVEN */
 module cgra_x_heep_top #(
     parameter COREV_PULP = 0,
     parameter FPU        = 0,
@@ -234,7 +234,8 @@ module cgra_x_heep_top #(
       .xif_mem_if(ext_if),
       .xif_mem_result_if(ext_if),
       .xif_result_if(ext_if),
-
+      .ext_dma_slot_tx_i('0),
+      .ext_dma_slot_rx_i('0),
       .ext_xbar_master_req_i(heep_slave_req),
       .ext_xbar_master_resp_o(heep_slave_resp),
       .ext_core_instr_req_o(heep_core_instr_req),

@@ -76,12 +76,12 @@
 /****************************************************************************/
 
 static kcom_kernel_t *kernels[] = {
-        // &conv_kernel,
+         &conv_kernel,
         // &reve_kernel,
         // &bitc_kernel,
         // &sqrt_kernel,
         // &gsm_kernel,
-        &strs_kernel,
+        // &strs_kernel,
         // &sha_kernel,
         // &sha2_kernel,
         // Add all other kernels here
@@ -145,9 +145,10 @@ void main()
                 kcom_resetRand();
             }
 #endif //REPEAT_FIRST_INPUT
-
-            kernel->config();
-
+        kcom_perfRecordStart(   &(kperf.time.conf) );
+        kernel->config();
+       
+        kcom_perfRecordStop(    &(kperf.time.conf) );
             /* Obtention of dead-zone-time */
 #if ANALYZE_EVERYTHING
             kcom_perfRecordStart(   &(kperf.time.dead) );
@@ -169,7 +170,9 @@ void main()
             kcom_perfRecordIntrSet( &(kperf.time.cgra) );
             kcom_perfRecordStart(   &(kperf.time.cgra) );
                 kcom_launchKernel( kernel_id );
+                
                 kcom_waitingForIntr();
+                
             // Time is stopped inside the interrupt handler to make it as fast as possible
 
 #if PERFORM_RES_CHECK

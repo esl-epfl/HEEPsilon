@@ -105,7 +105,7 @@
         rv_plic: {
             offset:  0x00000000,
             length:  0x00010000,
-            is_included: "no",
+            is_included: "yes",
             path:    "./hw/vendor/lowrisc_opentitan/hw/ip/rv_plic/data/rv_plic.hjson"
         },
         gpio: {
