@@ -1,0 +1,5 @@
+31  in  40  1   val
+42  in  d   1   var
+27  in  -32768  1   val   
+29  in  32767   1   val 
+53  out dmax    1   var

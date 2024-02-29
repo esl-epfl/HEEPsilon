@@ -1,0 +1,70 @@
+{
+    "function_name": "strsearch",
+    "inputs": [
+        {
+            "name": "patlen_1",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "skip2",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "patlen",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "pat",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "lowervec",
+            "depth": 1,
+            "type": "val"
+        },
+        {
+            "name": "lowervec_pat",
+            "depth": 1,
+            "type": "val"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "ret",
+            "depth": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "read_col0": [
+        {
+            "name": "lowervec"
+        },
+        {
+            "name": "patlen_1"
+        }
+    ],
+    "write_col0": [],
+    "read_col1": [
+        {
+            "name": "skip2"
+        },
+        {
+            "name": "pat"
+        },
+        {
+            "name": "lowervec_pat"
+        },
+        {
+            "name": "patlen"
+        }
+    ],
+    "write_col1": [
+        {
+            "name": "ret"
+        }
+    ]
+}

@@ -1,0 +1,304 @@
+#nodes: 8
+REC 5
+RES 1
+
+ASAP Schedule
+0 1 
+2 7 8 
+4 
+5 
+6 
+
+
+ALAP Schedule
+0 1 
+2 
+4 
+5 
+6 7 8 
+
+
+Mobility Schedule
+0 1 
+2 7 8 
+4 7 8 
+5 7 8 
+6 7 8 
+
+II: 5
+nit 5/5= 1.0= 1
+KMS
+[(0, 0), (0, 1)]
+[(0, 2), (0, 7), (0, 8)]
+[(0, 4), (0, 7), (0, 8)]
+[(0, 5), (0, 7), (0, 8)]
+[(0, 6), (0, 7), (0, 8)]
+Adding C1...
+Time: 0.18810701370239258
+Adding C2...
+Time: 0.015353918075561523
+Adding C3...
+[0, 6]
+[0, 2]
+[1, 8]
+[1, 7]
+[1, 2]
+[2, 6]
+[2, 4]
+[2, 4]
+[4, 5]
+[5, 6]
+Adding back...
+[6, 0]
+[7, 1]
+Time: 0.13380694389343262
+SAT
+Kernel
+[ 0 1 ]
+[ 2 7 ]
+[ 4 ]
+[ 5 ]
+[ 8 6 ]
+Schedule
+[0, 1]
+[2, 7]
+[4]
+[5]
+[8, 6]
+Time: 0.030087947845458984
+PKE
+t: 0     0 1 
+t: 1     2 7 
+t: 2     4 
+t: 3     5 
+t: 4     8 6 
+Interference graphs PE4: 4
+Colors needed: 0
+Colors needed: 1
+Colors needed: 0
+Colors needed: 0
+#Nodes: 0
+#Nodes: 1
+#Nodes: 0
+#Nodes: 0
+init_len:  1
+prolog_len:  0
+kernel_len:  5
+epilog_len:  0
+fini_len:  1
+Init: 0 - 0
+Kernel: 1 - 5
+Fini: 6 - 6
+T = 0
+LWD ROUT
+NOP
+NOP
+LWD R1
+LWD R0
+SADD ROUT, ZERO, 0
+NOP
+NOP
+NOP
+T = 1
+NOP
+NOP
+NOP
+SADD R0, RCT, ZERO
+NOP
+SADD ROUT, ROUT, ZERO
+NOP
+NOP
+NOP
+T = 2
+SRT ROUT, RCB, 1
+NOP
+NOP
+LOR ROUT, RCL, R0
+NOP
+NOP
+NOP
+NOP
+NOP
+T = 3
+NOP
+NOP
+NOP
+NOP
+SMUL ROUT, RCL, RCL
+NOP
+NOP
+NOP
+NOP
+T = 4
+NOP
+NOP
+NOP
+NOP
+SSUB ROUT, ROUT, R0
+NOP
+NOP
+NOP
+NOP
+T = 5
+NOP
+NOP
+NOP
+BGE R0, R1, 1
+NOP
+BSFA ROUT, RCR, ROUT, RCL
+NOP
+NOP
+NOP
+T = 6
+NOP
+NOP
+NOP
+NOP
+NOP
+SWD ROUT
+NOP
+NOP
+NOP
+T = 0
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |LWD|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |LWD|  ||  |LWD|  ||  |SADD|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+T = 1
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |MV|  ||  |NOP|  ||  |MV|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+T = 2
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |SRT|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |LOR|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+T = 3
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |SMUL|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+T = 4
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |SSUB|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+T = 5
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |BGE|  ||  |NOP|  ||  |BSFA|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+T = 6
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |SWD|  |
+|- - - - - - - - - - - - - - - - 
+|  |NOP|  ||  |NOP|  ||  |NOP|  |
+ - - - - - - - - - - - - - - -- -
+
+Output of the mapping with node id
+T = 0
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | 21 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | 23 |  ||  | 34 |  ||  | 20 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+T = 1
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | 1 |  ||  | -1 |  ||  | 0 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+T = 2
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | 7 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | 2 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+T = 3
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | 4 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+T = 4
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | 5 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+T = 5
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | 8 |  ||  | -1 |  ||  | 6 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+T = 6
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | 45 |  |
+|- - - - - - - - - - - - - - - - 
+|  | -1 |  ||  | -1 |  ||  | -1 |  |
+ - - - - - - - - - - - - - - -- -
+
+Id: 0 name: phi time: 0 pe: 5 Rout: -1 opA: ZERO opB: ROUT immediate: 0
+
+Id: 6 name: bsfa time: 4 pe: 5 Rout: -1 opA: ROUT opB: RCR immediate: 0
+
+Id: 1 name: phi time: 0 pe: 3 Rout: 0 opA: -1 opB: RCT immediate: 0
+
+Id: 2 name: or time: 1 pe: 3 Rout: -1 opA: RCL opB: R0 immediate: 0
+
+Id: 8 name: blt time: 4 pe: 3 Rout: -1 opA: R0 opB: R1 immediate: 0
+
+Id: 4 name: mul time: 2 pe: 4 Rout: -1 opA: RCL opB: -1 immediate: 0
+
+Id: 5 name: sub time: 3 pe: 4 Rout: -1 opA: ROUT opB: R0 immediate: 0
+
+Id: 7 name: lshr time: 1 pe: 0 Rout: -1 opA: RCB opB: 1 immediate: 1
+
