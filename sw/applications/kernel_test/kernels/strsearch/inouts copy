@@ -1,6 +1,0 @@
-46  in  (patlen -1) 1   eqn
-41  in  skip2   1   var
-45  in  patlen  1   var 
-42  in  pat     1   ptr     
-47  in  lowervec    1   ptr
-44  in lowervec[pat[patlen - 1]] 1 eqn

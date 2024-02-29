@@ -187,8 +187,8 @@ for(int l = 0; l < N_filter; l ++){
         for(int j = 0; j < col_output; j++){
             if(output[0][l][i][j] != output_from_CGRA[l][i][j]){
                 errors++;
-                //printf("Error at %d %d\n", i, j);
-                //printf("Expected %d, got %d\n", output[0][l][i][j], output_from_CGRA[l][i][j]);
+                printf("Error at %d %d\n", i, j);
+                printf("Expected %d, got %d\n", output[0][l][i][j], output_from_CGRA[l][i][j]);
             }
             //else{
             //    printf("Expected %d, got %d\n", output[0][l][i][j], output_from_CGRA[l][i][j]);

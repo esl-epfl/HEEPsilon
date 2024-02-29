@@ -6,7 +6,7 @@ import exporter
 def renderassembly(input_dim, filter_dimension, input_channel, output_channel):
     folders_available = ['ws', 'oc', 'im2c-ic', 'im2c-oc']
     folder = '4x4'
-    folder_juan = 'cd sw/applications/kernel_test/utils/'
+    folder_juan = 'cd sw/applications/im2c-oc_test/utils/'
 
     data = {
         'output_row': input_dim-filter_dimension+1,

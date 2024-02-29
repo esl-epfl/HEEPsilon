@@ -19,8 +19,8 @@ def crea_file_c(kmem_values, imem_values, output_file):
         file.write("const uint32_t cgra_kmem_conv[CGRA_KMEM_SIZE] = {" + ", ".join(kmem_values) + "};\n")
 
 def main():
-    file_di_testo = '/home/nicolo/Documents/GitHub/HEEPsilon/sw/applications/kernel_test/kernels/conv/4x4/bitstreams'  # Sostituisci con il percorso corretto del file bitstream
-    output_c_file = '/home/nicolo/Documents/GitHub/HEEPsilon/sw/applications/kernel_test/kernels/conv/bitstream.h'  # Sostituisci con il percorso desiderato per il file C generato
+    file_di_testo = '/home/nicolo/Documents/GitHub/HEEPsilon/sw/applications/oc_test/kernels/conv/4x4/bitstreams'  # Sostituisci con il percorso corretto del file bitstream
+    output_c_file = '/home/nicolo/Documents/GitHub/HEEPsilon/sw/applications/oc_test/kernels/conv/bitstream.h'  # Sostituisci con il percorso desiderato per il file C generato
 
     kmem_values, imem_values = estrai_valori(file_di_testo)
     crea_file_c(kmem_values, imem_values, output_c_file)

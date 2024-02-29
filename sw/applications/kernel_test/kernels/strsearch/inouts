@@ -1,7 +1,0 @@
-46  in  patlen_1    1   val
-41  in  skip2   1   val
-45  in  patlen  1   val 
-42  in  pat 1   val     
-47  in  lowervec    1   val
-44  in  lowervec_pat    1 val
-57  out ret 1 var
