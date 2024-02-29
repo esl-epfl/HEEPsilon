@@ -17,15 +17,15 @@ def renderassembly(input_dim, filter_dimension, input_channel, output_channel):
 
 
 
-    # Percorso del file template
+
     template_path = f'instructions.csv'
 
-    # Carica il template
-    template = Template(filename=template_path)
-    # Percorso del file di output (può essere lo stesso del template o diverso)
-    output_path = f'instruction/instructions_input-{input_dim}_ic-{input_channel}_oc-{output_channel}.csv'  # Cambia il nome se vuoi sovrascrivere
 
-    # Render del template e scrittura su file
+    template = Template(filename=template_path)
+    
+    output_path = f'instruction/instructions_input-{input_dim}_ic-{input_channel}_oc-{output_channel}.csv'  
+
+   
     with open(output_path, 'w') as f:
         f.write(template.render(**data))
     print(f'File created/updated in {folder}')
