@@ -1,0 +1,34 @@
+{
+    "function_name": "sha_transform",
+    "inputs": [
+        {"type":"int32_t" , "num":80 , "name":"W"}
+    ],
+    "outputs": [
+        {"type":"int32_t" , "num":80 , "name":"W"}
+    ],
+    "read_col0" : [
+        {"name":"W"}
+    ] ,
+    "read_col1" : [
+        {"name":"W"}
+    ] ,
+    "read_col2" : [
+        {"name":"W"}
+    ] ,
+    "read_col3" : [
+        {"name":"W"},
+        {"name":"W"}
+    ] ,
+    "write_col0" : [
+        
+    ] ,
+    "write_col1" : [
+        
+    ] ,
+    "write_col2" : [
+        
+    ] ,
+    "write_col3" : [
+        
+    ]
+}

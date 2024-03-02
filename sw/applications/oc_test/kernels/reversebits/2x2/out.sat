@@ -1,0 +1,184 @@
+#nodes: 9
+REC 3
+RES 3
+
+ASAP Schedule
+0 1 2 
+3 4 6 7 
+5 8 
+
+
+ALAP Schedule
+0 1 2 
+3 4 7 
+5 6 8 
+
+
+Mobility Schedule
+0 1 2 
+3 4 6 7 
+5 6 8 
+
+II: 3
+nit 3/3= 1.0= 1
+KMS
+[(0, 0), (0, 1), (0, 2)]
+[(0, 3), (0, 4), (0, 6), (0, 7)]
+[(0, 5), (0, 6), (0, 8)]
+Adding C1...
+Time: 0.01485300064086914
+Adding C2...
+Time: 0.005697965621948242
+Adding C3...
+[0, 3]
+[1, 7]
+[2, 6]
+[2, 4]
+[3, 5]
+[4, 5]
+[7, 8]
+Adding back...
+[5, 0]
+[6, 2]
+[7, 1]
+Time: 0.01197195053100586
+SAT
+Kernel
+[ 0 1 2 ]
+[ 7 4 6 3 ]
+[ 8 5 ]
+Schedule
+[0, 1, 2]
+[7, 4, 6, 3]
+[8, 5]
+Time: 0.008402824401855469
+PKE
+t: 0     0 1 2 
+t: 1     7 4 6 3 
+t: 2     8 5 
+Interference graphs PE2: 4
+Colors needed: 0
+Colors needed: 0
+Colors needed: 0
+Colors needed: 0
+#Nodes: 0
+#Nodes: 0
+#Nodes: 0
+#Nodes: 0
+Init: 0 - 0
+Kernel: 1 - 3
+Fini: 4 - 4
+T = 0
+LWD ROUT
+ADD ROUT, ROUT, ZERO
+ADD ROUT, ROUT, ZERO
+LWD R0
+T = 1
+ADD ROUT, ROUT, ZERO
+NOP
+ADD ROUT, ROUT, ZERO
+ADD ROUT, RCB, ZERO
+T = 2
+SRT ROUT, ROUT, 1
+SADD ROUT, RCT, 1
+LAND ROUT, RCB, 1
+SLT ROUT, RCR, 1
+T = 3
+NOP
+NOP
+LOR ROUT, RCL, ROUT
+BNE RCB, R0, 1
+T = 4
+NOP
+NOP
+SWD ROUT
+NOP
+T = 0
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  |LWD|  ||  |MV|  |
+|- - - - - - - - - - - 
+|  |MV|  ||  |LWD|  |
+ - - - - - - - - - -- -
+
+T = 1
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  |MV|  ||  |NOP|  |
+|- - - - - - - - - - - 
+|  |MV|  ||  |MV|  |
+ - - - - - - - - - -- -
+
+T = 2
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  |SRT|  ||  |SADD|  |
+|- - - - - - - - - - - 
+|  |LAND|  ||  |SLT|  |
+ - - - - - - - - - -- -
+
+T = 3
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - 
+|  |LOR|  ||  |BNE|  |
+ - - - - - - - - - -- -
+
+T = 4
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  |NOP|  ||  |NOP|  |
+|- - - - - - - - - - - 
+|  |SWD|  ||  |NOP|  |
+ - - - - - - - - - -- -
+
+Output of the mapping with node id
+T = 0
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  | 36 |  ||  | 21 |  |
+|- - - - - - - - - - - 
+|  | 20 |  ||  | 37 |  |
+ - - - - - - - - - -- -
+
+T = 1
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  | 2 |  ||  | -1 |  |
+|- - - - - - - - - - - 
+|  | 0 |  ||  | 1 |  |
+ - - - - - - - - - -- -
+
+T = 2
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  | 6 |  ||  | 7 |  |
+|- - - - - - - - - - - 
+|  | 4 |  ||  | 3 |  |
+ - - - - - - - - - -- -
+
+T = 3
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - 
+|  | 5 |  ||  | 8 |  |
+ - - - - - - - - - -- -
+
+T = 4
+ _ _ _ _ _ _ _ _ _ _ _ 
+|  | -1 |  ||  | -1 |  |
+|- - - - - - - - - - - 
+|  | 48 |  ||  | -1 |  |
+ - - - - - - - - - -- -
+
+Id: 7 name: add time: 1 pe: 1 Rout: -1 opA: RCT opB: 1 immediate: 1
+
+Id: 4 name: and time: 1 pe: 2 Rout: -1 opA: RCB opB: 1 immediate: 1
+
+Id: 0 name: phi time: 0 pe: 2 Rout: -1 opA: ROUT opB: ZERO immediate: 0
+
+Id: 5 name: or time: 2 pe: 2 Rout: -1 opA: RCL opB: ROUT immediate: 0
+
+Id: 6 name: lshr time: 1 pe: 0 Rout: -1 opA: ROUT opB: 1 immediate: 1
+
+Id: 2 name: phi time: 0 pe: 0 Rout: -1 opA: ROUT opB: R0 immediate: 0
+
+Id: 3 name: shl time: 1 pe: 3 Rout: -1 opA: RCR opB: 1 immediate: 1
+
+Id: 1 name: phi time: 0 pe: 3 Rout: -1 opA: RCB opB: ZERO immediate: 0
+
+Id: 8 name: beq time: 2 pe: 3 Rout: -1 opA: RCB opB: R0 immediate: 0
+

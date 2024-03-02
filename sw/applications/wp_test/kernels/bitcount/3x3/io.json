@@ -1,0 +1,31 @@
+{
+    "function_name": "",
+    "inputs": [
+        {
+            "name": "x",
+            "depth": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "ret",
+            "depth": 1,
+            "type": "uint32_t"
+        }
+    ],
+    "read_col0": [],
+    "write_col0": [
+        {
+            "name": "ret"
+        }
+    ],
+    "read_col1": [],
+    "write_col1": [],
+    "read_col2": [
+        {
+            "name": "x"
+        }
+    ],
+    "write_col2": []
+}

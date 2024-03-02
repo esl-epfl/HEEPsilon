@@ -93,6 +93,11 @@ run-fpga-com:
 XHEEP_MAKE = $(HEEP_DIR)/external.mk
 include $(XHEEP_MAKE)
 
+
+build-conv:
+	( cd sw/applications/${PROJECT}/kernels/conv/ && python3 render-c.py) ;
+	( cd sw/applications/${PROJECT}/utils/ && python3 inst_encoder.py ../kernels/conv/ 4x4) ;
+	( cd sw/applications/${PROJECT}/kernels/conv/ && python3 bitstream.py) ;
 # Add a dependency on the existing app target of XHEEP to create a link to the build folder
 app: link_build
 
