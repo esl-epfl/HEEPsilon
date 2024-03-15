@@ -39,6 +39,21 @@ The block diagram below shows the `X-HEEP` MCU
 
 <p align="center"><img src="block_diagrams/core_v_mini_mcu.svg" width="650"></p>
 
+# Reference
+
+If you use X-HEEP in your academic work you can cite us: [X-HEEP Paper](https://arxiv.org/abs/2401.05548)
+
+```
+@misc{machetti2024xheep,
+      title={X-HEEP: An Open-Source, Configurable and Extendible RISC-V Microcontroller for the Exploration of Ultra-Low-Power Edge Accelerators},
+      author={Simone Machetti and Pasquale Davide Schiavone and Thomas Christoph Müller and Miguel Peón-Quirós and David Atienza},
+      year={2024},
+      eprint={2401.05548},
+      archivePrefix={arXiv},
+      primaryClass={cs.AR}
+}
+```
+
 # Self-documented Makefile
 
 Note that under `util` folder, the file `generate-makefile-help` is employed to generate a self-documented helping output. In case of including any other target or command under the main `Makefile`, follow the same general and parameter descriptions as already provided for every target. Check the `help` output by doing `make` or `make help`. Moreover, **note that some of the parameters required for some of the targets are initiated with _default values_**
@@ -59,7 +74,6 @@ It has been tested only on `Ubuntu 20`, and we know it does NOT WORK on `Ubuntu 
 
 ## 2. Python
 
-
 We rely on either (a) `miniconda`, or (b) `virtual environment` enviroment.
 
 Choose between `2.a` or `2.b` to setup your enviroment.
@@ -78,7 +92,6 @@ You need to do it only the first time, then just activate the environment everyt
 ```bash
 conda activate core-v-mini-mcu
 ```
-
 
 ### 2.b Virtual Environment
 
@@ -153,13 +166,36 @@ sudo apt-get install -y gtkwave
 
 We use version v0.0-1824-ga3b5bedf
 
-See: [Install Verible](https://opentitan.org/guides/getting_started/index.html#step-6a-install-verible-optional)
+See: [Install Verible](https://opentitan.org/guides/getting_started/index.html#step-7a-install-verible-optional)
 
 To format your RTL code type:
 
 ```
 make verible
 ```
+
+## Docker alternative
+
+A docker image containing all the required software dependancies is available on [github-packages](https://github.com/orgs/esl-epfl/packages/container/package/x-heep-toolchain).
+
+It is only required to install [`docker`](https://docs.docker.com/get-docker/) and pull the image.
+
+```bash
+docker pull ghcr.io/esl-epfl/x-heep-toolchain:latest
+```
+
+Assuming that X-HEEP has been cloned to `X-HEEP-DIR=\absolute\path\to\x-HEEP\folder`, it is possible to directly run the docker mounting `X-HEEP-DIR` to the path `\workspace\x-heep` in the docker.
+
+```bash
+docker run -it -v ${X-HEEP-DIR}:/workspace/x-heep ghcr.io/esl-epfl/x-heep-toolchain
+```
+
+Take care to indicate the absolute path to the local clone of X-HEEP, otherwise `docker` will not be able to properly nount the local folder in the container.
+
+All the command listed in the README can be execute in the docker container, except for:
+- Simulation with Questasim and VCS, synthesis with Design Compiler (licenses are required to use these tools, so they are not installed in the container)
+- OpenRoad flow is not installed in the container, so it is not possible to run the related make commands
+
 ## Compilation Flow and Package Manager
 
 We use [FuseSoC](https://github.com/olofk/fusesoc) for all the tools we use.
@@ -168,7 +204,7 @@ The `fusesoc` commands are inside the Makefile.
 
 # Adding external IPs
 
-This repository relies on [Vendor](https://opentitan.org/book/util/doc/vendor.html) to add new IPs. The `vendor.py` script in the [`./util`](./util/) folder implements what is describeb above, while [this](./ExternalDevices.md) file contains additional information on how to connect external devices to the system.
+This repository relies on [Vendor](https://opentitan.org/book/util/doc/vendor.html) to add new IPs. The `vendor.py` script in the [`./util`](./util/) folder implements what is described above, while [this](./docs/source/How_to/ExternalDevices.md) file contains additional information on how to connect external devices to the system.
 
 # Compiling with Makefile
 
@@ -206,7 +242,6 @@ make mcu-gen MCU_CFG=mcu_cfg_minimal.hjson
 
 The `minimal` configuration is a work-in-progress, thus not all the APPs have been tested.
 
-
 ## Compiling Software
 
 Don't forget to set the `RISCV` env variable to the compiler folder (without the `/bin` included).
@@ -219,11 +254,11 @@ make app
 To run any other application, please use the following command with appropiate parameters:
 
 ```
-app PROJECT=<folder_name_of_the_project_to_be_built> TARGET=sim(default),pynq-z2 LINKER=on_chip(default),flash_load,flash_exec COMPILER=gcc(default),clang COMPILER_PREFIX=riscv32-unknown-(default) ARCH=rv32imc(default),<any RISC-V ISA string supported by the CPU>
+app PROJECT=<folder_name_of_the_project_to_be_built> TARGET=sim(default),systemc,pynq-z2,nexys-a7-100t,zcu104 LINKER=on_chip(default),flash_load,flash_exec COMPILER=gcc(default),clang COMPILER_PREFIX=riscv32-unknown-(default) ARCH=rv32imc(default),<any RISC-V ISA string supported by the CPU>
 
 Params:
 - PROJECT (ex: <folder_name_of_the_project_to_be_built>, hello_world(default))
-- TARGET (ex: sim(default),pynq-z2)
+- TARGET (ex: sim(default),systemc,pynq-z2,nexys-a7-100t,zcu104)
 - LINKER (ex: on_chip(default),flash_load,flash_exec)
 - COMPILER (ex: gcc(default),clang)
 - COMPILER_PREFIX (ex: riscv32-unknown-(default))
@@ -238,9 +273,8 @@ make app TARGET=pynq-z2
 
 Or, if you use the OpenHW Group [GCC](https://www.embecosm.com/resources/tool-chain-downloads/#corev) compiler with CORE_PULP extensions, make sure to point the `RISCV` env variable to the OpenHW Group compiler, then just run:
 
-
 ```
-make app COMPILER_PREFIX=riscv32-corev- ARCH=rv32imc_zicsr_zifencei_xcvhwlp1p0_xcvmem1p0_xcvmac1p0_xcvbi1p0_xcvalu1p0_xcvsimd1p0_xcvbitmanip1p0
+make app COMPILER_PREFIX=riscv32-corev- ARCH=rv32imc_zicsr_zifencei_xcvhwlp_xcvmem_xcvmac_xcvbi_xcvalu_xcvsimd_xcvbitmanip
 ```
 
 This will create the executable file to be loaded into your target system (ASIC, FPGA, Simulation).
@@ -264,13 +298,13 @@ Moreover, FreeRTOS is being fetch from 'https://github.com/FreeRTOS/FreeRTOS-Ker
 
 ## Simulating
 
-This project supports simulation with Verilator, Synopsys VCS, and Siemens Questasim.
+This project supports simulation with Verilator, Synopsys VCS, Siemens Questasim and Cadence Xcelium.
 It relies on `fusesoc` to handle multiple EDA tools and parameters.
 For example, if you want to set the `FPU` and `COREV_PULP` parameters of the `cv32e40p` CPU,
 you need to add next to your compilation command `FUSESOC_PARAM="--COREV_PULP=1 --FPU=1"`
 Below the different EDA examples commands.
 
-### Compiling for Verilator
+### Compiling for Verilator (C++ testbench)
 
 To simulate your application with Verilator, first compile the HDL:
 
@@ -296,6 +330,38 @@ or to execute all these three steps type:
 make run-helloworld
 ```
 
+### Compiling for Verilator (SystemC testbench)
+
+To simulate your application with Verilator using `SystemC`,
+
+make sure you have `SystemC 2.3.3` installed, if not, find it [here](https://www.accellera.org/downloads/standards/systemc).
+
+Make sure to have the following env variables set:
+
+```
+export SYSTEMC_INCLUDE=/your_path_to_systemc/systemc/include/
+export SYSTEMC_LIBDIR=/your_path_to_systemc/systemc/lib-linux64/
+```
+
+Compile the HDL:
+
+```
+make verilator-sim-sc
+```
+
+then, go to your target system built folder
+
+```
+cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim_sc-verilator
+```
+
+and type to run your compiled software:
+
+```
+./Vtestharness +firmware=../../../sw/build/main.hex
+```
+
+If you want to know what is special about the SystemC testbench, have a look [here](./docs/source/How_to/SystemC.md)
 
 ### Compiling for VCS
 
@@ -337,7 +403,7 @@ cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-vcs
 
 and running the same executable as for the digital simulation. Note that with Verdi you can view both the digital and the analog waveforms.
 
-Additional instructions on how to run an analog / mixed-signal simulation of X-HEEP can be found [here](AnalogMixedSignal.md). To try out the simulation, we provide an example SPICE netlist of an simple 1-bit ADC created by us and exported from [xschem](https://xschem.sourceforge.io/stefan/index.html) and which uses the PTM 65nm bulk CMOS model from [https://ptm.asu.edu](https://ptm.asu.edu/).
+Additional instructions on how to run an analog / mixed-signal simulation of X-HEEP can be found [here](./docs/source/How_to/AnalogMixedSignal.md). To try out the simulation, we provide an example SPICE netlist of an simple 1-bit ADC created by us and exported from [xschem](https://xschem.sourceforge.io/stefan/index.html) and which uses the PTM 65nm bulk CMOS model from [https://ptm.asu.edu](https://ptm.asu.edu/).
 
 ### Compiling for Questasim
 
@@ -390,6 +456,26 @@ make run RUN_OPT=1 RUN_UPF=1 PLUSARGS="c firmware=../../../sw/build/main.hex"
 
 Questasim version must be >= Questasim 2020.4
 
+### Compiling for Xcelium
+
+To simulate your application with Xcelium, first compile the HDL:
+
+```
+make xcelium-sim
+```
+
+then, go to your target system built folder
+
+```
+cd ./build/openhwgroup.org_systems_core-v-mini-mcu_0/sim-xcelium/
+```
+
+and type to run your compiled software:
+
+```
+make run PLUSARGS="c firmware=../../../sw/build/main.hex"
+```
+
 ### UART DPI
 
 To simulate the UART, we use the LowRISC OpenTitan [UART DPI](https://github.com/lowRISC/opentitan/tree/master/hw/dv/dpi/uartdpi).
@@ -427,7 +513,6 @@ The available parameters are:
 * LINKER: `on_chip`(default), `flash_load` or `flash_exec` (can provide more than one)
 * TIMEOUT: Integer number of seconds (default 120)
 
-
 #### Usage
 
 ##### Comands
@@ -440,7 +525,7 @@ make app-simulate-all
 ```
 Note that both commands allow the previous parameters to specify compiling or simulation options. E.g.:
 ```
-make app-simulate-all LINKER=on_chip SIMULATOR=questasim COMPILER=clang TIMEOUT=150 
+make app-simulate-all LINKER=on_chip SIMULATOR=questasim COMPILER=clang TIMEOUT=150
 ```
 
 ##### Manually
@@ -467,30 +552,44 @@ The success of the script is not required for merging of a PR.
 
 ## Debug
 
-Follow the [Debug](./Debug.md) guide to debug core-v-mini-mcu.
+Follow the [Debug](./docs/source/How_to/Debug.md) guide to debug core-v-mini-mcu.
 
 Alternatively, in case you are used to developing using Integrated Development Environments (IDEs), please check [the IDE readme](./IDEs.md).
 
 ## Execute From Flash
 
-Follow the [ExecuteFromFlash](./ExecuteFromFlash.md) guide to exxecute code directly from the FLASH with modelsim, FPGA, or ASIC.
+Follow the [ExecuteFromFlash](./docs/source/How_to/ExecuteFromFlash.md) guide to exxecute code directly from the FLASH with modelsim, FPGA, or ASIC.
 
 ## Emulation on Xilinx FPGAs
 
-This project offers two different X-HEEP implementetions on the Xilinx FPGAs, called Standalone-FEMU and Linux-FEMU.
+This project offers two different X-HEEP implementetions on Xilinx FPGAs, called Standalone and FEMU.
 
-### Standalone-FEMU (Standalone Fpga EMUlation)
+### Standalone
 
 In this version, the X-HEEP architecture is implemented on the programmable logic (PL) side of the FPGA, and its input/output are connected to the available headers on the FPGA board.
 
+Three FPGA boards are supported: the Xilinx Pynq-z2, Nexys-A7-100t, Zynq Ultrascale+ ZCU104.
+
 Make sure you have the FPGA board files installed in your Vivado.
 
-For example, for the Xilinx Pynq-Z2 board, use the documentation provided at the following [link](https://pynq.readthedocs.io/en/v2.5/overlay_design_methodology/board_settings.html) to download and install them:
+For example, for the Pynq-Z2 board, use the documentation provided at the following [link](https://pynq.readthedocs.io/en/v2.5/overlay_design_methodology/board_settings.html) to download and install them:
 
 To build and program the bitstream for your FPGA with vivado, type:
 
 ```
 make vivado-fpga FPGA_BOARD=pynq-z2
+```
+
+or
+
+```
+make vivado-fpga FPGA_BOARD=nexys-a7-100t
+```
+
+or
+
+```
+make vivado-fpga FPGA_BOARD=zcu104
 ```
 
 or add the flag `use_bscane_xilinx` to use the native Xilinx scanchain:
@@ -507,11 +606,23 @@ To program the bitstream, open Vivado,
 open --> Hardware Manager --> Open Target --> Autoconnect --> Program Device
 ```
 
-and choose the file `openhwgroup.org_systems_core-v-mini-mcu_0.bit`
+and choose the file `openhwgroup.org_systems_core-v-mini-mcu_0.bit`.
 
-To run SW, follow the [Debug](./Debug.md) guide
+Or simply type:
+
+```
+bash vivado-fpga-pgm FPGA_BOARD=pynq-z2
+```
+
+or
+
+```
+make vivado-fpga-pgm FPGA_BOARD=nexys-a7-100t
+```
+
+To run SW, follow the [Debug](./docs/source/How_to/Debug.md) guide
 to load the binaries with the HS2 cable over JTAG,
-or follow the [ExecuteFromFlash](./ExecuteFromFlash.md)
+or follow the [ExecuteFromFlash](./docs/source/How_to/ExecuteFromFlash.md)
 guide if you have a FLASH attached to the FPGA.
 
 Do not forget that the `pynq-z2` board requires you to have the ethernet cable attached to the board while running.
@@ -520,7 +631,7 @@ For example, if you want to run your application using flash_exec, do as follow:
 
 compile your application, e.g. `make app PROJECT=example_matfadd TARGET=pynq-z2 ARCH=rv32imfc LINKER=flash_exec`
 
-and then follow the [ExecuteFromFlash](./ExecuteFromFlash.md) to program the flash and set the boot buttons on the FPGA correctly.
+and then follow the [ExecuteFromFlash](./docs/source/How_to/ExecuteFromFlash.md) to program the flash and set the boot buttons on the FPGA correctly.
 
 To look at the output of your printf, run in another terminal:
 
@@ -528,13 +639,11 @@ To look at the output of your printf, run in another terminal:
 
 Please be sure to use the right `ttyUSB` number (you can discover it with `dmesg --time-format iso | grep FTDI` for example).
 
+### FPGA EMUlation Platform (FEMU)
 
-### Linux-FEMU (Linux Fpga EMUlation)
+In this version, the X-HEEP architecture is implemented on the programmable logic (PL) side of the Xilinx Zynq-7020 chip on the Pynq-Z2 board and Linux is run on the ARM-based processing system (PS) side of the same chip.
 
-In this version, the X-HEEP architecture is implemented on the programmable logic (PL) side of the FPGA and Linux is run on the ARM-based processing system (PS) side of the same chip.
-
-Read the [following](./linux_femu/README.md) documentation to have more information about this implementation.
-
+NOTE: This platform is not part of this repository, but you can access it with the following link: [FEMU](https://github.com/esl-epfl/x-heep-femu-sdk).
 
 # ASIC Implementation
 
@@ -555,6 +664,6 @@ make asic
 ## OpenRoad support for SkyWater 130nm
 
 We are working on supporting OpenRoad and SkyWater 130nm PDK, please refer to the
-[OpenRoadFlow](./OpenRoadFlow.md) page. This is not ready yet, it has not been tested.
+[Implement on ASIC](./docs/source/How_to/ImplementASIC.md) page. This is not ready yet, it has not been tested.
 
 This relies on a fork of [edalize](https://github.com/davideschiavone/edalize) that contains templates for Design Compiler and OpenRoad.
