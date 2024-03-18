@@ -8,7 +8,7 @@
 {
   upstream:
   {
-    url: https://github.com/esl-epfl/x-heep.git
-    rev: 76d58efe7b9dec0723c1cb9aaf8ad76ad6c85373
+    url: https://github.com/Luigi2898/x-heep.git
+    rev: 849539ddf996926f9b679837f3bc84c0799287bb
   }
 }
