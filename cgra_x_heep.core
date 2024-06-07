@@ -107,7 +107,6 @@ filesets:
 
   ip-fpga:
     files:
-    - hw/fpga/scripts/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
     - hw/fpga/scripts/generate_sram.tcl:  { file_type: tclSource }
     - hw/fpga/prim_xilinx_clk.sv:  { file_type: systemVerilogSource } # Here there are the following modules
     - hw/fpga/cve2_xilinx_clock_gate.sv:  { file_type: systemVerilogSource }
@@ -116,6 +115,16 @@ filesets:
     - hw/fpga/pad_cell_inout_xilinx.sv:  { file_type: systemVerilogSource }
     - hw/fpga/pad_cell_bypass_input_xilinx.sv:  { file_type: systemVerilogSource }
     - hw/fpga/pad_cell_bypass_output_xilinx.sv:  { file_type: systemVerilogSource }
+
+  ip-fpga-pynq-z2:
+    files:
+    - hw/fpga/scripts/pynq-z2/set_board.tcl: { file_type: tclSource }
+    - hw/fpga/scripts/pynq-z2/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
+
+  ip-fpga-zcu104:
+    files:
+    - hw/fpga/scripts/zcu104/set_board.tcl: { file_type: tclSource }
+    - hw/fpga/scripts/zcu104/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
 
   fpga-arm-emulation:
     depend:
@@ -129,7 +138,13 @@ filesets:
 
   xdc-fpga-pynq-z2:
     files:
-    - hw/fpga_cgra/constraints/pin_assign.xdc
+    - hw/fpga_cgra/constraints/pynq-z2/pin_assign.xdc
+    - hw/fpga/constraints/pynq-z2/constraints.xdc
+    file_type: xdc
+
+  xdc-fpga-zcu104:
+    files:
+    - hw/fpga_cgra/constraints/zcu104/pin_assign.xdc
     file_type: xdc
 
   netlist-fpga:
@@ -151,6 +166,10 @@ parameters:
     paramtype: vlogdefine
     default: false
   SYNTHESIS:
+    datatype: bool
+    paramtype: vlogdefine
+    default: false
+  FPGA_ZCU104:
     datatype: bool
     paramtype: vlogdefine
     default: false
@@ -277,4 +296,24 @@ targets:
     tools:
       vivado:
         part: xc7z020clg400-1
+    toplevel: [xilinx_cgra_x_heep_wrapper]
+
+  zcu104:
+    <<: *default_target
+    default_tool: vivado
+    description: ZCU104 Evaluation Board
+    filesets_append:
+    - x_heep_system
+    - rtl-fpga
+    - ip-fpga-zcu104
+    - ip-fpga
+    - xdc-fpga-zcu104
+    - ext_bus
+    parameters:
+    - COREV_PULP=0
+    - SYNTHESIS=true
+    - FPGA_ZCU104=true
+    tools:
+      vivado:
+        part: xczu7ev-ffvc1156-2-e
     toplevel: [xilinx_cgra_x_heep_wrapper]
