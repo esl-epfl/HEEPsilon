@@ -12,8 +12,9 @@ set_property -dict {PACKAGE_PIN M11 IOSTANDARD LVCMOS33} [get_ports rst_i]
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets rst_i]
 
 # LEDS
-set_property -dict {PACKAGE_PIN D5 IOSTANDARD LVCMOS33} [get_ports rst_led_o]
-set_property -dict {PACKAGE_PIN D6 IOSTANDARD LVCMOS33} [get_ports clk_led_o]
+set_property -dict {PACKAGE_PIN D5 IOSTANDARD LVCMOS33} [get_ports rst_led]
+set_property -dict {PACKAGE_PIN D6 IOSTANDARD LVCMOS33} [get_ports clk_led]
+set_property -dict {PACKAGE_PIN B1 IOSTANDARD LVCMOS33} [get_ports clk_out]
 set_property -dict {PACKAGE_PIN A5 IOSTANDARD LVCMOS33} [get_ports exit_valid_o]
 set_property -dict {PACKAGE_PIN B5 IOSTANDARD LVCMOS33} [get_ports exit_value_o]
 
@@ -81,19 +82,24 @@ set_property -dict {PACKAGE_PIN B9 IOSTANDARD LVCMOS18} [get_ports {gpio_io[16]}
 set_property -dict {PACKAGE_PIN B8 IOSTANDARD LVCMOS18} [get_ports {gpio_io[17]}]
 
 # PDM2PCM
-set_property -dict {PACKAGE_PIN K19 IOSTANDARD LVCMOS18} [get_ports pdm2pcm_clk_io]
-set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS18} [get_ports pdm2pcm_pdm_io]
+# set_property -dict {PACKAGE_PIN K19 IOSTANDARD LVCMOS18} [get_ports pdm2pcm_clk_io]
+# set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS18} [get_ports pdm2pcm_pdm_io]
+set_property -dict {PACKAGE_PIN K19 IOSTANDARD LVCMOS18} [get_ports {gpio_io[19]}]
+set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS18} [get_ports {gpio_io[18]}]
 
 # I2S
-set_property -dict {PACKAGE_PIN E18 IOSTANDARD LVCMOS18} [get_ports i2s_sck_io]
-set_property -dict {PACKAGE_PIN E17 IOSTANDARD LVCMOS18} [get_ports i2s_ws_io]
-set_property -dict {PACKAGE_PIN G18 IOSTANDARD LVCMOS18} [get_ports i2s_sd_io]
+# set_property -dict {PACKAGE_PIN E18 IOSTANDARD LVCMOS18} [get_ports i2s_sck_io]
+# set_property -dict {PACKAGE_PIN E17 IOSTANDARD LVCMOS18} [get_ports i2s_ws_io]
+# set_property -dict {PACKAGE_PIN G18 IOSTANDARD LVCMOS18} [get_ports i2s_sd_io]
+set_property -dict {PACKAGE_PIN E18 IOSTANDARD LVCMOS18} [get_ports {gpio_io[20]}]
+set_property -dict {PACKAGE_PIN E17 IOSTANDARD LVCMOS18} [get_ports {gpio_io[21]}]
+set_property -dict {PACKAGE_PIN G18 IOSTANDARD LVCMOS18} [get_ports {gpio_io[22]}]
 
 # SPI2
-set_property -dict {PACKAGE_PIN F18 IOSTANDARD LVCMOS18} [get_ports {spi2_csb_o[0]}]
-set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS18} [get_ports {spi2_csb_o[1]}]
+set_property -dict {PACKAGE_PIN F18 IOSTANDARD LVCMOS18} [get_ports {spi2_csb_io[0]}]
+set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS18} [get_ports {spi2_csb_io[1]}]
 set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS18} [get_ports spi2_sck_o]
-set_property -dict {PACKAGE_PIN F12 IOSTANDARD LVCMOS18} [get_ports {spi2_sd_io[0]}]
-set_property -dict {PACKAGE_PIN E12 IOSTANDARD LVCMOS18} [get_ports {spi2_sd_io[1]}]
-set_property -dict {PACKAGE_PIN H13 IOSTANDARD LVCMOS18} [get_ports {spi2_sd_io[2]}]
-set_property -dict {PACKAGE_PIN H12 IOSTANDARD LVCMOS18} [get_ports {spi2_sd_io[3]}]
+set_property -dict {PACKAGE_PIN F12 IOSTANDARD LVCMOS18} [get_ports spi2_sd_0_io]
+set_property -dict {PACKAGE_PIN E12 IOSTANDARD LVCMOS18} [get_ports spi2_sd_1_io]
+set_property -dict {PACKAGE_PIN H13 IOSTANDARD LVCMOS18} [get_ports spi2_sd_2_io]
+set_property -dict {PACKAGE_PIN H12 IOSTANDARD LVCMOS18} [get_ports spi2_sd_3_io]
