@@ -9,6 +9,6 @@
   upstream:
   {
     url: https://github.com/Luigi2898/x-heep.git
-    rev: 849539ddf996926f9b679837f3bc84c0799287bb
+    rev: 798fd6ffc9193b613f5a85f54a496bfcc149a07d
   }
 }
