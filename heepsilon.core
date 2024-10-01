@@ -181,11 +181,33 @@ parameters:
   COREV_PULP:
     datatype: int
     paramtype: vlogparam
+    description: |
+      Enables COREV_PULP custom RISC-V extension on the CV32E40P core. Admitted values: 1|0.
+    default: 0
+  FPU:
+    datatype: int
+    paramtype: vlogparam
+    description: |
+      Enables RV32F RISC-V extension on the CV32E40P core. Admitted values: 1|0.
     default: 0
   JTAG_DPI:
     datatype: int
     paramtype: vlogparam
+    description: |
+      Enables testbench JTAG DIPs. Admitted values: 1|0.
     default: 0
+  X_EXT:
+    datatype: int
+    paramtype: vlogparam
+    description: |
+      Enables CORE-V-XIF interface for the CV32E40X and CV32E40PX cores. Admitted values: 1|0.
+    default: 0
+  USE_EXTERNAL_DEVICE_EXAMPLE:
+    datatype: int
+    paramtype: vlogparam
+    description: |
+      Enables testbench modules compilation. Admitted values: 1|0.
+    default: 1
   USE_UPF:
     datatype: bool
     paramtype: vlogdefine
