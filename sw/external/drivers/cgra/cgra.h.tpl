@@ -12,11 +12,27 @@
 
 #define CGRA_INTR EXT_INTR_0
 
-#define CGRA_KMEM_SIZE 16
-#define CGRA_IMEM_SIZE 512
-#define CGRA_N_SLOTS   2
-#define CGRA_N_COLS    4
-#define CGRA_N_ROWS    4
+#define CGRA_N_COLS   ${cgra_num_columns}
+#define CGRA_N_ROWS   ${cgra_num_rows}
+#define CGRA_MAX_COLS ${cgra_max_columns}
+
+#define CGRA_KMEM_DEPTH     ${cgra_kmem_depth}
+#define CGRA_KMEM_WIDTH     ${cgra_kmem_width}
+
+#define CGRA_CMEM_BK_DEPTH      ${cgra_cmem_bk_depth}
+#define CGRA_CMEM_BK_DEPTH_LOG2 ${cgra_cmem_bk_depth_log2}
+#define CGRA_CMEM_TOT_DEPTH     (CGRA_CMEM_BK_DEPTH*CGRA_N_ROWS)
+
+#define CGRA_RCS_NUM_CREG      ${cgra_rcs_num_instr}
+#define CGRA_RCS_NUM_CREG_LOG2 ${cgra_rcs_num_instr_log2}
+
+// Some of these checks are already done during the bitstream generation but better double check them
+#if CGRA_CMEM_TOT_DEPTH < ${cgra_num_rows*cgra_max_columns*cgra_rcs_num_instr}
+  #warning Context memory cannot hold the maximum kernel size
+#endif
+#if CGRA_MAX_COLS > CGRA_N_COLS
+  #error CGRA configuration: more columns than possible can be used
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +41,7 @@ extern "C" {
 /**
  * Write the CGRA bistream to its memory
  */
-void cgra_cmem_init(uint32_t cgra_imem_bistream[], uint32_t cgra_kem_bitstream[]);
+void cgra_cmem_init(uint32_t cgra_cmem_bitstream[], uint32_t cgra_kmem_bitstream[]);
 
 /**
  * Initialization parameters for CGRA peripheral control registers..
@@ -41,35 +57,31 @@ typedef struct cgra {
 /**
  * Write to read_ptr register of the CGRA control registers.
  * @param cgra Pointer to cgra_t represting the target CGRA peripheral.
- * @param slot_id Slot ID to which write the read_ptr address
  * @param read_ptr Any valid memory address.
- * @param column Column number to which write the read_ptr address
+ * @param column_idx Column number to which write the read_ptr address
  */
-void cgra_set_read_ptr(const cgra_t *cgra, uint8_t slot_id, uint32_t read_ptr, uint8_t column);
+void cgra_set_read_ptr(const cgra_t *cgra, uint32_t read_ptr, uint8_t column_idx);
 
 /**
  * Write to write_ptr register of the CGRA control registers.
  * @param cgra Pointer to cgra_t represting the target CGRA peripheral.
- * @param slot_id Slot ID to which write the write_ptr address
  * @param write_ptr Any valid memory address.
- * @param column Column number to which write the write_ptr address
+ * @param column_idx Column number to which write the write_ptr address
  */
-void cgra_set_write_ptr(const cgra_t *cgra, uint8_t slot_id, uint32_t write_ptr, uint8_t column);
+void cgra_set_write_ptr(const cgra_t *cgra, uint32_t write_ptr, uint8_t column_idx);
 
 /**
- * Get the first available slot from the CGRA.
- * @param cgra Pointer to cgra_t represting the target CGRA peripheral.
- * @return Available slot number.
+ * Wait until the CGRA is ready to accept a new request.
+ * @param cgra Pointer to cgra_t representing the target CGRA peripheral.
  */
-uint32_t cgra_get_slot(const cgra_t *cgra);
+void cgra_wait_ready(const cgra_t *cgra);
 
 /**
  * Write to kernel_id register of the CGRA control registers.
  * @param cgra Pointer to cgra_t represting the target CGRA peripheral.
- * @param slot_id Slot ID to which request the kernel_id
  * @param kernel_id Kernel ID to execute
  */
-void cgra_set_kernel(const cgra_t *cgra, uint8_t slot_id, uint32_t kernel_id);
+void cgra_set_kernel(const cgra_t *cgra, uint32_t kernel_id);
 
 /**
  * Enable/disable CGRA performance counters.

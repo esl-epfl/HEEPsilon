@@ -2,10 +2,11 @@
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-module cgra_x_heep_top #(
+module heepsilon_top #(
     parameter COREV_PULP = 0,
     parameter FPU        = 0,
-    parameter ZFINX      = 0
+    parameter ZFINX      = 0,
+    parameter X_EXT      = 0
 ) (
     inout logic clk_i,
     inout logic rst_ni,
@@ -48,17 +49,17 @@ module cgra_x_heep_top #(
 
   import obi_pkg::*;
   import reg_pkg::*;
-  import cgra_x_heep_pkg::*;
+  import heepsilon_pkg::*;
 
   // External xbar master/slave and peripheral ports
   obi_req_t ext_xbar_slave_req;
   obi_resp_t ext_xbar_slave_resp;
   reg_req_t ext_periph_slave_req;
   reg_rsp_t ext_periph_slave_resp;
-  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_req;
-  obi_req_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_req;
-  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_resp;
-  obi_resp_t [cgra_x_heep_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_resp;
+  obi_req_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_req;
+  obi_req_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_req;
+  obi_resp_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] ext_master_resp;
+  obi_resp_t [heepsilon_pkg::CGRA_XBAR_NMASTER-1:0] heep_slave_resp;
   obi_req_t heep_core_instr_req;
   obi_resp_t heep_core_instr_resp;
   obi_req_t heep_core_data_req;
@@ -80,21 +81,21 @@ module cgra_x_heep_top #(
   logic cgra_int;
   logic cgra_enable;
   logic cgra_logic_rst_n;
-  logic cgra_ram_banks_set_retentive;
+  logic cgra_ram_banks_set_retentive_n;
 
   // External subsystems
   logic external_subsystem_rst_n;
-  logic external_ram_banks_set_retentive;
+  logic external_ram_banks_set_retentive_n;
   /* verilator lint_off unused */
   logic external_subsystem_clkgate_en_n;
-  logic external_subsystem_powergate_switch;
-  logic external_subsystem_powergate_switch_ack;
-  logic external_subsystem_powergate_iso;
+  logic external_subsystem_powergate_switch_n;
+  logic external_subsystem_powergate_switch_ack_n;
+  logic external_subsystem_powergate_iso_n;
 
   // CGRA logic clock gating unit enable (always-on in this case)
-  assign cgra_enable                  = 1'b1;
-  assign cgra_logic_rst_n             = external_subsystem_rst_n;
-  assign cgra_ram_banks_set_retentive = external_ram_banks_set_retentive;
+  assign cgra_enable                    = 1'b1;
+  assign cgra_logic_rst_n               = external_subsystem_rst_n;
+  assign cgra_ram_banks_set_retentive_n = external_ram_banks_set_retentive_n;
 
   always_comb begin
     // All interrupt lines set to zero by default
@@ -114,10 +115,10 @@ module cgra_x_heep_top #(
       .EXT_XBAR_NMASTER(CGRA_XBAR_NMASTER),
       .EXT_XBAR_NSLAVE (1)
   ) ext_bus_i (
-      .clk_i                    (clk_i),
-      .rst_ni                   (rst_ni),
-      .addr_map_i               (EXT_XBAR_ADDR_RULES),
-      .default_idx_i            ('0),
+      .clk_i        (clk_i),
+      .rst_ni       (rst_ni),
+      .addr_map_i   (EXT_XBAR_ADDR_RULES),
+      .default_idx_i('0),
 
       .heep_core_instr_req_i    (heep_core_instr_req),
       .heep_core_instr_resp_o   (heep_core_instr_resp),
@@ -132,12 +133,12 @@ module cgra_x_heep_top #(
       .heep_dma_addr_ch0_req_i  (heep_dma_addr_ch0_req),
       .heep_dma_addr_ch0_resp_o (heep_dma_addr_ch0_resp),
 
-      .ext_master_req_i         (ext_master_req),
-      .ext_master_resp_o        (ext_master_resp),
-      .heep_slave_req_o         (heep_slave_req),
-      .heep_slave_resp_i        (heep_slave_resp),
-      .ext_slave_req_o          (ext_xbar_slave_req),
-      .ext_slave_resp_i         (ext_xbar_slave_resp)
+      .ext_master_req_i (ext_master_req),
+      .ext_master_resp_o(ext_master_resp),
+      .heep_slave_req_o (heep_slave_req),
+      .heep_slave_resp_i(heep_slave_resp),
+      .ext_slave_req_o  (ext_xbar_slave_req),
+      .ext_slave_resp_i (ext_xbar_slave_resp)
   );
 
   cgra_top_wrapper cgra_top_wrapper_i (
@@ -151,7 +152,7 @@ module cgra_x_heep_top #(
       .reg_rsp_o(ext_periph_slave_resp),
       .slave_req_i(ext_xbar_slave_req),
       .slave_resp_o(ext_xbar_slave_resp),
-      .cmem_set_retentive_i(cgra_ram_banks_set_retentive),
+      .cmem_set_retentive_ni(cgra_ram_banks_set_retentive_n),
       .cgra_int_o(cgra_int)
   );
 
@@ -162,6 +163,7 @@ module cgra_x_heep_top #(
       .COREV_PULP(COREV_PULP),
       .FPU(FPU),
       .ZFINX(ZFINX),
+      .X_EXT(X_EXT),
       .EXT_XBAR_NMASTER(CGRA_XBAR_NMASTER)
   ) x_heep_system_i (
       .clk_i,
@@ -252,12 +254,12 @@ module cgra_x_heep_top #(
       .external_subsystem_clkgate_en_no(external_subsystem_clkgate_en_n),
       .ext_peripheral_slave_req_o(ext_periph_slave_req),
       .ext_peripheral_slave_resp_i(ext_periph_slave_resp),
-      .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch),
-      .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack),
-      .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso),
+      .external_subsystem_powergate_switch_no(external_subsystem_powergate_switch_n),
+      .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack_n),
+      .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso_n),
 
       .external_subsystem_rst_no(external_subsystem_rst_n),
-      .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive)
+      .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive_n)
   );
 
-endmodule  // cgra_x_heep_pkg
+endmodule  // heepsilon_pkg

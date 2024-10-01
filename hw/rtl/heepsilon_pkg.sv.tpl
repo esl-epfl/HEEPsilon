@@ -2,13 +2,13 @@
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-package cgra_x_heep_pkg;
+package heepsilon_pkg;
 
   import addr_map_rule_pkg::*;
   import core_v_mini_mcu_pkg::*;
 
   // One master port per CGRA column
-  localparam CGRA_XBAR_NMASTER = 4;
+  localparam CGRA_XBAR_NMASTER = ${cgra_num_columns};
   // One slave port to the CGRA context memory
   localparam EXT_XBAR_NSLAVE = 1;
 
@@ -49,4 +49,4 @@ package cgra_x_heep_pkg;
       EXT_SYSTEM_NPERIPHERALS
   ) : 32'd1;
 
-endpackage  // cgra_x_heep_pkg
+endpackage  // heepsilon_pkg

@@ -4,8 +4,8 @@ CAPI=2:
 # Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 # SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-name: eslepfl:systems:cgra-x-heep
-description: CGRA X-HEEP Top.
+name: eslepfl:systems:heepsilon
+description: HEEPsilon (X-HEEP + CGRA) Top.
 
 filesets:
   files_rtl_generic:
@@ -14,8 +14,8 @@ filesets:
     - openhwgroup.org:systems:core-v-mini-mcu
     - eslepfl::cgra
     files:
-    - hw/rtl/cgra_x_heep_pkg.sv
-    - hw/rtl/cgra_x_heep_top.sv
+    - hw/rtl/heepsilon_pkg.sv
+    - hw/rtl/heepsilon_top.sv
     file_type: systemVerilogSource
 
   x_heep_system:
@@ -102,7 +102,7 @@ filesets:
     - hw/fpga/sram_wrapper.sv
     - hw/fpga_cgra/cgra_sram_wrapper.sv
     - hw/fpga_cgra/cgra_clock_gate.sv
-    - hw/fpga_cgra/xilinx_cgra_x_heep_wrapper.sv
+    - hw/fpga_cgra/xilinx_heepsilon_wrapper.sv
     file_type: systemVerilogSource
 
   ip-fpga:
@@ -198,7 +198,7 @@ targets:
   default: &default_target
     filesets:
     - files_rtl_generic
-    toplevel: [cgra_x_heep_top]
+    toplevel: [heepsilon_top]
 
   sim:
     <<: *default_target
@@ -296,7 +296,7 @@ targets:
     tools:
       vivado:
         part: xc7z020clg400-1
-    toplevel: [xilinx_cgra_x_heep_wrapper]
+    toplevel: [xilinx_heepsilon_wrapper]
 
   zcu104:
     <<: *default_target
@@ -316,4 +316,4 @@ targets:
     tools:
       vivado:
         part: xczu7ev-ffvc1156-2-e
-    toplevel: [xilinx_cgra_x_heep_wrapper]
+    toplevel: [xilinx_heepsilon_wrapper]
