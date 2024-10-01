@@ -118,12 +118,10 @@ filesets:
 
   ip-fpga-pynq-z2:
     files:
-    - hw/fpga/scripts/pynq-z2/set_board.tcl: { file_type: tclSource }
     - hw/fpga/scripts/pynq-z2/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
 
   ip-fpga-zcu104:
     files:
-    - hw/fpga/scripts/zcu104/set_board.tcl: { file_type: tclSource }
     - hw/fpga/scripts/zcu104/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
 
   fpga-arm-emulation:
