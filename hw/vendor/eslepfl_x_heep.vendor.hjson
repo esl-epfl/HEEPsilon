@@ -7,8 +7,8 @@
   target_dir: "esl_epfl_x_heep",
 
   upstream: {
-    url: "https://github.com/esl-epfl/x-heep.git",
-    rev: "df569a88fc7eaa447645262f0d3a76dd22c519f7",
+    url: "https://github.com/Luigi2898/x-heep.git",
+    rev: "798fd6ffc9193b613f5a85f54a496bfcc149a07d",
   },
 
   patch_dir: "patches/esl_epfl_x_heep",

@@ -11,8 +11,13 @@ module xilinx_heepsilon_wrapper
     parameter ZFINX    = 0,
     parameter CLK_LED_COUNT_LENGTH = 27
 ) (
-    inout logic         clk_i,
-    inout logic         rst_i,
+`ifdef FPGA_ZCU104
+    inout logic clk_300mhz_n,
+    inout logic clk_300mhz_p,
+`else
+    inout logic clk_i,
+`endif
+    inout logic rst_i,
 
     //visibility signals
     output logic        rst_led,
@@ -84,10 +89,18 @@ module xilinx_heepsilon_wrapper
   // clock output for debugging
   assign clk_out = clk_gen;
 
+`ifdef FPGA_ZCU104
+  xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
+      .CLK_IN1_D_0_clk_n(clk_300mhz_n),
+      .CLK_IN1_D_0_clk_p(clk_300mhz_p),
+      .clk_out1_0(clk_gen)
+  );
+`else  // FPGA PYNQ-Z2
   xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
       .clk_125MHz(clk_i),
       .clk_out1_0(clk_gen)
   );
+`endif
 
   heepsilon_top #(
         .COREV_PULP (0),
