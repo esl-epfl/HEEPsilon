@@ -13,6 +13,31 @@ filesets:
     - x-heep::packages
     - openhwgroup.org:systems:core-v-mini-mcu
     - eslepfl::cgra
+    - openhwgroup.org:ip:cv32e40p
+    - openhwgroup.org:ip:cv32e40x
+    - openhwgroup:cve2:cve2_top
+    - esl_epfl:ip:cv32e40px
+    - pulp-platform.org:ip:gpio
+    - pulp-platform.org::common_cells
+    - pulp-platform.org::cluster_interconnect
+    - pulp-platform.org::riscv_dbg
+    - pulp-platform.org::register_interface
+    - openhwgroup.org:ip:soc_ctrl
+    - lowrisc:ip:uart:0.1
+    - lowrisc:ip:rv_plic_example:0.1
+    - lowrisc:ip:rv_timer:0.1
+    - lowrisc:ip:spi_host:1.0
+    - lowrisc:ip:i2c:0.1
+    - yosyshq:picorv32_spimemio:0-r1
+    - x-heep:obi_spimemio:0.1.0
+    - x-heep:ip:boot_rom
+    - x-heep:ip:dma
+    - x-heep:ip:dma_subsystem
+    - x-heep:ip:i2s
+    - x-heep:ip:power_manager
+    - x-heep:ip:fast_intr_ctrl
+    - x-heep:ip:obi_fifo
+    - x-heep:ip:pdm2pcm
     files:
     - hw/rtl/heepsilon_pkg.sv
     - hw/rtl/heepsilon_top.sv
@@ -97,6 +122,8 @@ filesets:
     file_type: systemVerilogSource
 
   rtl-fpga:
+    depend:
+    - openhwgroup.org:systems:core-v-mini-mcu-fpga
     files:
     - hw/fpga/xilinx_core_v_mini_mcu_wrapper.sv
     - hw/fpga/sram_wrapper.sv
@@ -285,6 +312,7 @@ targets:
     - x_heep_system
     - files_rtl_generic # Already added by default?
     - rtl-fpga
+    - ip-fpga-pynq-z2
     - ip-fpga
     - xdc-fpga-pynq-z2
     - ext_bus
@@ -309,9 +337,14 @@ targets:
     - ext_bus
     parameters:
     - COREV_PULP=0
+    - FPU
+    - X_EXT
     - SYNTHESIS=true
+    - REMOVE_OBI_FIFO
     - FPGA_ZCU104=true
     tools:
       vivado:
         part: xczu7ev-ffvc1156-2-e
+        board_part: xilinx.com:zcu104:part0:1.0
+        board_repo_paths: [../../../hw/fpga/board_files/vendor/esl_epfl_zcu104_board_files]
     toplevel: [xilinx_heepsilon_wrapper]
