@@ -212,6 +212,11 @@ parameters:
     datatype: bool
     paramtype: vlogdefine
     default: false
+  REMOVE_OBI_FIFO:
+    datatype: bool
+    paramtype: vlogdefine
+    description: |
+      Remove the FIFO between the BUS and the peripherals subsystems
   SYNTHESIS:
     datatype: bool
     paramtype: vlogdefine
