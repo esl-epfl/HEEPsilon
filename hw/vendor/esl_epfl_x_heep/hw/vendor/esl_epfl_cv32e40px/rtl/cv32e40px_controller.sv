@@ -110,6 +110,10 @@ module cv32e40px_controller import cv32e40px_pkg::*;
 
   output logic        apu_stall_o,
 
+  // X-IF signals
+  output logic        x_branch_or_async_taken_o,
+  output logic        x_control_illegal_reset_o,
+
   // jump/branch signals
   input  logic        branch_taken_ex_i,          // branch taken signal from EX ALU
   input  logic [1:0]  ctrl_transfer_insn_in_id_i,               // jump is being calculated in ALU
@@ -240,7 +244,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
   logic debug_req_q;
   logic debug_req_pending;
 
-  // qualify wfi vs nosleep locally 
+  // qualify wfi vs nosleep locally
   logic wfi_active;
 
 
@@ -326,6 +330,9 @@ module cv32e40px_controller import cv32e40px_pkg::*;
     // but the aligner immediately modifies pc_id to HWLP_BEGIN. This condition on hwlp_targ_addr_o
     // ensures that the target is kept constant even if pc_id is no more HWLP_END
     hwlp_targ_addr_o        = ((hwlp_start1_leq_pc && hwlp_end1_geq_pc) && !(hwlp_start0_leq_pc && hwlp_end0_geq_pc)) ? hwlp_start_addr_i[1] : hwlp_start_addr_i[0];
+
+    x_branch_or_async_taken_o = 1'b0;
+    x_control_illegal_reset_o = 1'b0;
 
     unique case (ctrl_fsm_cs)
       // We were just reset, wait for fetch_enable
@@ -438,6 +445,8 @@ module cv32e40px_controller import cv32e40px_pkg::*;
             pc_mux_o      = PC_BRANCH;
             pc_set_o      = 1'b1;
 
+            x_branch_or_async_taken_o = 1'b1;
+
             // if we want to debug, flush the pipeline
             // the current_pc_if will take the value of the next instruction to
             // be executed (NPC)
@@ -491,10 +500,12 @@ module cv32e40px_controller import cv32e40px_pkg::*;
             if ( (debug_req_pending || trigger_match_i) & ~debug_mode_q )
               begin
                 //Serving the debug
+                is_decoding_o     = COREV_PULP ? 1'b0 : 1'b1;
                 halt_if_o         = 1'b1;
                 halt_id_o         = 1'b1;
                 ctrl_fsm_ns       = DBG_FLUSH;
                 debug_req_entry_n = 1'b1;
+                x_branch_or_async_taken_o = 1'b1;
               end
             else if (irq_req_ctrl_i && ~debug_mode_q)
               begin
@@ -510,6 +521,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                 exc_pc_mux_o      = EXC_PC_IRQ;
                 exc_cause_o       = irq_id_ctrl_i;
                 csr_irq_sec_o     = irq_sec_ctrl_i;
+                x_branch_or_async_taken_o = 1'b1;
 
                 // IRQ interface
                 irq_ack_o         = 1'b1;
@@ -533,6 +545,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                   halt_id_o         = 1'b0;
                   ctrl_fsm_ns       = id_ready_i ? FLUSH_EX : DECODE;
                   illegal_insn_n    = 1'b1;
+                  x_control_illegal_reset_o = 1'b1;
 
                 end else begin
 
@@ -596,7 +609,17 @@ module cv32e40px_controller import cv32e40px_pkg::*;
 
                     csr_status_i: begin
                       halt_if_o     = 1'b1;
-                      ctrl_fsm_ns   = id_ready_i ? FLUSH_EX : DECODE;
+                      if (~id_ready_i) begin
+                        ctrl_fsm_ns = DECODE;
+                      end else begin
+                        ctrl_fsm_ns = FLUSH_EX;
+                        if (hwlp_end0_eq_pc) begin
+                          hwlp_dec_cnt_o[0] = 1'b1;
+                        end
+                        if (hwlp_end1_eq_pc) begin
+                          hwlp_dec_cnt_o[1] = 1'b1;
+                        end
+                      end
                     end
 
                     data_load_event_i: begin
@@ -616,7 +639,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                         ctrl_fsm_ns  = hwlp_end0_eq_pc_plus4 || hwlp_end1_eq_pc_plus4 ? DECODE : DECODE_HWLOOP;
 
                         // we can be at the end of HWloop due to a return from interrupt or ecall or ebreak or exceptions
-                        if(hwlp_end0_eq_pc && hwlp_counter0_gt_1) begin
+                        if (hwlp_end0_eq_pc && hwlp_counter0_gt_1) begin
                           pc_mux_o         = PC_HWLOOP;
                           if (~jump_done_q) begin
                             pc_set_o          = 1'b1;
@@ -668,6 +691,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                         illegal_insn_i | ecall_insn_i:
                         begin
                             ctrl_fsm_ns = FLUSH_EX;
+                            x_control_illegal_reset_o = illegal_insn_i;
                         end
 
                         (~ebrk_force_debug_mode & ebrk_insn_i):
@@ -712,10 +736,12 @@ module cv32e40px_controller import cv32e40px_pkg::*;
             if ( (debug_req_pending || trigger_match_i) & ~debug_mode_q )
               begin
                 //Serving the debug
+                is_decoding_o     = COREV_PULP ? 1'b0 : 1'b1;
                 halt_if_o         = 1'b1;
                 halt_id_o         = 1'b1;
                 ctrl_fsm_ns       = DBG_FLUSH;
                 debug_req_entry_n = 1'b1;
+                x_branch_or_async_taken_o = 1'b1;
              end
             else if (irq_req_ctrl_i && ~debug_mode_q)
               begin
@@ -731,6 +757,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                 exc_pc_mux_o      = EXC_PC_IRQ;
                 exc_cause_o       = irq_id_ctrl_i;
                 csr_irq_sec_o     = irq_sec_ctrl_i;
+                x_branch_or_async_taken_o = 1'b1;
 
                 // IRQ interface
                 irq_ack_o         = 1'b1;
@@ -756,6 +783,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                   halt_id_o         = 1'b1;
                   ctrl_fsm_ns       = FLUSH_EX;
                   illegal_insn_n    = 1'b1;
+                  x_control_illegal_reset_o = 1'b1;
 
                 end else begin
 
@@ -764,7 +792,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
 
                     ebrk_insn_i: begin
                       halt_if_o     = 1'b1;
-                      halt_id_o     = 1'b1;
+                      halt_id_o     = 1'b0;
 
                       if (debug_mode_q)
                         // we got back to the park loop in the debug rom
@@ -776,20 +804,30 @@ module cv32e40px_controller import cv32e40px_pkg::*;
 
                       else begin
                         // otherwise just a normal ebreak exception
-                        ctrl_fsm_ns = FLUSH_EX;
+                        ctrl_fsm_ns = id_ready_i ? FLUSH_EX : DECODE_HWLOOP;
                       end
 
                     end
 
                     ecall_insn_i: begin
                       halt_if_o     = 1'b1;
-                      halt_id_o     = 1'b1;
-                      ctrl_fsm_ns   = FLUSH_EX;
+                      halt_id_o     = 1'b0;
+                      ctrl_fsm_ns   = id_ready_i ? FLUSH_EX : DECODE_HWLOOP;
                     end
 
                     csr_status_i: begin
                       halt_if_o     = 1'b1;
-                      ctrl_fsm_ns   = id_ready_i ? FLUSH_EX : DECODE_HWLOOP;
+                      if (~id_ready_i) begin
+                        ctrl_fsm_ns = DECODE_HWLOOP;
+                      end else begin
+                        ctrl_fsm_ns = FLUSH_EX;
+                        if (hwlp_end0_eq_pc) begin
+                          hwlp_dec_cnt_o[0] = 1'b1;
+                        end
+                        if (hwlp_end1_eq_pc) begin
+                          hwlp_dec_cnt_o[1] = 1'b1;
+                        end
+                      end
                     end
 
                     data_load_event_i: begin
@@ -843,6 +881,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
                         illegal_insn_i | ecall_insn_i:
                         begin
                             ctrl_fsm_ns = FLUSH_EX;
+                            x_control_illegal_reset_o = illegal_insn_i;
                         end
 
                         (~ebrk_force_debug_mode & ebrk_insn_i):
@@ -1065,16 +1104,10 @@ module cv32e40px_controller import cv32e40px_pkg::*;
               end
 
               csr_status_i: begin
-
-                if(hwlp_end0_eq_pc && hwlp_counter0_gt_1) begin
-                    pc_mux_o         = PC_HWLOOP;
-                    pc_set_o          = 1'b1;
-                    hwlp_dec_cnt_o[0] = 1'b1;
-              end
-                if(hwlp_end1_eq_pc && hwlp_counter1_gt_1) begin
-                    pc_mux_o         = PC_HWLOOP;
-                    pc_set_o          = 1'b1;
-                    hwlp_dec_cnt_o[1] = 1'b1;
+                if ((hwlp_end0_eq_pc && !hwlp_counter0_eq_0) ||
+                    (hwlp_end1_eq_pc && !hwlp_counter1_eq_0)) begin
+                  pc_mux_o = PC_HWLOOP;
+                  pc_set_o = 1'b1;
                 end
               end
 
@@ -1191,7 +1224,7 @@ module cv32e40px_controller import cv32e40px_pkg::*;
         exc_pc_mux_o      = EXC_PC_DBD;
         csr_save_cause_o  = 1'b1;
         debug_csr_save_o  = 1'b1;
-        if (debug_force_wakeup_q) 
+        if (debug_force_wakeup_q)
             debug_cause_o = DBG_CAUSE_HALTREQ;
         else if (debug_single_step_i)
             debug_cause_o = DBG_CAUSE_STEP; // pri 0
@@ -1463,7 +1496,7 @@ endgenerate
 
   assign debug_wfi_no_sleep_o = debug_mode_q || debug_req_pending || debug_single_step_i || trigger_match_i || COREV_CLUSTER;
 
-  // Gate off wfi 
+  // Gate off wfi
   assign wfi_active = wfi_i & ~debug_wfi_no_sleep_o;
 
   // sticky version of debug_req (must be on clk_ungated_i such that incoming pulse before core is enabled is not missed)
@@ -1559,7 +1592,7 @@ endgenerate
 
     // HWLoop 0 and 1 having target address constraints
     property p_hwlp_same_target_address;
-       @(posedge clk) (hwlp_counter_i[1] > 1 && hwlp_counter_i[0] > 1) |-> ( hwlp_end_addr_i[1] - 4 >= hwlp_end_addr_i[0] - 4 + 8 );
+       @(posedge clk) (hwlp_counter_i[1] > 1 && hwlp_counter_i[0] > 1 && pc_id_i >= hwlp_start_addr_i[0] && pc_id_i <= hwlp_end_addr_i[0] - 4) |-> ( hwlp_end_addr_i[1] - 4 >= hwlp_end_addr_i[0] - 4 + 8 );
     endproperty
 
     a_hwlp_same_target_address : assert property(p_hwlp_same_target_address) else $warning("%t, HWLoops target address do not respect constraints", $time);
@@ -1584,7 +1617,7 @@ endgenerate
 
   // Ensure DBG_TAKEN_IF can only be enterred if in single step mode or woken
   // up from sleep by debug_req_i
-         
+
   a_single_step_dbg_taken_if : assert property (@(posedge clk)  disable iff (!rst_n)  (ctrl_fsm_ns==DBG_TAKEN_IF) |-> ((~debug_mode_q && debug_single_step_i) || debug_force_wakeup_n));
 
   // Ensure DBG_FLUSH state is only one cycle. This implies that cause is either trigger, debug_req_entry, or ebreak

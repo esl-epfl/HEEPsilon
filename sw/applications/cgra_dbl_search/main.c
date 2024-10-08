@@ -7,28 +7,33 @@
 #include "core_v_mini_mcu.h"
 #include "rv_plic.h"
 #include "rv_plic_regs.h"
-#include "cgra_x_heep.h"
+#include "heepsilon.h"
 #include "cgra.h"
 #include "cgra_bitstream.h"
 #include "stimuli.h"
 
-#define DEBUG
+// This application only works with a 4x4 CGRA
+#if CGRA_N_COLS != 4 | CGRA_N_ROWS != 4
+  #error The CGRA must have a 4x4 size to run this example
+#endif
 
-// Use PRINTF instead of PRINTF to remove print by default
+// #define DEBUG
+
+// Use PRINTF instead of printf to remove print by default
 #ifdef DEBUG
   #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
   #define PRINTF(...)
 #endif
-#define PRINTF_ALWAYS(fmt, ...) printf(fmt, ## __VA_ARGS__)
 
-#define OUTPUT_LENGTH 4
+#define CGRA_IN_LEN  2
+#define CGRA_OUT_LEN 4
 
 // one dim slot x n input values (data ptrs, constants, ...)
-int32_t cgra_input[CGRA_N_SLOTS][10] __attribute__ ((aligned (4)));
+int32_t cgra_input[CGRA_IN_LEN] __attribute__ ((aligned (4)));
 int8_t cgra_intr_flag;
-volatile int32_t cgra_res[OUTPUT_LENGTH] = {0};
-int32_t exp_res[OUTPUT_LENGTH] = {0};
+volatile int32_t cgra_res[CGRA_OUT_LEN] = {0};
+int32_t exp_res[CGRA_OUT_LEN] = {0};
 
 // Interrupt controller variables
 void handler_irq_cgra(uint32_t id) {
@@ -37,10 +42,9 @@ void handler_irq_cgra(uint32_t id) {
 
 int main(void) {
 
-  //PRINTF("Init CGRA context memory...\n");
-  cgra_cmem_init(cgra_imem_bitstream, cgra_kmem_bitstream);
-  //PRINTF("Bye!\n");
-  //PRINTF("\rdone\n");
+  PRINTF("Init CGRA context memory...");
+  cgra_cmem_init(cgra_cmem_bitstream, cgra_kmem_bitstream);
+  PRINTF("done\n");
 
   // Init the PLIC
   plic_Init();
@@ -59,10 +63,9 @@ int main(void) {
   cgra_t cgra;
   cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
 
-  // Variable for CGRA call anc check
-  uint8_t cgra_slot;
+  // Variable for CGRA call and check
   int8_t column_idx;
-  int32_t errors;
+  int32_t errors_min, errors_max;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //  _____   ____  _    _ ____  _      ______   __  __ _____ _   _    _____ ______          _____   _____ _    _  //
@@ -79,7 +82,7 @@ int main(void) {
   exp_res[2] = 0;
   exp_res[3] = -1;
 
-  PRINTF("Run double minimum search on cpu...\n");
+  PRINTF("Run double min search on cpu...");
   for(int32_t i=1; i<INPUT_LENGTH; i++) {
     if (stimuli[i] < exp_res[0]) {
       exp_res[1] = exp_res[0];
@@ -91,42 +94,42 @@ int main(void) {
       exp_res[3] = i;
     }
   }
-  PRINTF("\rdone\n");
+  PRINTF("done\n");
 
-  // Select request slot of CGRA (2 slots)
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   // input data ptr
-  cgra_input[cgra_slot][0] = (int32_t)&stimuli[0];
+  cgra_input[0] = (int32_t)&stimuli[0];
   // input size
-  cgra_input[cgra_slot][1] = INPUT_LENGTH-1;
+  cgra_input[1] = INPUT_LENGTH-1;
 
-  PRINTF("Run double minimum search on CGRA...\n");
+  PRINTF("Run double min search on CGRA...");
   cgra_perf_cnt_enable(&cgra, 1);
-  column_idx;
   // Set CGRA kernel pointers
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[cgra_slot], column_idx);
-  cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res, column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input, column_idx);
+  cgra_set_write_ptr(&cgra, (uint32_t) cgra_res, column_idx);
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, DBL_MIN_KER_ID);
+  cgra_set_kernel(&cgra, DBL_MIN_KER_ID);
 
   // Wait CGRA is done
   cgra_intr_flag=0;
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
+  PRINTF("done\n");
 
   // Check the cgra values are correct
-  errors=0;
-  for (int i=0; i<OUTPUT_LENGTH; i++) {
+  errors_min=0;
+  for (int i=0; i<CGRA_OUT_LEN; i++) {
     if (cgra_res[i] != exp_res[i]) {
       PRINTF("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
       PRINTF("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
-      errors++;
+      errors_min++;
     }
   }
 
-  PRINTF("CGRA double minimum check finished with %d errors\n", errors);
+  printf("CGRA double minimum check finished with %d errors\n", errors_min);
 
   // Performance counter display
   PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
@@ -146,7 +149,7 @@ int main(void) {
   exp_res[2] = 0;
   exp_res[3] = -1;
 
-  PRINTF("Run double maximum search on cpu...\n");
+  PRINTF("Run double max search on cpu...");
   for(int32_t i=1; i<INPUT_LENGTH; i++) {
     if (stimuli[i] > exp_res[0]) {
       exp_res[1] = exp_res[0];
@@ -158,41 +161,42 @@ int main(void) {
       exp_res[3] = i;
     }
   }
-  PRINTF("\rdone\n");
+  PRINTF("done\n");
 
-  // Select request slot of CGRA (2 slots)
-  cgra_slot = cgra_get_slot(&cgra);
+  // Check the CGRA can accept a new request
+  cgra_wait_ready(&cgra);
   // input data ptr
-  cgra_input[cgra_slot][0] = (int32_t)&stimuli[0];
+  cgra_input[0] = (int32_t)&stimuli[0];
   // input size
-  cgra_input[cgra_slot][1] = INPUT_LENGTH-1;
+  cgra_input[1] = INPUT_LENGTH-1;
 
-  PRINTF("Run double maximum search on CGRA...\n");
+  PRINTF("Run double max search on CGRA...");
   cgra_perf_cnt_enable(&cgra, 1);
   // Set CGRA kernel pointers
   column_idx = 0;
-  cgra_set_read_ptr(&cgra, cgra_slot, (uint32_t) cgra_input[cgra_slot], column_idx);
-  cgra_set_write_ptr(&cgra, cgra_slot, (uint32_t) cgra_res, column_idx);
+  cgra_set_read_ptr(&cgra, (uint32_t) cgra_input, column_idx);
+  cgra_set_write_ptr(&cgra, (uint32_t) cgra_res, column_idx);
   // Launch CGRA kernel
-  cgra_set_kernel(&cgra, cgra_slot, DBL_MAX_KER_ID);
+  cgra_set_kernel(&cgra, DBL_MAX_KER_ID);
 
   // Wait CGRA is done
   cgra_intr_flag=0;
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
   }
+  PRINTF("done\n");
 
   // Check the cgra values are correct
-  errors=0;
-  for (int i=0; i<OUTPUT_LENGTH; i++) {
+  errors_max=0;
+  for (int i=0; i<CGRA_OUT_LEN; i++) {
     if (cgra_res[i] != exp_res[i]) {
       PRINTF("[%d]: %d != %d\n", i, cgra_res[i], exp_res[i]);
       PRINTF("[%d]: %08x != %08x\n", i, cgra_res[i], exp_res[i]);
-      errors++;
+      errors_max++;
     }
   }
 
-  PRINTF("CGRA double maximum check finished with %d errors\n", errors);
+  printf("CGRA double maximum check finished with %d errors\n", errors_max);
 
   // Performance counter display
   PRINTF("CGRA kernel executed: %d\n", cgra_perf_cnt_get_kernel(&cgra));
@@ -209,5 +213,5 @@ int main(void) {
   PRINTF("CGRA column %d active cycles: %d\n", column_idx, cgra_perf_cnt_get_col_active(&cgra, column_idx));
   PRINTF("CGRA column %d stall cycles : %d\n", column_idx, cgra_perf_cnt_get_col_stall(&cgra, column_idx));
 
-  return errors ? EXIT_FAILURE : EXIT_SUCCESS;
+  return (errors_min+errors_max) ? EXIT_FAILURE : EXIT_SUCCESS;
 }

@@ -33,7 +33,9 @@ module cv32e40px_register_file #(
     parameter ADDR_WIDTH = 5,
     parameter DATA_WIDTH = 32,
     parameter FPU        = 0,
-    parameter ZFINX      = 0
+    parameter ZFINX      = 0,
+    parameter COREV_X_IF = 0,
+    parameter X_DUALREAD = 0
 ) (
     // Clock and Reset
     input logic clk,
@@ -41,17 +43,19 @@ module cv32e40px_register_file #(
 
     input logic scan_cg_en_i,
 
+    input logic dualread_i,
+
     //Read port R1
-    input  logic [ADDR_WIDTH-1:0] raddr_a_i,
-    output logic [DATA_WIDTH-1:0] rdata_a_o,
+    input logic [ADDR_WIDTH-1:0] raddr_a_i,
+    output logic [X_DUALREAD:0][DATA_WIDTH-1:0] rdata_a_o,
 
     //Read port R2
-    input  logic [ADDR_WIDTH-1:0] raddr_b_i,
-    output logic [DATA_WIDTH-1:0] rdata_b_o,
+    input logic [ADDR_WIDTH-1:0] raddr_b_i,
+    output logic [X_DUALREAD:0][DATA_WIDTH-1:0] rdata_b_o,
 
     //Read port R3
-    input  logic [ADDR_WIDTH-1:0] raddr_c_i,
-    output logic [DATA_WIDTH-1:0] rdata_c_o,
+    input logic [ADDR_WIDTH-1:0] raddr_c_i,
+    output logic [X_DUALREAD:0][DATA_WIDTH-1:0] rdata_c_o,
 
     // Write port W1
     input logic [ADDR_WIDTH-1:0] waddr_a_i,
@@ -98,10 +102,37 @@ module cv32e40px_register_file #(
   //-----------------------------------------------------------------------------
   //-- READ : Read address decoder RAD
   //-----------------------------------------------------------------------------
-  assign rdata_a_o = raddr_a_i[5] ? mem_fp[raddr_a_i[4:0]] : mem[raddr_a_i[4:0]];
-  assign rdata_b_o = raddr_b_i[5] ? mem_fp[raddr_b_i[4:0]] : mem[raddr_b_i[4:0]];
-  assign rdata_c_o = raddr_c_i[5] ? mem_fp[raddr_c_i[4:0]] : mem[raddr_c_i[4:0]];
-
+  generate
+    if (COREV_X_IF != 0) begin
+      if (X_DUALREAD) begin
+        always_comb begin
+          if (dualread_i) begin
+            rdata_a_o[0] = raddr_a_i[5] ? mem_fp[raddr_a_i[4:0]] : mem[raddr_a_i[4:0]];
+            rdata_b_o[0] = raddr_b_i[5] ? mem_fp[raddr_b_i[4:0]] : mem[raddr_b_i[4:0]];
+            rdata_c_o[0] = raddr_c_i[5] ? mem_fp[raddr_c_i[4:0]] : mem[raddr_c_i[4:0]];
+            rdata_a_o[1] = raddr_a_i[5] ? mem_fp[raddr_a_i[4:0] | 5'b00001] : mem[raddr_a_i[4:0] | 5'b00001];
+            rdata_b_o[1] = raddr_b_i[5] ? mem_fp[raddr_b_i[4:0] | 5'b00001] : mem[raddr_b_i[4:0] | 5'b00001];
+            rdata_c_o[1] = raddr_c_i[5] ? mem_fp[raddr_c_i[4:0] | 5'b00001] : mem[raddr_c_i[4:0] | 5'b00001];
+          end else begin
+            rdata_a_o[0] = raddr_a_i[5] ? mem_fp[raddr_a_i[4:0]] : mem[raddr_a_i[4:0]];
+            rdata_b_o[0] = raddr_b_i[5] ? mem_fp[raddr_b_i[4:0]] : mem[raddr_b_i[4:0]];
+            rdata_c_o[0] = raddr_c_i[5] ? mem_fp[raddr_c_i[4:0]] : mem[raddr_c_i[4:0]];
+            rdata_b_o[1] = '0;
+            rdata_a_o[1] = '0;
+            rdata_c_o[1] = '0;
+          end
+        end
+      end else begin
+        assign rdata_a_o = raddr_a_i[5] ? mem_fp[raddr_a_i[4:0]] : mem[raddr_a_i[4:0]];
+        assign rdata_b_o = raddr_b_i[5] ? mem_fp[raddr_b_i[4:0]] : mem[raddr_b_i[4:0]];
+        assign rdata_c_o = raddr_c_i[5] ? mem_fp[raddr_c_i[4:0]] : mem[raddr_c_i[4:0]];
+      end
+    end else begin
+      assign rdata_a_o = raddr_a_i[5] ? mem_fp[raddr_a_i[4:0]] : mem[raddr_a_i[4:0]];
+      assign rdata_b_o = raddr_b_i[5] ? mem_fp[raddr_b_i[4:0]] : mem[raddr_b_i[4:0]];
+      assign rdata_c_o = raddr_c_i[5] ? mem_fp[raddr_c_i[4:0]] : mem[raddr_c_i[4:0]];
+    end
+  endgenerate
   //-----------------------------------------------------------------------------
   // WRITE : SAMPLE INPUT DATA
   //---------------------------------------------------------------------------
@@ -172,8 +203,8 @@ module cv32e40px_register_file #(
     mem[0] = '0;
 
     for (k = 1; k < NUM_WORDS; k++) begin : w_WordIter
-      if (~rst_n) mem[k] = '0;
-      else if (mem_clocks[k] == 1'b1) mem[k] = waddr_onehot_b_q[k] ? wdata_b_q : wdata_a_q;
+      if (~rst_n) mem[k] <= '0;
+      else if (mem_clocks[k] == 1'b1) mem[k] <= waddr_onehot_b_q[k] ? wdata_b_q : wdata_a_q;
     end
   end
 
@@ -182,9 +213,9 @@ module cv32e40px_register_file #(
     always_latch begin : latch_wdata_fp
       if (FPU == 1) begin
         for (l = 0; l < NUM_FP_WORDS; l++) begin : w_WordIter
-          if (~rst_n) mem_fp[l] = '0;
+          if (~rst_n) mem_fp[l] <= '0;
           else if (mem_clocks[l+NUM_WORDS] == 1'b1)
-            mem_fp[l] = waddr_onehot_b_q[l+NUM_WORDS] ? wdata_b_q : wdata_a_q;
+            mem_fp[l] <= waddr_onehot_b_q[l+NUM_WORDS] ? wdata_b_q : wdata_a_q;
         end
       end
     end

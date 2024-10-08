@@ -81,7 +81,7 @@ with open("edalize_build_rtl.tcl","r") as f:
 # Fix the ocurrences of hw/hw/ inside the edalize_build_rtl.tcl file
 data = data.replace("/hw/hw/","/hw/")
 
-instance = "tb_top/testharness_i/cgra_x_heep_top_i/cgra_top_wrapper_i"
+instance = "tb_top/testharness_i/heepsilon_top_i/cgra_top_wrapper_i"
 
 data = data + "\n\nvsim -vcddump -r tb_top\n" 
 data = data + "vsim -saifdump dump.saif tb_top\n"		
