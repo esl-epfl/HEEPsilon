@@ -18,6 +18,9 @@ from jsonref import JsonRef
 from mako.template import Template
 import collections
 from math import log2
+import x_heep_gen.load_config
+from x_heep_gen.system import BusType
+import math
 
 class Pad:
 
@@ -30,13 +33,25 @@ class Pad:
 
   def create_pad_ring(self):
 
+    # Mapping dictionary from string to integer
+    mapping_dict = {
+        'top' : 'core_v_mini_mcu_pkg::TOP',
+        'right' : 'core_v_mini_mcu_pkg::RIGHT',
+        'bottom' : 'core_v_mini_mcu_pkg::BOTTOM',
+        'left' : 'core_v_mini_mcu_pkg::LEFT'
+    }
+
+    mapping = ''
+    if self.pad_mapping is not None:
+        mapping = ', .SIDE(' + mapping_dict[self.pad_mapping] + ')'
+
     self.interface = '    inout wire ' + self.name + '_io,\n'
 
     if self.pad_type == 'input':
         self.pad_ring_io_interface = '    inout wire ' + self.io_interface + ','
         self.pad_ring_ctrl_interface += '    output logic ' + self.signal_name + 'o,'
         self.pad_ring_instance = \
-            'pad_cell_input #(.PADATTR('+ str(self.attribute_bits) +')) ' + self.cell_name + ' ( \n' + \
+            'pad_cell_input #(.PADATTR('+ str(self.attribute_bits) +')' + mapping + ') ' + self.cell_name + ' ( \n' + \
             '   .pad_in_i(1\'b0),\n' + \
             '   .pad_oe_i(1\'b0),\n' + \
             '   .pad_out_o(' + self.signal_name + 'o),\n' + \
@@ -45,7 +60,7 @@ class Pad:
         self.pad_ring_io_interface = '    inout wire ' + self.io_interface + ','
         self.pad_ring_ctrl_interface += '    input logic ' + self.signal_name + 'i,'
         self.pad_ring_instance = \
-            'pad_cell_output #(.PADATTR('+ str(self.attribute_bits) +')) ' + self.cell_name + ' ( \n' + \
+            'pad_cell_output #(.PADATTR('+ str(self.attribute_bits) +')' + mapping + ') ' + self.cell_name + ' ( \n' + \
             '   .pad_in_i(' + self.signal_name + 'i),\n' + \
             '   .pad_oe_i(1\'b1),\n' + \
             '   .pad_out_o(),\n' + \
@@ -56,7 +71,7 @@ class Pad:
         self.pad_ring_ctrl_interface += '    output logic ' + self.signal_name + 'o,\n'
         self.pad_ring_ctrl_interface += '    input logic ' + self.signal_name + 'oe_i,'
         self.pad_ring_instance = \
-            'pad_cell_inout #(.PADATTR('+ str(self.attribute_bits) +')) ' + self.cell_name + ' ( \n' + \
+            'pad_cell_inout #(.PADATTR('+ str(self.attribute_bits) +')' + mapping + ') ' + self.cell_name + ' ( \n' + \
             '   .pad_in_i(' + self.signal_name + 'i),\n' + \
             '   .pad_oe_i(' + self.signal_name + 'oe_i),\n' + \
             '   .pad_out_o(' + self.signal_name + 'o),\n' + \
@@ -195,13 +210,14 @@ class Pad:
         self.pad_ring_bonding_bonding += '    .' + self.signal_name + 'oe_i(' + oe_internal_signals + '),'
         self.x_heep_system_interface += '    inout wire ' + self.signal_name + 'io,'
 
-  def __init__(self, name, cell_name, pad_type, index, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, has_attribute, attribute_bits):
+  def __init__(self, name, cell_name, pad_type, pad_mapping, index, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, has_attribute, attribute_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip):
 
     self.name = name
     self.cell_name = cell_name
     self.index = index
     self.localparam = 'PAD_' + name.upper()
     self.pad_type = pad_type
+    self.pad_mapping = pad_mapping
     self.pad_mux_list = pad_mux_list
 
     if('low' in pad_active):
@@ -224,6 +240,12 @@ class Pad:
 
     self.is_driven_manually = pad_driven_manually
     self.do_skip_declaration = pad_skip_declaration
+
+    self.layout_index = pad_layout_index
+    self.layout_orient = pad_layout_orient
+    self.layout_cell = pad_layout_cell
+    self.layout_offset = pad_layout_offset
+    self.layout_skip = pad_layout_skip
 
     if(len(pad_mux_list) == 0):
         self.signal_name_drive.append(self.signal_name)
@@ -285,12 +307,18 @@ def write_template(tpl_path, outdir, outfile, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser(prog="mcugen")
-    parser.add_argument("--cfg",
+    parser.add_argument("--cfg_peripherals",
                         "-c",
                         metavar="file",
                         type=argparse.FileType('r'),
                         required=True,
                         help="A configuration file")
+    
+    parser.add_argument("--config",
+                        metavar="file",
+                        type=str,
+                        required=True,
+                        help="X-Heep general configuration")
 
     parser.add_argument("--pads_cfg",
                         "-pc",
@@ -380,7 +408,7 @@ def main():
         logging.basicConfig(level=logging.DEBUG)
 
     # Read HJSON description of System.
-    with args.cfg as file:
+    with args.cfg_peripherals as file:
         try:
             srcfull = file.read()
             obj = hjson.loads(srcfull, use_decimal=True)
@@ -404,47 +432,21 @@ def main():
 
     outfile = args.outfile
 
+    config_override = x_heep_gen.system.Override(None, None, None)
+
     if args.cpu != None and args.cpu != '':
         cpu_type = args.cpu
     else:
         cpu_type = obj['cpu_type']
 
     if args.bus != None and args.bus != '':
-        bus_type = args.bus
-    else:
-        bus_type = obj['bus_type']
+        config_override.bus_type = BusType(args.bus)
 
     if args.memorybanks != None and args.memorybanks != '':
-        ram_numbanks_cont = int(args.memorybanks)
-    else:
-        ram_numbanks_cont = int(obj['ram']['numbanks'])
+        config_override.numbanks = int(args.memorybanks)
 
     if args.memorybanks_il != None and args.memorybanks_il != '':
-        ram_numbanks_il = int(args.memorybanks_il)
-    else:
-        ram_numbanks_il = int(obj['ram']['numbanks_interleaved'])
-
-    if ram_numbanks_il != 0:
-        log_ram_numbanks_il = int(log2(ram_numbanks_il))
-
-        if not log2(ram_numbanks_il).is_integer():
-            exit("ram interleaved numbanks must be a power of 2 instead of " + str(ram_numbanks_il))
-    else:
-        log_ram_numbanks_il = 0
-
-    if ram_numbanks_il != 0 and bus_type == 'onetoM':
-        exit("bus type must be 'NtoM' instead 'onetoM' to access the interleaved memory banks in parallel" + str(args.bus))
-
-    if ram_numbanks_cont + ram_numbanks_il < 2 and ram_numbanks_cont + ram_numbanks_il > 16:
-        exit("ram numbanks must be between 2 and 16 instead of " + str(ram_numbanks_cont + ram_numbanks_il))
-    else:
-        ram_numbanks = ram_numbanks_cont + ram_numbanks_il
-
-    ram_start_address = string2int(obj['ram']['address'])
-    if int(ram_start_address,16) != 0:
-        exit("ram start address must be 0 instead of " + str(ram_start_address))
-
-    ram_size_address = '{:08X}'.format(ram_numbanks*32*1024)
+        config_override.numbanks_il = int(args.memorybanks_il)
 
     if args.external_domains != None and args.external_domains != '':
         external_domains = int(args.external_domains)
@@ -453,6 +455,12 @@ def main():
 
     if  external_domains > 32:
         exit("external_domains must be less than 32 instead of " + str(external_domains))
+
+
+
+    xheep = x_heep_gen.load_config.load_cfg_file(pathlib.PurePath(str(args.config)), config_override)
+
+
 
     debug_start_address = string2int(obj['debug']['address'])
     if int(debug_start_address, 16) < int('10000', 16):
@@ -503,7 +511,51 @@ def main():
 
     ao_peripherals = extract_peripherals(discard_path(obj['ao_peripherals']))
     ao_peripherals_count = len(ao_peripherals)
+    dma_ch_count = ao_peripherals["dma"]["num_channels"]
 
+    if int(dma_ch_count, 16) > int('256', 16) or int(dma_ch_count, 16) == 0:
+        exit("Number of DMA channels has to be between 0 and 256, excluded")
+
+    dma_ch_size = ao_peripherals["dma"]["ch_length"]
+
+    # Number of master ports for the dma subsystem
+    num_dma_master_ports = ao_peripherals["dma"]["num_master_ports"]
+    if int(num_dma_master_ports, 16) > int(dma_ch_count, 16) or int(num_dma_master_ports, 16) == 0:
+        exit("Number of DMA master ports has to be between 0 and " + str(dma_ch_count) + ", 0 excluded")
+
+    # Number of masters for each slave of the DMA NtoM xbar
+    num_dma_xbar_channels_per_master_port = ao_peripherals["dma"]["num_channels_per_master_port"]
+    if (int(num_dma_xbar_channels_per_master_port, 16) > int(dma_ch_count, 16) and int(dma_ch_count, 16) != 1) or int(num_dma_xbar_channels_per_master_port, 16) == 0:
+        exit("Number of DMA channels per system bus master ports has to be between 0 and " + str(dma_ch_count) + ", excluded")
+
+    if (int(num_dma_master_ports) > 1):
+        # Computation of full_masters_xbars
+        temp_full_masters_xbars = math.floor(int(dma_ch_count) / int(num_dma_xbar_channels_per_master_port))
+        if temp_full_masters_xbars < int(num_dma_master_ports) and temp_full_masters_xbars * int(num_dma_xbar_channels_per_master_port) == int(dma_ch_count):
+            full_masters_xbars = temp_full_masters_xbars - 1
+        else:
+            full_masters_xbars = temp_full_masters_xbars
+        last = int(num_dma_xbar_channels_per_master_port) * full_masters_xbars
+
+        # Array initialization
+        array_xbar_gen = [0] * int(num_dma_master_ports)
+
+        # Computation of the number of xbar channels for each master port
+        for i in range(int(num_dma_master_ports)):
+            if i < full_masters_xbars:
+                array_xbar_gen[i] = int(num_dma_xbar_channels_per_master_port)
+            else:
+                array_xbar_gen[i] = min(int(dma_ch_count) - last, int(dma_ch_count) - last - (int(num_dma_master_ports) - i - 1))
+                last = last + array_xbar_gen[i]
+
+        if (sum(array_xbar_gen) != int(dma_ch_count) or 0 in array_xbar_gen):
+            exit("Error in the DMA xbar generation: wrong parameters")
+        
+        dma_xbar_array = ", ".join(map(str, array_xbar_gen))
+    else:
+        if (int(num_dma_xbar_channels_per_master_port) != int(dma_ch_count)):
+            exit("With 1 master port, the number of DMA channels per master port has to be equal to the number of DMA channels")
+        dma_xbar_array = "default: 1"
 
     peripheral_start_address = string2int(obj['peripherals']['address'])
     if int(peripheral_start_address, 16) < int('10000', 16):
@@ -519,29 +571,13 @@ def main():
     flash_mem_start_address  = string2int(obj['flash_mem']['address'])
     flash_mem_size_address  = string2int(obj['flash_mem']['length'])
 
-    linker_onchip_code_start_address  = string2int(obj['linker_script']['onchip_ls']['code']['address'])
-    linker_onchip_code_size_address  = string2int(obj['linker_script']['onchip_ls']['code']['lenght'])
+    stack_size  = string2int(obj['linker_script']['stack_size'])
+    heap_size  = string2int(obj['linker_script']['heap_size'])
 
-    if int(linker_onchip_code_size_address,16) < 32*1024:
-        exit("The code section must be at least 32KB, instead it is " + str(linker_onchip_code_size_address))
 
-    linker_onchip_data_start_address  = string2int(obj['linker_script']['onchip_ls']['data']['address'])
-    if (obj['linker_script']['onchip_ls']['data']['lenght'].split()[0].split(",")[0] == "whatisleft"):
-        if ram_numbanks_il == 0 or (ram_numbanks_cont == 1 and ram_numbanks_il > 0):
-            linker_onchip_data_size_address  = str('{:08X}'.format(int(ram_size_address,16) - int(linker_onchip_code_size_address,16)))
-        else:
-            linker_onchip_data_size_address  = str('{:08X}'.format(int(ram_size_address,16) - int(linker_onchip_code_size_address,16) - ram_numbanks_il*32*1024))
-    else:
-        if ram_numbanks_il == 0 or (ram_numbanks_cont == 1 and ram_numbanks_il > 0):
-            linker_onchip_data_size_address  = string2int(obj['linker_script']['onchip_ls']['data']['lenght'])
-        else:
-            linker_onchip_data_size_address  = str('{:08X}'.format(int(string2int(obj['linker_script']['onchip_ls']['data']['lenght']),16) - ram_numbanks_il*32*1024))
+    if ((int(stack_size,16) + int(heap_size,16)) > xheep.ram_size_address()):
+        exit("The stack and heap section must fit in the RAM size, instead they takes " + str(stack_size + heap_size))
 
-    linker_onchip_il_start_address = str('{:08X}'.format(int(linker_onchip_data_start_address,16) + int(linker_onchip_data_size_address,16)))
-    linker_onchip_il_size_address = str('{:08X}'.format(ram_numbanks_il*32*1024))
-
-    if ((int(linker_onchip_data_size_address,16) + int(linker_onchip_code_size_address,16)) > int(ram_size_address,16)):
-        exit("The code and data section must fit in the RAM size, instead they takes " + str(linker_onchip_data_size_address + linker_onchip_code_size_address))
 
     plic_used_n_interrupts = len(obj['interrupts']['list'])
     plit_n_interrupts = obj['interrupts']['number']
@@ -590,7 +626,7 @@ def main():
 
         pad_name = key
         pad_num  = pads[key]['num']
-        pad_type = pads[key]['type']
+        pad_type = pads[key]['type'].strip(',')
 
         try:
             pad_offset = int(pads[key]['num_offset'])
@@ -601,6 +637,11 @@ def main():
             pad_active = pads[key]['active']
         except KeyError:
             pad_active = 'high'
+        
+        try:
+            pad_mapping = pads[key]['mapping'].strip(',')
+        except KeyError:
+            pad_mapping = None
 
         try:
             pad_mux_list_hjson = pads[key]['mux']
@@ -631,6 +672,31 @@ def main():
         except KeyError:
             pad_keep_internal = False
 
+        try:
+            pad_layout_orient = pads[key]['layout_attributes']['orient']
+        except KeyError:
+            pad_layout_orient = None
+        
+        try:
+            pad_layout_cell = pads[key]['layout_attributes']['cell']
+        except KeyError:
+            pad_layout_cell = None
+        
+        try:
+            pad_layout_offset = pads[key]['layout_attributes']['offset']
+        except KeyError:
+            pad_layout_offset = None
+
+        try:
+            pad_layout_skip = pads[key]['layout_attributes']['skip']
+        except KeyError:
+            pad_layout_skip = None
+
+        try:
+            pad_layout_index = pads[key]['layout_attributes']['index']
+        except KeyError:
+            pad_layout_index = None
+
         pad_mux_list = []
 
         for pad_mux in pad_mux_list_hjson:
@@ -656,13 +722,13 @@ def main():
             except KeyError:
                 pad_skip_declaration_mux = False
 
-            p = Pad(pad_mux, '', pads[key]['mux'][pad_mux]['type'], 0, pad_active_mux, pad_driven_manually_mux, pad_skip_declaration_mux, [], pads_attributes!=None, pads_attributes_bits)
+            p = Pad(pad_mux, '', pads[key]['mux'][pad_mux]['type'], pad_mapping, 0, pad_active_mux, pad_driven_manually_mux, pad_skip_declaration_mux, [], pads_attributes!=None, pads_attributes_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip)
             pad_mux_list.append(p)
 
         if pad_num > 1:
             for p in range(pad_num):
                 pad_cell_name = "pad_" + key + "_" + str(p+pad_offset) + "_i"
-                pad_obj = Pad(pad_name + "_" + str(p+pad_offset), pad_cell_name, pad_type, pad_index_counter, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits)
+                pad_obj = Pad(pad_name + "_" + str(p+pad_offset), pad_cell_name, pad_type, pad_mapping, pad_index_counter, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip)
                 if not pad_keep_internal:
                     pad_obj.create_pad_ring()
                 pad_obj.create_core_v_mini_mcu_ctrl()
@@ -681,7 +747,7 @@ def main():
 
         else:
             pad_cell_name = "pad_" + key + "_i"
-            pad_obj = Pad(pad_name, pad_cell_name, pad_type, pad_index_counter, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits)
+            pad_obj = Pad(pad_name, pad_cell_name, pad_type, pad_mapping, pad_index_counter, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip)
             if not pad_keep_internal:
                 pad_obj.create_pad_ring()
             pad_obj.create_core_v_mini_mcu_ctrl()
@@ -717,6 +783,11 @@ def main():
                 pad_active = 'high'
 
             try:
+                pad_mapping = external_pads[key]['mapping']
+            except KeyError:
+                pad_mapping = None
+
+            try:
                 pad_mux_list_hjson = external_pads[key]['mux']
             except KeyError:
                 pad_mux_list_hjson = []
@@ -737,6 +808,31 @@ def main():
             except KeyError:
                 pad_skip_declaration = False
 
+            try:
+                pad_layout_orient = external_pads[key]['layout_attributes']['orient']
+            except KeyError:
+                pad_layout_orient = None
+            
+            try:
+                pad_layout_cell = external_pads[key]['layout_attributes']['cell']
+            except KeyError:
+                pad_layout_cell = None
+            
+            try:
+                pad_layout_offset = external_pads[key]['layout_attributes']['offset']
+            except KeyError:
+                pad_layout_offset = None
+
+            try:
+                pad_layout_skip = external_pads[key]['layout_attributes']['skip']
+            except KeyError:
+                pad_layout_skip = None
+            
+            try:
+                pad_layout_index = external_pads[key]['layout_attributes']['index']
+            except KeyError:
+                pad_layout_index = None
+            
             pad_mux_list = []
 
             for pad_mux in pad_mux_list_hjson:
@@ -762,13 +858,13 @@ def main():
                 except KeyError:
                     pad_skip_declaration_mux = False
 
-                p = Pad(pad_mux, '', external_pads[key]['mux'][pad_mux]['type'], 0, pad_active_mux, pad_driven_manually_mux, pad_skip_declaration_mux, [], pads_attributes!=None, pads_attributes_bits)
+                p = Pad(pad_mux, '', external_pads[key]['mux'][pad_mux]['type'], pad_mapping, 0, pad_active_mux, pad_driven_manually_mux, pad_skip_declaration_mux, [], pads_attributes!=None, pads_attributes_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip)
                 pad_mux_list.append(p)
 
             if pad_num > 1:
                 for p in range(pad_num):
                     pad_cell_name = "pad_" + key + "_" + str(p+pad_offset) + "_i"
-                    pad_obj = Pad(pad_name + "_" + str(p+pad_offset), pad_cell_name, pad_type, external_pad_index, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits)
+                    pad_obj = Pad(pad_name + "_" + str(p+pad_offset), pad_cell_name, pad_type, pad_mapping, external_pad_index, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip)
                     pad_obj.create_pad_ring()
                     pad_obj.create_pad_ring_bonding()
                     pad_obj.create_internal_signals()
@@ -784,7 +880,7 @@ def main():
 
             else:
                 pad_cell_name = "pad_" + key + "_i"
-                pad_obj = Pad(pad_name, pad_cell_name, pad_type, external_pad_index, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits)
+                pad_obj = Pad(pad_name, pad_cell_name, pad_type, pad_mapping, external_pad_index, pad_active, pad_driven_manually, pad_skip_declaration, pad_mux_list, pads_attributes!=None, pads_attributes_bits, pad_layout_index, pad_layout_orient, pad_layout_cell, pad_layout_offset, pad_layout_skip)
                 pad_obj.create_pad_ring()
                 pad_obj.create_pad_ring_bonding()
                 pad_obj.create_internal_signals()
@@ -818,21 +914,20 @@ def main():
     total_pad_list.append(last_pad)
 
     kwargs = {
+        "xheep"                            : xheep,
         "cpu_type"                         : cpu_type,
-        "bus_type"                         : bus_type,
-        "ram_start_address"                : ram_start_address,
-        "ram_numbanks"                     : ram_numbanks,
-        "ram_numbanks_cont"                : ram_numbanks_cont,
-        "ram_numbanks_il"                  : ram_numbanks_il,
-        "log_ram_numbanks_il"              : log_ram_numbanks_il,
         "external_domains"                 : external_domains,
-        "ram_size_address"                 : ram_size_address,
         "debug_start_address"              : debug_start_address,
         "debug_size_address"               : debug_size_address,
         "ao_peripheral_start_address"      : ao_peripheral_start_address,
         "ao_peripheral_size_address"       : ao_peripheral_size_address,
         "ao_peripherals"                   : ao_peripherals,
         "ao_peripherals_count"             : ao_peripherals_count,
+        "dma_ch_count"                     : dma_ch_count,
+        "dma_ch_size"                      : dma_ch_size,
+        "num_dma_master_ports"             : num_dma_master_ports,
+        "num_dma_xbar_channels_per_master_port" : num_dma_xbar_channels_per_master_port,
+        "dma_xbar_masters_array"           : dma_xbar_array,
         "peripheral_start_address"         : peripheral_start_address,
         "peripheral_size_address"          : peripheral_size_address,
         "peripherals"                      : peripherals,
@@ -841,12 +936,8 @@ def main():
         "ext_slave_size_address"           : ext_slave_size_address,
         "flash_mem_start_address"          : flash_mem_start_address,
         "flash_mem_size_address"           : flash_mem_size_address,
-        "linker_onchip_code_start_address" : linker_onchip_code_start_address,
-        "linker_onchip_code_size_address"  : linker_onchip_code_size_address,
-        "linker_onchip_data_start_address" : linker_onchip_data_start_address,
-        "linker_onchip_data_size_address"  : linker_onchip_data_size_address,
-        "linker_onchip_il_start_address"   : linker_onchip_il_start_address,
-        "linker_onchip_il_size_address"    : linker_onchip_il_size_address,
+        "stack_size"                       : stack_size,
+        "heap_size"                        : heap_size,
         "plic_used_n_interrupts"           : plic_used_n_interrupts,
         "plit_n_interrupts"                : plit_n_interrupts,
         "interrupts"                       : interrupts,

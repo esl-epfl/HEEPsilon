@@ -23,7 +23,9 @@
 * @version  1
 * @brief    GPIO driver
 */
-
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
 /****************************************************************************/
 /**                                                                        **/
 /*                             MODULES USED                                 */
@@ -150,7 +152,7 @@ gpio_result_t gpio_assign_irq_handler( uint32_t intr_id,
 {
   if( intr_id >= GPIO_INTR_START && intr_id <= GPIO_INTR_END )
   {
-    gpio_handlers[ intr_id - GPIO_INTR_START ] = handler;
+    gpio_handlers[ intr_id - GPIO_INTR_START ] = (void (*)(void))handler;
     return GpioOk;
   }
   return GpioError;
@@ -160,7 +162,7 @@ void gpio_reset_handlers_list( )
 {
     for( uint8_t i = 0; i < GPIO_INTR_QTY; i++ )
     {
-        gpio_handlers[ i ] = &gpio_handler_irq_dummy;
+        gpio_handlers[ i ] = (void (*)(void))&gpio_handler_irq_dummy;
     }
 }
 
@@ -573,3 +575,8 @@ __attribute__((optimize("O0"))) static void gpio_handler_irq_dummy( uint32_t dum
 /*                                 EOF                                      */
 /**                                                                        **/
 /****************************************************************************/
+
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus

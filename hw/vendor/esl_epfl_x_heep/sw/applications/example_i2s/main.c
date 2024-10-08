@@ -34,7 +34,7 @@
 #include "i2s_structs.h"
 
 
-#ifdef TARGET_PYNQ_Z2
+#ifdef TARGET_IS_FPGA
 #define I2S_TEST_BATCH_SIZE    128
 #define I2S_TEST_BATCHES      16
 #define I2S_CLK_DIV           8
@@ -72,7 +72,7 @@
 
 #if TARGET_SIM && PRINTF_IN_SIM
         #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
-#elif TARGET_PYNQ_Z2 && PRINTF_IN_FPGA
+#elif PRINTF_IN_FPGA && !TARGET_SIM
     #define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 #else
     #define PRINTF(...)
@@ -104,7 +104,7 @@ void handler_irq_i2s(uint32_t id) {
 }
 
 #ifdef USE_DMA
-void dma_intr_handler_trans_done(void)
+void dma_intr_handler_trans_done(uint8_t channel)
 {
     dma_intr_flag = 1;
 }
@@ -128,18 +128,18 @@ void setup()
      // -- DMA CONFIGURATION --
 
     tgt_src.ptr        = I2S_RX_DATA_ADDRESS;
-    tgt_src.inc_du     = 0;
+    tgt_src.inc_d1_du     = 0;
     tgt_src.trig       = DMA_TRIG_SLOT_I2S;
     tgt_src.type       = DMA_DATA_TYPE_WORD;
-    tgt_src.size_du    = AUDIO_DATA_NUM;
 
     tgt_dst.ptr        = audio_data_0;
-    tgt_dst.inc_du     = 1;
+    tgt_dst.inc_d1_du     = 1;
     tgt_dst.trig       = DMA_TRIG_MEMORY;
     tgt_dst.type       = DMA_DATA_TYPE_WORD;
 
     trans.src        = &tgt_src;
     trans.dst        = &tgt_dst;
+    trans.size_d1_du    = AUDIO_DATA_NUM;
     trans.end        = DMA_TRANS_END_INTR;
 
     dma_config_flags_t res;
@@ -173,7 +173,7 @@ void setup()
 int main(int argc, char *argv[]) {
     bool success = true;
 
-#ifdef TARGET_PYNQ_Z2
+#ifdef TARGET_IS_FPGA
     for (uint32_t i = 0; i < 0x10000; i++) asm volatile("nop");
 #endif
     PRINTF("I2S DEMO\r\n\r");
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 
     //PRINTF("Setup done!\r\n\r");
 
-#ifdef TARGET_PYNQ_Z2
+#ifdef TARGET_IS_FPGA
 
 
     for (uint32_t i = 0; i < I2S_WAIT_CYCLES; i++) asm volatile("nop");
@@ -301,22 +301,47 @@ int main(int argc, char *argv[]) {
         PRINTF("B%x\r\n\r", batch);
 
         int32_t* data = audio_data_0;
-        for (int i = 0; i < AUDIO_DATA_NUM; i+=2) {
-            PRINTF("0x%x 0x%x\r\n\r", data[i], data[i+1]);
+        int32_t data_even = 0;
+        int32_t data_odd  = 0;
+        for (int i = 0; i < AUDIO_DATA_NUM; i++) {
+            PRINTF("0x%x\r\n\r", data[i]);
             if (data[i] != 0) {
                 mic_connected = true; // the microphone testbench is connected
-                if (data[i] != 0x8765431) {
-                    PRINTF("ERROR left sample %d (B%d) = 0x%08x != 0x8765431\r\n\r", i, batch, data[i]);
-                    success = false;
+            } else {
+                if(i == 0) {
+                    //check what is the first data to expect, left or right
+                    //the testbench alternatively sends these 2 data, catching which one is first for each BATCH
+                    if ( (data[0] == 0x8765431) || (data[0] == 0xfedcba9) ) {
+                        if (data[0] == 0x8765431) {
+                            data_even = 0x8765431;
+                            data_odd  = 0xfedcba9;
+                        } else {
+                            data_odd  = 0x8765431;
+                            data_even = 0xfedcba9;
+                        }
+                    } else {
+                        PRINTF("ERROR sample %d (B%d) = 0x%08x != 0x8765431 or 0xfedcba9\r\n\r", i, batch, data[0]);
+                        success = false;
+                    }
+
+                } else {
+                    //check whether even or odd
+                    if (i & 0x1) {
+                        //odd
+                        if (data[i] != data_odd) {
+                                PRINTF("ERROR left sample %d (B%d) = 0x%08x != 0x%08x\r\n\r", i, batch, data[i], data_odd);
+                                success = false;
+                        }
+                    }
+                    else {
+                        //even
+                        if (data[i] != data_even) {
+                                PRINTF("ERROR left sample %d (B%d) = 0x%08x != 0x%08x\r\n\r", i, batch, data[i], data_even);
+                                success = false;
+                        }
+                    }
                 }
-            }
-            if (data[i+1] != 0) {
-                mic_connected = true; // the microphone testbench is connected
-                if (data[i+1] != 0xfedcba9) {
-                    PRINTF("ERROR left sample data[%d] = 0x%08x != 0xfedcba9\r\n\r", i+1, batch, data[i+1]);
-                    success = false;
-                }
-            }
+             }
         }
     }
 
