@@ -8,7 +8,7 @@
 
   upstream: {
     url: "https://github.com/esl-epfl/OpenEdgeCGRA.git",
-    rev: "92cc0b97dd9f11b17b16a2d1cc19adc902bec3d1",
+    rev: "618b45d2c5deb0ae3741b8dfdd472354ed073126",
   },
 
   patch_dir: "patches/esl_epfl_cgra",
