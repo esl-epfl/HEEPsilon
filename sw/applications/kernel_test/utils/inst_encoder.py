@@ -279,9 +279,9 @@ with open(BITSTREAMS_PATH, 'w') as f:
 
 
 
-exec(open("io_gen.py").read())
+# exec(open("io_gen.py").read())
 
-exec(open("heeptest_gen.py").read())
+# exec(open("heeptest_gen.py").read())
 
 
 #####################################################################################

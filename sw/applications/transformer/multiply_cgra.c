@@ -82,7 +82,6 @@ volatile bool               cgra_intr_flag;
 
 // CGRA variables
 static cgra_t               cgra;
-static uint8_t              cgra_slot;
 
 // CGRA input and output buffers
 static int32_t cgra_input[CGRA_N_COLS][CGRA_COL_INPUT_SIZE]    __attribute__ ((aligned (4)));
@@ -123,12 +122,12 @@ void multiply_cgra(int * matrixA, int ROWS_A, int COLS_A, int * matrixB, int COL
 
   // Set CGRA kernel L/S pointers
   for(int col_idx = 0 ; col_idx < CGRA_N_COLS ; col_idx++){
-    cgra_set_read_ptr ( &cgra, cgra_slot, (uint32_t) cgra_input[col_idx], col_idx );
+    cgra_set_read_ptr ( &cgra, (uint32_t) cgra_input[col_idx], col_idx );
   }
 
   // CGRA Execution
   cgra_intr_flag = 0;
-  cgra_set_kernel( &cgra, cgra_slot, 1 );
+  cgra_set_kernel( &cgra, 1 );
   // Wait until CGRA is done
   while(cgra_intr_flag==0) {
     wait_for_interrupt();
@@ -156,7 +155,6 @@ void initCGRA(){
 
   cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
   // Select request slot of CGRA
-  cgra_slot = cgra_get_slot(&cgra);
 }
 
 // Interrupt controller variables

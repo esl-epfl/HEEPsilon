@@ -15,7 +15,7 @@ PORT		?= /dev/ttyUSB2
 EXTERNAL_DOMAINS = 1
 PROJECT ?= hello_world
 
-#MEMORY_BANKS ?= 2 # Multiple of 2
+MEMORY_BANKS ?= 4 # Multiple of 2
 #MEMORY_BANKS_IL ?= 4 # Power of 2
   
 export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
@@ -36,6 +36,8 @@ heepsilon-gen:
 # This is needed to be done after the X-HEEP mcu-gen because the test-bench to be used is the one from heepsilon, not the one from X-HEEP.
 mcu-gen: heepsilon-gen
 	$(MAKE) -f $(XHEEP_MAKE) EXTERNAL_DOMAINS=${EXTERNAL_DOMAINS} MEMORY_BANKS=${MEMORY_BANKS} $(MAKECMDGOALS)
+	cd hw/vendor/esl_epfl_x_heep &&\
+	$(PYTHON) util/mcu_gen.py --config configs/general.hjson --cfg_peripherals mcu_cfg.hjson --pads_cfg pad_cfg.hjson  --outdir ../../../tb/ --memorybanks $(MEMORY_BANKS) --tpl-sv ../../../tb/tb_util.svh.tpl
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
 ## @param FPGA_BOARD=nexys-a7-100t,pynq-z2
