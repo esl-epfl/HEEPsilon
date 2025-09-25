@@ -245,7 +245,7 @@ def translate_instructions(instr_usi) :
                     instr_epfl[1] = 'IMM'
 
     elif op in type_5_instr :
-        increment = 1 if instr_usi[2] == '-' else instr_usi[2]
+        increment = 4 if instr_usi[2] == '-' else instr_usi[2]
         if op == 'SWD' :
             instr_epfl = [instr_usi[1],'-',op,'-','-',increment]
         else :
