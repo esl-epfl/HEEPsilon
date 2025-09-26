@@ -15,7 +15,7 @@ PORT		?= /dev/ttyUSB2
 EXTERNAL_DOMAINS = 1
 PROJECT ?= hello_world
 
-MEMORY_BANKS ?= 4 # Multiple of 2
+#MEMORY_BANKS ?= 2 # Multiple of 2
 #MEMORY_BANKS_IL ?= 4 # Power of 2
   
 export HEEP_DIR = hw/vendor/esl_epfl_x_heep/
