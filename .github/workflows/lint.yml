@@ -27,8 +27,8 @@ jobs:
       run: pip install -r hw/vendor/esl_epfl_x_heep/python-requirements.txt
     - name: Re-vendor and diff
       run: |
-        util/vendor.py --verbose hw/vendor/eslepfl_x_heep.vendor.hjson \
-            && hw/vendor/esl_epfl_x_heep/util/git-diff.py --error-msg "::error ::Found differences, please re-vendor."
+        find . -name '*.vendor.hjson' | xargs -n1 util/vendor.py --verbose &&
+        hw/vendor/esl_epfl_x_heep/util/git-diff.py --error-msg '::error ::Found differences, please re-vendor.'
   ##################
   # MCU Generator  #
   ##################
