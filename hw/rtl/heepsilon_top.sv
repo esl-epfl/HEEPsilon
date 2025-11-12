@@ -258,6 +258,13 @@ module heepsilon_top #(
       .external_subsystem_powergate_switch_ack_ni(external_subsystem_powergate_switch_ack_n),
       .external_subsystem_powergate_iso_no(external_subsystem_powergate_iso_n),
 
+      .ext_ao_peripheral_req_i('0),
+      .ext_ao_peripheral_resp_o(),
+      .ext_dma_slot_tx_i('0),
+      .ext_dma_slot_rx_i('0),
+      .ext_dma_stop_i('0),
+      .dma_done_o(),
+
       .external_subsystem_rst_no(external_subsystem_rst_n),
       .external_ram_banks_set_retentive_no(external_ram_banks_set_retentive_n)
   );

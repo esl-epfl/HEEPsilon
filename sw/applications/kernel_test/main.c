@@ -117,7 +117,7 @@ void main()
         stats.n = ITERATIONS_PER_KERNEL;
         stats.errors = 0;
         /* Set the kernel ID */
-        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_SIZE - 1) ) + 1; // Must be between 1 and (KMEM_SIZE - 1).
+        uint8_t kernel_id = ( ker_idx % (CGRA_KMEM_DEPTH - 1) ) + 1; // Must be between 1 and (KMEM_SIZE - 1).
         kernel->kmem[ kernel_id ] = kernel->kmem[1]; // By default the kernels come located with id = 1.
         // The kernel = 1 is kept, so we can always take it from there.
 

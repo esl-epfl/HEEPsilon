@@ -115,7 +115,6 @@ static rv_timer_t          timer;
 volatile bool               cgra_intr_flag;
 
 static cgra_t               cgra;
-static uint8_t              cgra_slot;
 // To stop the counter inside the interupt handler
 static kcom_time_diff_t     *cgraPerf;
 
@@ -452,12 +451,11 @@ void kcom_load( kcom_kernel_t *ker )
 
     cgra.base_addr = mmio_region_from_addr((uintptr_t)CGRA_PERIPH_START_ADDRESS);
     // Select request slot of CGRA
-    cgra_slot = cgra_get_slot(&cgra);
     cgra_perf_cnt_enable(&cgra, 1);
     // Set CGRA kernel L/S pointers
     for(int8_t col_idx = 0 ; col_idx < ker->col_n ; col_idx++){
-        cgra_set_read_ptr ( &cgra, cgra_slot, (uint32_t)&((ker->input[0]))  + (col_idx * ker->in_n  * sizeof(uint32_t) ),  col_idx );
-        cgra_set_write_ptr( &cgra, cgra_slot, (uint32_t)&((ker->output[0])) + (col_idx * ker->out_n * sizeof(uint32_t) ),  col_idx );
+        cgra_set_read_ptr ( &cgra, (uint32_t)&((ker->input[0]))  + (col_idx * ker->in_n  * sizeof(uint32_t) ),  col_idx );
+        cgra_set_write_ptr( &cgra, (uint32_t)&((ker->output[0])) + (col_idx * ker->out_n * sizeof(uint32_t) ),  col_idx );
     }
 }
 
@@ -468,7 +466,7 @@ void kcom_rstPerfCounter()
 
 void kcom_launchKernel( uint8_t Id )
 {
-    cgra_set_kernel( &cgra, cgra_slot, Id );
+    cgra_set_kernel( &cgra, Id );
 }
 
 __attribute__((optimize("O0"))) void kcom_waitingForIntr()

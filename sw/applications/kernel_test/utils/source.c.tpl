@@ -64,8 +64,8 @@ static uint32_t    check   (void);
 /**                                                                        **/
 /****************************************************************************/
 
-const uint32_t  cgra_imem_${shortname}[CGRA_IMEM_SIZE] = { ${imem} };
-static uint32_t cgra_kmem_${shortname}[CGRA_KMEM_SIZE] = { ${kmem} };
+const uint32_t  cgra_imem_${shortname}[CGRA_CMEM_TOT_DEPTH] = { ${imem} };
+static uint32_t cgra_kmem_${shortname}[CGRA_KMEM_DEPTH] = { ${kmem} };
 
 static int32_t cgra_input[CGRA_COLS][IN_VAR_DEPTH]     __attribute__ ((aligned (4)));
 static int32_t cgra_output[CGRA_COLS][OUT_VAR_DEPTH]   __attribute__ ((aligned (4)));

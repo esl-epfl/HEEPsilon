@@ -245,10 +245,11 @@ def translate_instructions(instr_usi) :
                     instr_epfl[1] = 'IMM'
 
     elif op in type_5_instr :
+        increment = 4 if instr_usi[2] == '-' else instr_usi[2]
         if op == 'SWD' :
-            instr_epfl = [instr_usi[1],'-',op,'-','-','-']
+            instr_epfl = [instr_usi[1],'-',op,'-','-',increment]
         else :
-            instr_epfl = ['-','-',op,instr_usi[1],'-','-']
+            instr_epfl = ['-','-',op,instr_usi[1],'-',increment]
     elif op == 'JUMP' :
         instr_epfl=[instr_usi[2] if (instr_usi[2] in muxA_list_ext) else "ZERO",\
                     instr_usi[3] if (instr_usi[3] in muxB_list_ext) else "ZERO",'JUMP',\
